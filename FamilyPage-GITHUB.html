@@ -1,0 +1,2206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Keylab Performance Parties 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:      #faf9f7;
+    --bg2:     #f4f2ef;
+    --bg3:     #ebe8e2;
+    --border:  #e2ddd6;
+    --text:    #1a1814;
+    --text2:   #5a5650;
+    --text3:   #9a958e;
+    --acc:     #e8560a;
+    --acc-lt:  #fff0e8;
+    --acc-dk:  #c04106;
+    --blue:    #2563eb;
+    --blue-dk: #1d4ed8;
+    --blue-lt: #eff6ff;
+    --warn:    #92540a;
+    --warn-lt: #fff7ed;
+    --info:    #1d5fa8;
+    --info-lt: #f0f7ff;
+    --err:     #c0392b;
+    --err-lt:  #fff1f0;
+    --radius:  12px;
+    --shadow:  0 1px 4px rgba(0,0,0,.06), 0 4px 20px rgba(0,0,0,.05);
+  }
+
+  html {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.55;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .page-wrap {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 16px 48px;
+  }
+
+  /* ── Header ── */
+  .site-header {
+    padding: 28px 0 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 28px;
+  }
+  .site-header .wordmark {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--acc);
+    margin-bottom: 4px;
+  }
+  .site-header h1 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.25;
+  }
+  .site-header .tagline {
+    font-size: 13px;
+    color: var(--text3);
+    margin-top: 3px;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 18px;
+  }
+
+  /* ── Fields ── */
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 14px;
+  }
+  .field label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text2);
+  }
+  .field input, .field textarea, .field select {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    padding: 10px 13px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: border-color .15s;
+    width: 100%;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    border-color: var(--acc);
+  }
+  .hint {
+    font-size: 12px;
+    color: var(--text3);
+    line-height: 1.4;
+    margin-top: 2px;
+  }
+
+  /* ── Buttons ── */
+  .btn-primary {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    background: var(--blue);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: background .15s;
+  }
+  .btn-primary:hover { background: var(--blue-dk); }
+
+  .btn-secondary {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    background: transparent;
+    color: var(--blue);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    border: 1.5px solid var(--blue);
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: background .15s;
+  }
+  .btn-secondary:hover { background: var(--blue-lt); }
+
+  .btn-cancel {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    background: transparent;
+    color: var(--err);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    border: 1.5px solid #f5a89e;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: background .15s;
+  }
+  .btn-cancel:hover { background: var(--err-lt); }
+
+  .btn-ghost {
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text3);
+    cursor: pointer;
+    padding: 6px 0;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .btn-ghost:hover { color: var(--text2); }
+
+  .text-link {
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--blue);
+    cursor: pointer;
+    padding: 8px 0;
+    display: block;
+    text-align: center;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .btn-wrap {
+    margin-bottom: 12px;
+  }
+  .btn-desc {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 5px;
+    line-height: 1.4;
+  }
+
+  /* ── Notices ── */
+  .notice {
+    display: flex;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.45;
+    margin-bottom: 16px;
+    align-items: flex-start;
+  }
+  .ni { flex-shrink: 0; margin-top: 1px; }
+  .notice-success { background: var(--acc-lt); color: var(--acc-dk); }
+  .notice-warn { background: var(--warn-lt); color: var(--warn); }
+  .notice-info { background: var(--info-lt); color: var(--info); }
+  .notice-err { background: var(--err-lt); color: var(--err); }
+
+  /* ── Status pill ── */
+  .status-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .01em;
+  }
+  .pill-unconfirmed { background: #fff7ed; color: #92540a; }
+  .pill-confirmed { background: #fff0e8; color: #c04106; }
+  .pill-confirmed-guest { background: #eff6ff; color: #1d4ed8; }
+  .pill-cancelled { background: #fff1f0; color: #c0392b; }
+  .pill-not-participating { background: #f4f2ef; color: #9a958e; }
+
+  /* ── Status explanation line ── */
+  .status-explain {
+    font-size: 13px;
+    color: var(--text2);
+    margin-top: 10px;
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+
+  /* ── Admin note callout ── */
+  .admin-note-callout {
+    background: #fffbf5;
+    border: 1px solid #fde4c0;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #92540a;
+    line-height: 1.45;
+  }
+  .admin-note-callout strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+
+  /* ── Assignment card ── */
+  .assign-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 16px;
+    margin-bottom: 16px;
+  }
+  .assign-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+    gap: 10px;
+  }
+  .assign-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 5px;
+  }
+  .assign-day {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.15;
+  }
+  .assign-seg {
+    font-size: 13px;
+    color: var(--text2);
+    margin-top: 3px;
+  }
+  .arrive-badge {
+    font-size: 13px;
+    font-weight: 500;
+    background: var(--acc-lt);
+    color: var(--acc-dk);
+    padding: 7px 12px;
+    border-radius: 7px;
+    margin-bottom: 14px;
+    border: 1px solid #ffd4b8;
+  }
+  .assign-meta {
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .assign-meta-item { flex: 1; min-width: 80px; }
+  .assign-meta-label {
+    font-size: 11px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 2px;
+  }
+  .assign-meta-val { font-size: 14px; font-weight: 500; color: var(--text); }
+
+  .action-divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  /* ── Status badge (legacy, kept for any remaining references) ── */
+  .status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .status-confirmed { background: #fff0e8; color: #c04106; }
+  .status-confirmed-guest { background: #eff6ff; color: #1d4ed8; }
+  .status-cancelled { background: #fff1f0; color: #c0392b; }
+  .status-unconfirmed { background: #fff7ed; color: #92540a; }
+
+  /* ── Cancelled notice ── */
+  .cancelled-notice {
+    background: var(--err-lt);
+    border: 1px solid #fdb8b0;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+  }
+  .cn-title { font-size: 14px; font-weight: 600; color: var(--err); margin-bottom: 4px; }
+  .cn-body { font-size: 13px; color: #8b2218; line-height: 1.4; }
+
+  /* ── Swap grid ── */
+  .swap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .slot-btn {
+    padding: 14px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    background: var(--bg);
+    cursor: pointer;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    transition: border-color .15s, background .15s;
+  }
+  .slot-btn:hover:not(:disabled) { border-color: var(--acc); background: var(--acc-lt); }
+  .slot-btn:disabled { opacity: .45; cursor: not-allowed; }
+  .slot-btn.current { border-color: var(--acc); background: var(--acc-lt); }
+  .slot-btn.is-orig { border-color: var(--blue); background: var(--blue-lt); }
+  .slot-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .slot-time { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .slot-avail { font-size: 11px; margin-top: 5px; }
+  .slot-avail.open { color: var(--acc); }
+  .slot-avail.full { color: var(--err); }
+
+  /* ── Pref grid ── */
+  .pref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-bottom: 16px; }
+  .pref-btn {
+    padding: 12px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    background: var(--bg);
+    cursor: pointer;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    transition: border-color .15s, background .15s;
+  }
+  .pref-btn.selected { border-color: var(--acc); background: var(--acc-lt); }
+  .pref-btn.current-slot { border-color: var(--text3); }
+  .pref-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .pref-time { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+  /* ── Guest select ── */
+  .guest-summary {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 14px;
+    color: var(--text2);
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+  .guest-select-wrap { margin-bottom: 12px; }
+  .guest-select-wrap label {
+    display: block;
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 5px;
+  }
+  .guest-select-wrap select {
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    padding: 10px 13px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+  }
+
+  /* ── Confirm sent ── */
+  .confirm-icon { font-size: 36px; text-align: center; margin-bottom: 10px; }
+  .confirm-title { font-size: 20px; font-weight: 700; text-align: center; color: var(--blue); margin-bottom: 6px; }
+  .confirm-sub { font-size: 14px; color: var(--text2); text-align: center; margin-bottom: 18px; line-height: 1.5; }
+  .confirm-detail {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+  .confirm-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 10px;
+  }
+  .confirm-row:last-child { border-bottom: none; }
+  .confirm-key { font-size: 12px; color: var(--text3); flex-shrink: 0; }
+  .confirm-val { font-size: 14px; font-weight: 500; color: var(--text); text-align: right; }
+
+  /* ── Message sent ── */
+  .msg-sent { text-align: center; padding: 10px 0 6px; }
+  .msg-sent .icon { font-size: 36px; margin-bottom: 10px; }
+
+  /* ── Loading ── */
+  .loading-wrap {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text3);
+    font-size: 15px;
+  }
+  .spin { display: inline-block; animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .back-row { margin-top: 14px; }
+
+  /* ── Pick student buttons ── */
+  .pick-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    background: var(--bg);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: border-color .15s, background .15s;
+  }
+  .pick-btn:hover { border-color: var(--blue); background: var(--blue-lt); }
+  .pick-btn-name { font-size: 15px; font-weight: 600; color: var(--text); }
+  .pick-btn-meta { font-size: 12px; color: var(--text3); margin-top: 3px; }
+
+  /* ── Info accordion ── */
+  #info-section { margin-top: 32px; }
+  .info-heading {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 10px;
+  }
+  .info-section {
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .info-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 16px;
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    gap: 10px;
+  }
+  .info-toggle:hover { background: var(--bg2); }
+  .info-toggle .arrow { transition: transform .2s; flex-shrink: 0; font-size: 11px; color: var(--text3); }
+  .info-toggle.open .arrow { transform: rotate(180deg); }
+  .info-body {
+    display: none;
+    padding: 0 16px 16px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+    border-top: 1px solid var(--border);
+  }
+  .info-body.open { display: block; }
+  .info-body h4 { font-size: 13px; font-weight: 600; color: var(--text); margin: 12px 0 4px; }
+  .info-body h4:first-child { margin-top: 14px; }
+  .info-body p { margin-bottom: 8px; }
+  .info-body ul { padding-left: 18px; margin-bottom: 8px; }
+  .info-body li { margin-bottom: 4px; }
+  .info-body a { color: var(--blue); }
+</style>
+<script>
+// Force GAS iframe to respect device width
+(function() {
+  try {
+    // Tell the GAS host to resize to full available width
+    if (window.google && google.script && google.script.host) {
+      google.script.host.setWidth(window.screen.width > 0 ? Math.min(window.screen.width, 480) : 480);
+    }
+  } catch(e) {}
+
+  // If we're inside an iframe, inject a viewport meta into the parent if accessible
+  try {
+    if (window.self !== window.top) {
+      var parentHead = window.top.document.head;
+      var existing = window.top.document.querySelector('meta[name="viewport"]');
+      if (!existing) {
+        var m = window.top.document.createElement('meta');
+        m.name = 'viewport';
+        m.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+        parentHead.appendChild(m);
+      } else {
+        existing.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+      }
+    }
+  } catch(e) {}
+})();
+</script>
+</head>
+<body>
+<div class="page-wrap">
+  <header class="site-header">
+    <div class="wordmark">Keylab Music School</div>
+    <h1>Performance Parties 2026</h1>
+    <div class="tagline">June 15&ndash;19 &middot; 94 Luquer St, Brooklyn</div>
+  </header>
+  <div id="root"></div>
+  <div id="info-section"></div>
+</div>
+
+<script>
+// ── State ────────────────────────────────────────────────────────
+var state   = "lookup";
+var student = null;
+var slots   = null;
+var phase   = "pre";
+var errMsg  = "";
+var lookupName = "", lookupPw = "", lookupEmail = "";
+var lookupMatches = []; // for multi-match picker
+var selectedMatch = null; // {id, name, day, seg} chosen from picker
+var pendingConfirmStatus = "confirmed";
+var prefSelected = [];
+var pendingGuestList = [];
+var pendingAuthIntent = null; // 'confirm-performer' | 'confirm-guest' | 'cancel' | null
+
+var TIMES = {
+  Monday:    {Early:"Monday, June 15 \u2014 4:00 PM",  Late:"Monday, June 15 \u2014 5:00 PM"},
+  Tuesday:   {Early:"Tuesday, June 16 \u2014 4:00 PM", Late:"Tuesday, June 16 \u2014 5:00 PM"},
+  Wednesday: {Early:"Wednesday, June 17 \u2014 4:00 PM",Late:"Wednesday, June 17 \u2014 5:00 PM"},
+  Thursday:  {Early:"Thursday, June 18 \u2014 4:00 PM",Late:"Thursday, June 18 \u2014 5:00 PM"},
+  Friday:    {Single:"Friday, June 19 \u2014 4:00 PM"}
+};
+var ARRIVE = {Early:"Arrive 3:30\u20133:50 PM", Late:"Arrive 4:45\u20135:00 PM", Single:"Arrive 3:30\u20133:50 PM"};
+
+// ── GITHUB VERSION: calls GAS backend via fetch() instead of google.script.run ──
+var GAS_URL = 'YOUR_GAS_EXEC_URL_HERE'; // ← paste your /exec URL here before uploading
+
+function api(p, cb) {
+  fetch(GAS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(p)
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) { cb(null, data); })
+  .catch(function(e) { cb(e); });
+}
+
+// Safety guard: ensure esc is always available before any callback fires
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+
+function statusLabel(st) {
+  var map = {
+    'unconfirmed': 'Unconfirmed',
+    'confirmed': 'Confirmed performer',
+    'confirmed-guest': 'Attending, not performing',
+    'cancelled': 'Cancelled',
+    'not-participating': 'Not attending'
+  };
+  return map[st] || st;
+}
+
+function statusPillClass(st) {
+  if (st === 'confirmed')        return 'pill-confirmed';
+  if (st === 'confirmed-guest')  return 'pill-confirmed-guest';
+  if (st === 'cancelled')        return 'pill-cancelled';
+  if (st === 'not-participating') return 'pill-not-participating';
+  return 'pill-unconfirmed';
+}
+
+function statusExplain(st) {
+  if (st === 'unconfirmed')        return 'Your participation has not yet been confirmed. Please confirm using the options below.';
+  if (st === 'confirmed')          return "You're confirmed as a performer.";
+  if (st === 'confirmed-guest')    return "You're confirmed as attending, not performing.";
+  if (st === 'cancelled')          return 'Your participation has been cancelled. See options below to rejoin.';
+  if (st === 'not-participating')  return 'You are marked as not attending. Please contact us at info@keylab.nyc for assistance.';
+  return '';
+}
+
+// Legacy statusClass kept for any remaining references
+function statusClass(st) {
+  if (st === 'confirmed')        return 'status-confirmed';
+  if (st === 'confirmed-guest')  return 'status-confirmed-guest';
+  if (st === 'cancelled')        return 'status-cancelled';
+  return 'status-unconfirmed';
+}
+
+function showErr(m) { errMsg = m; render(); }
+
+function goBack() { state = 'found'; errMsg = ''; render(); }
+
+// ── Lookup step 1: name search ─────────────────────────────────
+function doLookup() {
+  errMsg = '';
+  var n = (document.getElementById("fn") || {}).value || "";
+  if (!n.trim()) { showErr("Please enter the student's first name."); return; }
+  lookupName = n.trim();
+  state = "loading"; render();
+  api({action:"lookup", name:lookupName, password:"", email:""}, function(e, r) {
+    if (e || !r)  { state = "lookup"; showErr("Connection error. Please try again."); return; }
+    if (!r.ok && !r.multiple) { state = "lookup"; showErr(r.error || "No student found. Check the spelling or contact info@keylab.nyc."); return; }
+    if (r.multiple) {
+      lookupMatches = r.matches;
+      state = "pick-student"; errMsg = ''; render();
+    } else if (r.nameOnly) {
+      selectedMatch = r.match;
+      lookupMatches = [];
+      state = "auth"; errMsg = ''; render();
+    } else {
+      // Shouldn't happen in step 1, but handle gracefully
+      state = "lookup"; showErr("Could not find student. Please try again.");
+    }
+  });
+}
+
+// ── Lookup step 2a: pick from multiple matches ─────────────────
+function doPickStudent(idx) {
+  errMsg = '';
+  selectedMatch = lookupMatches[idx];
+  state = "auth"; errMsg = ''; render();
+}
+
+// ── Lookup step 2b: password + email entry ─────────────────────
+function doAuth() {
+  errMsg = '';
+  var pw    = (document.getElementById("fpw")   || {}).value || "";
+  var email = (document.getElementById("femail")|| {}).value || "";
+  if (!pw.trim()) { showErr("Please enter your password."); return; }
+  lookupPw = pw.trim(); lookupEmail = email.trim();
+  state = "loading"; render();
+  api({action:"lookup", name:selectedMatch.name, studentId:selectedMatch.id, password:lookupPw, email:lookupEmail}, function(e, r) {
+    if (e || !r)  { pendingAuthIntent = null; state = "auth"; showErr("Connection error. Please try again."); return; }
+    if (!r.ok)    { pendingAuthIntent = null; state = "auth"; showErr(r.error || "Incorrect password."); return; }
+    student = r.student;
+    if (!lookupEmail && student.email) lookupEmail = student.email;
+    api({action:"getSlots"}, function(e2, r2) {
+      if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
+      else { phase = phase || 'pre'; }
+      // Act on intent immediately
+      var intent = pendingAuthIntent;
+      pendingAuthIntent = null;
+      if (intent === 'confirm-performer' || intent === 'confirm-guest') {
+        var confirmStatus = intent === 'confirm-performer' ? 'confirmed' : 'confirmed-guest';
+        pendingConfirmStatus = confirmStatus;
+        pendingGuestList = (student.guestNames && student.guestNames.length > 0) ? student.guestNames.slice() : [];
+        state = "guest-select"; errMsg = ''; render();
+      } else if (intent === 'update-guests') {
+        pendingConfirmStatus = student.status; // keep current status
+        pendingGuestList = (student.guestNames && student.guestNames.length > 0) ? student.guestNames.slice() : [];
+        state = "guest-select"; errMsg = ''; render();
+      } else if (intent === 'cancel') {
+        state = "cancel"; errMsg = ''; render();
+      } else {
+        state = "found"; render();
+      }
+    });
+  });
+}
+
+// ── Confirm — guest selector flow ──────────────────────────────
+function doSaveEmail() {
+  var inp = document.getElementById("email-collect");
+  var email = inp ? inp.value.trim() : '';
+  if (!email) { return; }
+  lookupEmail = email;
+  // Persist to sheet via lookup (email write-back happens in lookup handler)
+  api({action:"lookup", name:lookupName, studentId:(student && student.id), password:lookupPw, email:lookupEmail}, function(e, r) {
+    if (!e && r && r.ok && r.student) {
+      student.email = lookupEmail;
+    }
+    render();
+  });
+}
+function doStartConfirm(status) {
+  pendingConfirmStatus = status;
+  // Clone existing guest names into editable pending list
+  pendingGuestList = (student && student.guestNames && student.guestNames.length > 0)
+    ? student.guestNames.slice()
+    : [];
+  state = "guest-select";
+  errMsg = '';
+  render();
+}
+
+function doConfirmWithGuests() {
+  errMsg = '';
+  var sel = document.getElementById("guest-count-sel");
+  if (!sel || sel.value === "") { showErr("Please select how many guests will be attending."); return; }
+  var gCount = parseInt(sel.value);
+  // Collect guest names
+  var names = [];
+  for (var i = 0; i < gCount; i++) {
+    var inp = document.getElementById("gname-" + i);
+    var nm = inp ? inp.value.trim() : '';
+    if (!nm) { showErr("Please enter a name for each guest."); return; }
+    names.push(nm);
+  }
+  var status = pendingConfirmStatus;
+  state = "loading"; render();
+  api({action:"confirm", studentId:student.id, password:lookupPw, status:status, guests:gCount, guestNames:names, email:lookupEmail}, function(e, r) {
+    if (e || !r || !r.ok) {
+      if (r && r.slotFull) {
+        errMsg = "This segment just filled up. Please choose another slot below.";
+        api({action:"getSlots"}, function(e2, r2) {
+          if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
+          state = "rejoin-pick"; render();
+        });
+        return;
+      }
+      state = "guest-select"; showErr((r && r.error) || "Could not save. Please try again."); return;
+    }
+    student.status = status;
+    student.guests = gCount;
+    student.guestNames = names;
+    if (r.earlyConfirm) {
+      student.earlyConfirm = true;
+      var tags = student.tags || '';
+      if (tags.indexOf('early-confirm') === -1) {
+        student.tags = tags ? tags + '|early-confirm' : 'early-confirm';
+      }
+    }
+    state = "confirm-sent"; render();
+  });
+}
+
+// ── Cancel ─────────────────────────────────────────────────────
+function doStartCancel() { state = "cancel"; errMsg = ''; render(); }
+
+function doSubmitCancel() {
+  errMsg = '';
+  var note = (document.getElementById("cancel-note") || {}).value || "";
+  if (!note.trim()) { showErr("Please explain why you're cancelling."); return; }
+  var btn = document.getElementById("cancel-btn");
+  if (btn) { btn.disabled = true; btn.textContent = "Cancelling\u2026"; }
+  api({action:"cancel", studentId:student.id, password:lookupPw, note:note.trim(), email:lookupEmail}, function(e, r) {
+    if (e || !r || !r.ok) {
+      if (btn) { btn.disabled = false; btn.textContent = "Confirm cancellation"; }
+      showErr((r && r.error) || "Could not cancel. Please try again.");
+      return;
+    }
+    student.status = 'cancelled';
+    // Mirror the orig: tag the backend just wrote, so rCancelConfirmed can find it
+    var tags = student.tags || '';
+    if (tags.indexOf('orig:') === -1) {
+      var origTag = 'orig:' + student.day + '_' + student.seg;
+      student.tags = tags ? tags + '|' + origTag : origTag;
+    }
+    // Refresh slots so rejoin buttons appear immediately on the booking screen
+    api({action:"getSlots"}, function(e2, r2) {
+      if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
+      state = "cancel-confirmed"; render();
+    });
+  });
+}
+
+// ── Preferences ────────────────────────────────────────────────
+function doStartPreferences() {
+  prefSelected = [student.day + '_' + student.seg];
+  state = "preferences"; errMsg = ''; render();
+}
+
+function togglePref(key) {
+  var i = prefSelected.indexOf(key);
+  if (i > -1) prefSelected.splice(i, 1);
+  else prefSelected.push(key);
+  render();
+}
+
+function doSubmitPreferences() {
+  errMsg = '';
+  if (!prefSelected.length) { showErr("Please select at least one slot."); return; }
+  var note = (document.getElementById("pref-note") || {}).value || "";
+  var btn = document.getElementById("pref-btn");
+  if (btn) { btn.disabled = true; btn.textContent = "Submitting\u2026"; }
+  var segments = prefSelected.map(function(k) {
+    var p = k.split('_'); return p[0] + ' ' + p[1];
+  });
+  api({action:"submitPreferences", studentId:student.id, password:lookupPw, segments:segments, note:note.trim(), email:lookupEmail}, function(e, r) {
+    if (e || !r || !r.ok) {
+      if (btn) { btn.disabled = false; btn.textContent = "Submit preferences"; }
+      showErr((r && r.error) || "Could not submit. Please try again.");
+      return;
+    }
+    state = "pref-sent"; render();
+  });
+}
+
+// ── Rejoin ─────────────────────────────────────────────────────
+function doRejoin() {
+  // Always fetch fresh slot data before attempting any rejoin
+  state = "loading"; render();
+  api({action:"getSlots"}, function(e, r) {
+    if (!e && r && r.ok) { slots = r.slots; phase = r.phase; }
+    doRejoinWithFreshSlots();
+  });
+}
+
+function doRejoinWithFreshSlots() {
+  if (phase === 'pre' || phase === 'priority') {
+    var tags = student.tags || '';
+    var origMatch = tags.match(/orig:([A-Za-z]+)_([A-Za-z]+)/);
+    if (origMatch) {
+      var origDay = origMatch[1];
+      var origSeg = origMatch[2];
+      var origKey = origDay + '_' + origSeg;
+      var slotData = slots && slots[origKey];
+      if (slotData && !slotData.isFull) {
+        api({action:"rejoin", studentId:student.id, password:lookupPw, toDay:origDay, toSeg:origSeg, email:lookupEmail}, function(e, r) {
+          if (e || !r || !r.ok) {
+            // Slot raced to full between check and write — show dead-end
+            state = "found";
+            showErr("Your original segment just filled up. Check back on May 1st when self-service scheduling opens, or submit a scheduling request and we\u2019ll be in touch asap.");
+            render(); return;
+          }
+          student.day = origDay; student.seg = origSeg; student.status = 'confirmed';
+          api({action:"getSlots"}, function(e2, r2) {
+            if (!e2 && r2 && r2.ok) { slots = r2.slots; }
+            window._swapResult = r.confirmation;
+            state = "swap-confirmed"; render();
+          });
+        });
+        return;
+      } else {
+        // Orig slot full or unknown — dead-end, no grid
+        state = "found";
+        errMsg = "Your original segment is now full. Check back on May 1st when self-service scheduling opens, or submit a scheduling request and we\u2019ll be in touch with an update asap.";
+        render();
+        return;
+      }
+    }
+    // No orig tag — shouldn't happen, but dead-end gracefully
+    state = "found";
+    errMsg = "No original segment found. Please contact us at info@keylab.nyc for assistance.";
+    render();
+    return;
+  }
+
+  api({action:"rejoin", studentId:student.id, password:lookupPw}, function(e, r) {
+    if (e || !r || !r.ok) { state = "found"; showErr((r && r.error) || "Could not process. Please try again."); return; }
+    if (r.needsSlot) {
+      var origDay = r.origDay;
+      var origSeg = r.origSeg;
+      api({action:"getSlots"}, function(e2, r2) {
+        if (!e2 && r2 && r2.ok) { slots = r2.slots; }
+        if (origDay && origSeg) {
+          var origKey = origDay + '_' + origSeg;
+          var slotData = slots && slots[origKey];
+          window._rejoinOrigDay = (slotData && !slotData.isFull) ? origDay : null;
+          window._rejoinOrigSeg = (slotData && !slotData.isFull) ? origSeg : null;
+        }
+        state = "swap"; errMsg = ''; render();
+      });
+    } else {
+      state = "found"; render();
+    }
+  });
+}
+
+function doRejoinDirect(toDay, toSeg) {
+  state = "loading"; render();
+  api({action:"rejoin", studentId:student.id, password:lookupPw, toDay:toDay, toSeg:toSeg, email:lookupEmail}, function(e, r) {
+    if (e || !r || !r.ok) {
+      if (r && r.slotFull) {
+        api({action:"getSlots"}, function(e2, r2) {
+          if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
+          if (phase === 'open') {
+            state = "swap"; window._rejoinOrigDay = null; window._rejoinOrigSeg = null;
+            errMsg = "This segment is now full. Choose another slot below. The schedule locks June 1st.";
+          } else {
+            state = "rejoin-pick";
+            errMsg = "This segment is now full. Choose another slot below. The schedule locks June 1st.";
+          }
+          render();
+        });
+      } else {
+        state = "found"; showErr((r && r.error) || "Could not restore. Please try again.");
+      }
+      return;
+    }
+    student.day = toDay; student.seg = toSeg; student.status = 'confirmed';
+    api({action:"getSlots"}, function(e2, r2) {
+      if (!e2 && r2 && r2.ok) { slots = r2.slots; }
+      window._swapResult = r.confirmation;
+      window._rejoinOrigDay = null; window._rejoinOrigSeg = null;
+      state = "swap-confirmed"; render();
+    });
+  });
+}
+
+// ── Swap ───────────────────────────────────────────────────────
+function doStartSwap() {
+  state = "loading"; render();
+  api({action:"getSlots"}, function(e, r) {
+    if (!e && r && r.ok) { slots = r.slots; phase = r.phase; }
+    state = "swap"; errMsg = ''; render();
+  });
+}
+
+function doSwap(toDay, toSeg) {
+  errMsg = '';
+  state = "swapping"; render();
+  api({action:"swap", studentId:student.id, toDay:toDay, toSeg:toSeg, password:lookupPw, email:lookupEmail}, function(e, r) {
+    if (e || !r || !r.ok) { state = "swap"; showErr((r && r.error) || "Swap failed. Please try again."); return; }
+    student.day = toDay; student.seg = toSeg; student.status = 'confirmed';
+    api({action:"getSlots"}, function(e2, r2) {
+      if (!e2 && r2 && r2.ok) { slots = r2.slots; }
+      state = "swap-confirmed";
+      window._swapResult = r.confirmation;
+      render();
+    });
+  });
+}
+
+// ── Message ────────────────────────────────────────────────────
+function doStartMessage() { state = "messaging"; errMsg = ''; render(); }
+
+function doSendMessage() {
+  errMsg = '';
+  var msg = (document.getElementById("msg-text") || {}).value || "";
+  if (!msg.trim()) { showErr("Please enter a message."); return; }
+  var btn = document.getElementById("send-btn");
+  if (btn) { btn.disabled = true; btn.textContent = "Sending\u2026"; }
+  api({action:"message", studentId:student.id, password:lookupPw, message:msg.trim(), email:lookupEmail}, function(e, r) {
+    if (e || !r || !r.ok) {
+      if (btn) { btn.disabled = false; btn.textContent = "Send message"; }
+      showErr((r && r.error) || "Could not send. Please email info@keylab.nyc directly.");
+      return;
+    }
+    state = "msg-sent"; render();
+  });
+}
+
+// ── Render ─────────────────────────────────────────────────────
+function render() {
+  var root = document.getElementById("root");
+  if (!root) return;
+
+  if (state === "loading" || state === "swapping") {
+    root.innerHTML = '<div class="loading-wrap"><span class="spin">&#10227;</span> ' +
+      (state === "swapping" ? "Saving your change\u2026" : "One moment\u2026") + '</div>';
+    renderInfo("lookup");
+    return;
+  }
+
+  var screens = {
+    "lookup":           function() { root.innerHTML = rLookup();          renderInfo("lookup"); },
+    "pick-student":     function() { root.innerHTML = rPickStudent();     renderInfo("lookup"); },
+    "auth":             function() { root.innerHTML = rAuth();            renderInfo("lookup"); },
+    "found":            function() { root.innerHTML = rFound();           renderInfo("found"); },
+    "guest-select":     function() { root.innerHTML = rGuestSelect(); renderInfo("found"); updateGuestNameFields(); },
+    "preferences":      function() { root.innerHTML = rPreferences();     renderInfo("found"); },
+    "pref-sent":        function() { root.innerHTML = rPrefSent();        renderInfo("found"); },
+    "cancel":           function() { root.innerHTML = rCancel();          renderInfo("found"); },
+    "cancel-confirmed": function() { root.innerHTML = rCancelConfirmed(); renderInfo("found"); },
+    "rejoin-pick":      function() {
+      if (!slots) { state = "loading"; render(); api({action:"getSlots"}, function(e,r) { if(!e&&r&&r.ok){slots=r.slots;phase=r.phase;} state="rejoin-pick"; render(); }); return; }
+      root.innerHTML = rRejoinPick(); renderInfo("found");
+    },
+    "swap":             function() { root.innerHTML = rSwap();            renderInfo("found"); },
+    "swap-confirmed":   function() { root.innerHTML = rSwapConfirmed();   renderInfo("found"); },
+    "confirm-sent":     function() { root.innerHTML = rConfirmSent();     renderInfo("found"); },
+    "messaging":        function() { root.innerHTML = rMessaging();       renderInfo("found"); },
+    "msg-sent":         function() { root.innerHTML = rMsgSent();         renderInfo("found"); }
+  };
+
+  if (screens[state]) screens[state]();
+}
+
+// ── Shared error fragment ──────────────────────────────────────
+function errFrag() {
+  if (!errMsg) return '';
+  return '<div class="notice notice-err"><span class="ni">&#9888;</span><span>' + esc(errMsg) + '</span></div>';
+}
+
+// ── Screen: Lookup (step 1 — name search) ─────────────────────
+function rLookup() {
+  return '<div class="card">' +
+    '<div class="card-title">Find your booking</div>' +
+    '<div class="notice notice-info" style="margin-bottom:16px"><span class="ni">&#128197;</span>' +
+    '<span><strong>Priority deadline:</strong> Responses received by Monday, April 27th will receive scheduling priority and a guaranteed guest allowance of up to 3 guests.</span></div>' +
+    errFrag() +
+    '<div class="field"><label>Student\'s first name</label>' +
+    '<input id="fn" type="text" placeholder="e.g. Emma" autocomplete="off" ' +
+    'onkeydown="if(event.key===\'Enter\')doLookup()"></div>' +
+    '<button class="btn-primary" onclick="doLookup()">Find my booking &rarr;</button>' +
+    '</div>';
+}
+
+// ── Screen: Pick student (multiple matches) ────────────────────
+function rPickStudent() {
+  var isMultiSlot = lookupMatches.length > 1 &&
+    lookupMatches.every(function(m) { return m.tags && m.tags.indexOf('multi-day') > -1; });
+  var html = '<div class="card">' +
+    '<div class="card-title">' + (isMultiSlot ? 'Choose a performance slot' : 'Select your child') + '</div>';
+  if (isMultiSlot) {
+    html += '<div class="notice notice-warn" style="margin-bottom:16px"><span class="ni">&#9888;</span><span>' +
+      '<strong>' + esc(lookupMatches[0].name.trim().split(/\s+/)[0]) + ' is scheduled in multiple slots.</strong> ' +
+      'Select the slot you\'d like to confirm. <strong>The other slot will be released</strong> when you confirm.' +
+      '</span></div>';
+  } else {
+    html += '<p style="font-size:13px;color:var(--text2);margin-bottom:16px">We found multiple students named <strong>' + esc(lookupName) + '</strong>. Select your child:</p>';
+  }
+  html += errFrag();
+  var dateLabels = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
+  lookupMatches.forEach(function(m, idx) {
+    var slotLabel = m.day + (m.seg !== 'Single' ? ' ' + m.seg : '') + ' \u2014 ' + (dateLabels[m.day] || '');
+    var statusBit = m.status && m.status !== 'unconfirmed' ? ' &middot; ' + statusLabel(m.status) : '';
+    html += '<button onclick="doPickStudent(' + idx + ')" class="pick-btn">' +
+      '<div class="pick-btn-name">' + esc(m.name) + '</div>' +
+      '<div class="pick-btn-meta">' + slotLabel + statusBit + '</div>' +
+      '</button>';
+  });
+  html += '</div>' +
+    '<div class="back-row"><button class="btn-ghost" onclick="state=\'lookup\';errMsg=\'\';render()">&#8592; Back</button></div>';
+  return html;
+}
+
+// ── Screen: Auth (step 2 — full booking display + intent) ───────
+function rAuth() {
+  var dateLabels   = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
+  var timeLookup   = {Early:'4:00 PM', Late:'5:00 PM', Single:'4:00 PM'};
+  var segLabels    = {Early:'Early session', Late:'Late session', Single:'Single session'};
+  var arriveLookup = {Early:'Arrive 3:30\u20133:50 PM', Late:'Arrive 4:45\u20135:00 PM', Single:'Arrive 3:30\u20133:50 PM'};
+  var m = selectedMatch || {};
+  var st = m.status || 'unconfirmed';
+  var isInactive = st === 'cancelled' || st === 'not-participating';
+  var isConfirmed = st === 'confirmed';
+  var isGuest     = st === 'confirmed-guest';
+
+  var html = '<div class="card">' +
+    '<div class="card-title">Your performance party booking</div>';
+
+  // ── Zone 1: Booking summary (no login required) ───────────────
+
+  // Booking card
+  html += '<div class="assign-card" style="margin-bottom:16px">';
+  if (isInactive) {
+    html += '<div class="assign-top">' +
+      '<div><div class="assign-label">Performance booking</div>' +
+      '<div class="assign-day">' + esc(m.name || '') + '</div></div>' +
+      '<span class="status-pill ' + statusPillClass(st) + '">' + statusLabel(st) + '</span>' +
+      '</div>' +
+      '<p style="font-size:13px;color:var(--err);margin-top:8px;line-height:1.4">Your child is not currently scheduled. Log in to rejoin or submit a scheduling request.</p>';
+  } else {
+    html += '<div class="assign-top">' +
+      '<div><div class="assign-label">' + esc(m.name || '') + (isGuest ? ' is attending:' : st === 'unconfirmed' ? ' is invited to perform:' : ' is scheduled to perform:') + '</div>' +
+      '<div class="assign-day">' + (m.day || '') + ', ' + (dateLabels[m.day] || '') + '</div>' +
+      '<div class="assign-seg">' + (segLabels[m.seg] || '') + ' &mdash; ' + (timeLookup[m.seg] || '') + '</div>' +
+      '<div class="assign-seg" style="font-size:12px;color:var(--text3)">Approx. 45 min &ndash; 1 hour</div></div>' +
+      '<span class="status-pill ' + statusPillClass(st) + '">' + statusLabel(st) + '</span>' +
+      '</div>';
+    html += '<div class="arrive-badge">&#128336; ' + (arriveLookup[m.seg] || '') + '</div>';
+    // Guests + names if confirmed
+    if (isConfirmed || isGuest) {
+      var gCount = parseInt(m.guests) || 0;
+      var guestNamesHtml = '';
+      if (m.guestNames && m.guestNames.length > 0) {
+        guestNamesHtml = '<div class="assign-meta-item" style="flex-basis:100%;min-width:100%">' +
+          '<div class="assign-meta-label">Guest names</div>' +
+          '<div class="assign-meta-val" style="font-size:13px;font-weight:400">' +
+          m.guestNames.map(function(n) { return esc(n); }).join(' &middot; ') +
+          '</div></div>';
+      }
+      html += '<div class="assign-meta">' +
+        '<div class="assign-meta-item"><div class="assign-meta-label">Guests</div>' +
+        '<div class="assign-meta-val">' + gCount + '</div></div>' +
+        guestNamesHtml + '</div>';
+    }
+  }
+  html += '</div>';
+
+  // Unconfirmed: prominent amber callout (updated copy — spots not "released", just unprotected)
+  if (st === 'unconfirmed') {
+    html += '<div style="background:#fff7ed;border:2px solid #fb923c;border-radius:10px;padding:16px 16px 14px;margin-bottom:16px">' +
+      '<div style="font-size:14px;font-weight:700;color:#92540a;margin-bottom:6px">&#9888;&#65039; Action required — your spot is not yet confirmed</div>' +
+      '<p style="font-size:13px;color:#92540a;line-height:1.5;margin-bottom:0">' +
+      'Please confirm your participation before May 1st. After May 1st, performance segments are open to all families on a first come first served basis with a maximum of 10 performers per segment.' +
+      '</p>' +
+      '</div>';
+  }
+
+  // ── Zone 2: Action area (login required) ─────────────────────
+  html += '<div class="action-divider"></div>';
+
+  // Prompt line
+  html += '<p style="font-size:14px;font-weight:500;color:var(--text2);margin-bottom:14px">' +
+    (isInactive ? 'Log in to manage your booking.' : 'Enter your password to continue.') +
+    '</p>';
+
+  // Password + email fields
+  html += '<div class="field"><label>Password</label>' +
+    '<input id="fpw" type="password" placeholder="e.g. EmmaC2026" autocomplete="current-password" ' +
+    'onkeydown="if(event.key===\'Enter\')document.getElementById(\'femail\').focus()">' +
+    '<div class="hint">First name + last initial + 2026. Example: <strong>EmmaC2026</strong></div></div>' +
+    '<div class="field"><label>Email address</label>' +
+    '<input id="femail" type="email" placeholder="your@email.com" autocomplete="email" ' +
+    'onkeydown="if(event.key===\'Enter\')doAuthWithIntent(null)">' +
+    '<div class="hint">We\'ll send confirmations here. Leave blank if we already have your email.</div></div>';
+
+  html += errFrag();
+
+  // Context-aware action buttons
+  html += '<div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">';
+
+  // Multi-slot reminder above buttons
+  if (lookupMatches.length > 1 && m.tags && m.tags.indexOf('multi-day') > -1) {
+    var otherMatch = lookupMatches.filter(function(x) { return x.id !== m.id; })[0];
+    var dateLabels2 = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
+    var otherSlotLabel = otherMatch ? (otherMatch.day + (otherMatch.seg !== 'Single' ? ' ' + otherMatch.seg : '') + ' \u2014 ' + (dateLabels2[otherMatch.day] || '')) : 'the other slot';
+    html += '<div class="notice notice-warn" style="margin-bottom:4px"><span class="ni">&#9888;</span><span>' +
+      'Confirming this slot will <strong>automatically release ' + otherSlotLabel + '</strong>. Only one performance per student.' +
+      '</span></div>';
+  }
+
+  if (!isInactive) {
+    if (!isConfirmed) {
+      // Primary CTA — green for unconfirmed, blue if already confirmed-guest switching
+      var confirmBtnStyle = st === 'unconfirmed'
+        ? 'display:block;width:100%;padding:13px 20px;background:var(--blue);color:#fff;font-family:\'DM Sans\',sans-serif;font-size:15px;font-weight:600;border:none;border-radius:8px;cursor:pointer'
+        : 'display:block;width:100%;padding:12px 20px;background:var(--blue);color:#fff;font-family:\'DM Sans\',sans-serif;font-size:15px;font-weight:500;border:none;border-radius:8px;cursor:pointer';
+      html += btnWrap(
+        '<button onclick="doAuthWithIntent(\'confirm-performer\')" style="' + confirmBtnStyle + '">Confirm as performer &rarr;</button>',
+        'Your child will perform. You\'ll select guest count and names on the next screen.'
+      );
+    }
+    if (!isGuest) {
+      var attendBtnStyle = st === 'unconfirmed'
+        ? 'display:block;width:100%;padding:12px 20px;background:transparent;color:var(--acc-dk);font-family:\'DM Sans\',sans-serif;font-size:15px;font-weight:500;border:1.5px solid var(--acc);border-radius:8px;cursor:pointer'
+        : 'display:block;width:100%;padding:12px 20px;background:transparent;color:var(--blue);font-family:\'DM Sans\',sans-serif;font-size:15px;font-weight:500;border:1.5px solid var(--blue);border-radius:8px;cursor:pointer';
+      html += btnWrap(
+        '<button onclick="doAuthWithIntent(\'confirm-guest\')" style="' + attendBtnStyle + '">' + (isConfirmed ? 'Change to attending, not performing' : 'Attending, not performing') + '</button>',
+        'Your child will attend and cheer on the performers but will not perform.'
+      );
+    }
+    if (isConfirmed || isGuest) {
+      html += btnWrap(
+        '<button onclick="doAuthWithIntent(\'update-guests\')" style="display:block;width:100%;padding:12px 20px;background:transparent;color:var(--blue);font-family:\'DM Sans\',sans-serif;font-size:15px;font-weight:500;border:1.5px solid var(--blue);border-radius:8px;cursor:pointer">Update guest list</button>',
+        'Edit guest names or remove a seat.'
+      );
+    }
+    html += btnWrap(
+      '<button onclick="doAuthWithIntent(\'cancel\')" style="display:block;width:100%;padding:12px 20px;background:transparent;color:var(--err);font-family:\'DM Sans\',sans-serif;font-size:15px;font-weight:500;border:1.5px solid #f5a89e;border-radius:8px;cursor:pointer">Cancel / Not Attending</button>',
+      'Your spot will be released. You can rejoin into any open slot up until June 1st.'
+    );
+  } else {
+    html += btnWrap(
+      '<button onclick="doAuthWithIntent(null)" style="display:block;width:100%;padding:12px 20px;background:var(--blue);color:#fff;font-family:\'DM Sans\',sans-serif;font-size:15px;font-weight:500;border:none;border-radius:8px;cursor:pointer">Log in to manage booking &rarr;</button>',
+      'View rejoin options and submit scheduling requests.'
+    );
+  }
+
+  html += '</div></div>' +
+    '<div class="back-row"><button class="btn-ghost" onclick="state=\'' + (lookupMatches.length > 1 ? 'pick-student' : 'lookup') + '\';errMsg=\'\';render()">&#8592; Back</button></div>';
+  return html;
+}
+
+function doAuthWithIntent(intent) {
+  pendingAuthIntent = intent;
+  doAuth();
+}
+
+// ── Shared button-with-description helper ──────────────────────
+function btnWrap(btnHtml, desc) {
+  return '<div class="btn-wrap">' + btnHtml + '<div class="btn-desc">' + desc + '</div></div>';
+}
+
+// ── Screen: Found ──────────────────────────────────────────────
+function rFound() {
+  var s = student;
+  var isInactive = s.status === 'cancelled' || s.status === 'not-participating';
+  var firstName = esc(s.name.trim().split(/\s+/)[0]);
+  var dateLabels = {
+    Monday:'June 15', Tuesday:'June 16', Wednesday:'June 17',
+    Thursday:'June 18', Friday:'June 19'
+  };
+  var sessionLabel = s.seg === 'Early' ? 'Early session' : s.seg === 'Late' ? 'Late session' : 'Single session';
+  var timeLabel = {Early:'4:00 PM', Late:'5:00 PM', Single:'4:00 PM'}[s.seg] || '';
+
+  var html = errFrag();
+
+  // Booking card
+  html += '<div class="assign-card">';
+
+  if (isInactive) {
+    html += '<div class="assign-top">' +
+      '<div><div class="assign-label">Performance booking</div>' +
+      '<div class="assign-day">' + firstName + '</div></div>' +
+      '<span class="status-pill ' + statusPillClass(s.status) + '">' + statusLabel(s.status) + '</span>' +
+      '</div>' +
+      '<p style="font-size:13px;color:var(--err);margin-top:8px;line-height:1.4">' +
+      'Your child is not currently scheduled. Use the options below to rejoin or submit a scheduling request.' +
+      '</p>';
+  } else {
+    html += '<div class="assign-top">' +
+      '<div><div class="assign-label">' +
+      firstName + (s.status === 'confirmed-guest' ? ' is attending:' : s.status === 'unconfirmed' ? ' is invited to perform:' : ' is scheduled to perform:') +
+      '</div>' +
+      '<div class="assign-day">' + esc(s.day) + ', ' + esc(dateLabels[s.day] || '') + '</div>' +
+      '<div class="assign-seg">' + sessionLabel + ' &mdash; ' + timeLabel + '</div>' +
+      '<div class="assign-seg" style="font-size:12px;color:var(--text3)">Approx. 45 min &ndash; 1 hour</div></div>' +
+      '<span class="status-pill ' + statusPillClass(s.status) + '">' + statusLabel(s.status) + '</span>' +
+      '</div>';
+    html += '<div class="arrive-badge">&#128336; ' + (ARRIVE[s.seg] || '') + '</div>';
+    if (s.status === 'confirmed' || s.status === 'confirmed-guest') {
+      var guestNamesCard = '';
+      if (s.guestNames && s.guestNames.length > 0) {
+        guestNamesCard = '<div class="assign-meta-item" style="flex-basis:100%;min-width:100%"><div class="assign-meta-label">Guest names</div>' +
+          '<div class="assign-meta-val" style="font-size:13px;font-weight:400">' +
+          s.guestNames.map(function(n) { return esc(n); }).join(' &middot; ') +
+          '</div></div>';
+      }
+      html += '<div class="assign-meta">' +
+        '<div class="assign-meta-item"><div class="assign-meta-label">Guests</div>' +
+        '<div class="assign-meta-val">' + (parseInt(s.guests) || 0) + '</div></div>' +
+        guestNamesCard +
+        '</div>';
+      html += calendarLinks(s);
+    } else {
+      html += '<p style="font-size:13px;color:var(--text2);margin-top:10px;line-height:1.4">' +
+        esc(statusExplain(s.status)) + '</p>';
+    }
+  }
+
+  html += '</div>';
+
+  // Admin note callout
+  if (s.adminNote) {
+    html += '<div class="admin-note-callout"><strong>Note from Keylab:</strong> ' + esc(s.adminNote) + '</div>';
+  }
+
+  // Prompt for email if none on file
+  if (!lookupEmail) {
+    html += '<div class="notice notice-warn" style="margin-bottom:0"><span class="ni">&#9993;</span><span>' +
+      '<strong>No email on file.</strong> Add your email address so we can send you confirmations.' +
+      '<div style="display:flex;gap:8px;margin-top:8px">' +
+      '<input id="email-collect" type="email" placeholder="your@email.com" autocomplete="email" ' +
+      'style="flex:1;font-family:\'DM Sans\',sans-serif;font-size:14px;padding:7px 10px;border:1px solid #f5a89e;border-radius:7px;background:#fff;color:var(--text)">' +
+      '<button onclick="doSaveEmail()" style="font-family:\'DM Sans\',sans-serif;font-size:13px;font-weight:500;padding:7px 14px;background:var(--blue);color:#fff;border:none;border-radius:7px;cursor:pointer">Save</button>' +
+      '</div>' +
+      '</span></div>';
+  }
+
+  html += '<div class="action-divider"></div>';
+  html += rActions(s, isInactive);
+  html += '<div class="back-row"><button class="btn-ghost" onclick="student=null;selectedMatch=null;lookupMatches=[];state=\'lookup\';errMsg=\'\';render()">&#8592; Back</button></div>';
+  return html;
+}
+
+// ── Unified action block ───────────────────────────────────────
+function rActions(s, isInactive) {
+  var html = '';
+
+  // ── Confirmed performer: dedicated "Make a Change" section ────
+  if (!isInactive && s.status === 'confirmed') {
+    html += '<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:10px">Make a change</div>';
+    if (phase === 'open') {
+      html += btnWrap(
+        '<button class="btn-secondary" onclick="doStartSwap()">Reschedule &rarr;</button>',
+        'Instantly reschedule into any open spot, per availability. Your current spot will be released.'
+      );
+    } else if (phase === 'pre' || phase === 'priority') {
+      // Fix 7: status-aware scheduling request copy
+      var schedReqDesc = 'Self-service rescheduling opens May 1st, but you can also request to be placed into any segment during performance week. We\'ll put a hold on your current spot so you don\'t lose it, review your request, and contact you asap with an update.';
+      html += btnWrap(
+        '<button class="btn-secondary" onclick="doStartPreferences()">Request a reschedule</button>',
+        schedReqDesc
+      );
+    }
+    // Change to attending (not performing)
+    if (phase !== 'locked') {
+      html += btnWrap(
+        '<button class="btn-secondary" onclick="doStartConfirm(\'confirmed-guest\')">Change to attending, not performing</button>',
+        'Update your status to attending non-performer. You can switch back to confirmed performer at any time.'
+      );
+    }
+    html += btnWrap(
+      '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
+      phase === 'locked'
+        ? 'Your spot will be released. The schedule is locked so rejoining is not guaranteed \u2014 contact us at info@keylab.nyc.'
+        : 'Your spot will be released immediately. You can rejoin into any open slot up until June 1st.'
+    );
+    html += '<button class="text-link" onclick="doStartMessage()">Send a message to Keylab &rarr;</button>';
+    return html;
+  }
+
+  // ── Confirmed-guest: attending non-performer ──────────────────
+  if (!isInactive && s.status === 'confirmed-guest') {
+    html += '<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:10px">Make a change</div>';
+    html += btnWrap(
+      '<button class="btn-primary" onclick="doStartConfirm(\'confirmed\')">Confirm as performer &rarr;</button>',
+      'Switch to confirmed performer. You\'ll select your guest count.'
+    );
+    html += '<button class="text-link" onclick="doStartMessage()">Send a message to Keylab &rarr;</button>';
+    html += '<div class="action-divider"></div>';
+    html += btnWrap(
+      '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
+      phase === 'locked'
+        ? 'Your spot will be released. The schedule is locked so rejoining is not guaranteed \u2014 contact us at info@keylab.nyc.'
+        : 'Your spot will be released immediately. You can rejoin into any open slot up until June 1st.'
+    );
+    return html;
+  }
+
+  // ── Standard phase logic (unconfirmed + inactive) ─────────────
+  if (phase === 'pre') {
+    if (!isInactive) {
+      // Only show priority deadline banner if not yet confirmed
+      if (s.status !== 'confirmed' && s.status !== 'confirmed-guest') {
+        html += '<div class="notice notice-info"><span class="ni">&#128197;</span><span>' +
+          '<strong>Priority deadline April 27th:</strong> Confirm by April 27th for scheduling priority and a guaranteed guest allowance of up to 3 guests.' +
+          '</span></div>';
+      }
+      if (s.status !== 'confirmed') {
+        html += btnWrap(
+          '<button class="btn-primary" onclick="doStartConfirm(\'confirmed\')">Confirm as performer &rarr;</button>',
+          'Reserve your child\'s performance spot and up to 3 guest seats.'
+        );
+      }
+      if (s.status !== 'confirmed-guest') {
+        html += btnWrap(
+          '<button class="btn-secondary" onclick="doStartConfirm(\'confirmed-guest\')">Confirm as attending, not performing</button>',
+          'Attending but not performing. Includes up to 3 guest seats.'
+        );
+      }
+    } else {
+      // Inactive — offer original slot restore only (no grid picker until May 1st)
+      var tags = s.tags || '';
+      var origMatch = tags.match(/orig:([A-Za-z]+)_([A-Za-z]+)/);
+      if (origMatch) {
+        var origDay = origMatch[1], origSeg = origMatch[2];
+        var slotData = slots && slots[origDay + '_' + origSeg];
+        if (slotData && !slotData.isFull) {
+          html += btnWrap(
+            '<button class="btn-primary" onclick="doRejoin()">Return to ' + origDay + ' ' + origSeg + ' spot &rarr;</button>',
+            'Restores you to your previously scheduled ' + origDay + ' ' + origSeg + ' spot instantly.'
+          );
+        } else {
+          html += '<div class="notice notice-warn" style="margin-bottom:12px"><span class="ni">&#9888;</span><span>' +
+            'Your original segment is now full. Check back on May 1st when self-service scheduling opens, or submit a scheduling request and we\'ll be in touch with an update asap.' +
+            '</span></div>';
+        }
+      }
+    }
+    // Fix 7: status-aware scheduling request copy
+    var isInactivePre = isInactive;
+    var schedReqDesc2 = isInactivePre
+      ? 'Tell us your preferred days. We\'ll contact you with available options.'
+      : 'Tell us your preferred days. Your current spot stays held while we review.';
+    html += btnWrap(
+      '<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>',
+      schedReqDesc2
+    );
+    if (!isInactive) {
+      html += btnWrap(
+        '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
+        'Your spot will be released immediately. You can rejoin into any open slot up until June 1st.'
+      );
+    }
+
+  } else if (phase === 'priority') {
+    html += '<div class="notice notice-info"><span class="ni">&#8987;</span><span>' +
+      'We\'re finalizing priority scheduling requests. Self-service rescheduling opens <strong>May 1st</strong>.' +
+      '</span></div>';
+    if (isInactive) {
+      // Inactive students can still rejoin original slot during priority phase
+      var tagsPri = s.tags || '';
+      var origMatchPri = tagsPri.match(/orig:([A-Za-z]+)_([A-Za-z]+)/);
+      if (origMatchPri) {
+        var origDayPri = origMatchPri[1], origSegPri = origMatchPri[2];
+        var slotDataPri = slots && slots[origDayPri + '_' + origSegPri];
+        if (slotDataPri && !slotDataPri.isFull) {
+          html += btnWrap(
+            '<button class="btn-primary" onclick="doRejoin()">Return to ' + origDayPri + ' ' + origSegPri + ' spot &rarr;</button>',
+            'Restores you to your previously scheduled spot instantly.'
+          );
+        } else {
+          html += '<div class="notice notice-warn" style="margin-bottom:12px"><span class="ni">&#9888;</span><span>' +
+            'Your original segment is now full. Check back on May 1st when self-service scheduling opens, or submit a scheduling request and we\'ll be in touch with an update asap.' +
+            '</span></div>';
+        }
+      }
+      html += btnWrap(
+        '<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>',
+        'We\'ll do our best to find you an available spot. Self-service rescheduling opens May 1st — schedule locks June 1st.'
+      );
+    } else {
+      html += btnWrap(
+        '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
+        'Your spot will be released immediately. You can rejoin into any open slot using this tool.'
+      );
+    }
+    html += '<button class="text-link" onclick="doStartMessage()">Send a message &rarr;</button>';
+
+  } else if (phase === 'open') {
+    if (isInactive) {
+      var tags2 = s.tags || '';
+      var origMatch2 = tags2.match(/orig:([A-Za-z]+)_([A-Za-z]+)/);
+      var origDay2 = null, origSeg2 = null;
+      if (origMatch2) {
+        origDay2 = origMatch2[1]; origSeg2 = origMatch2[2];
+        var slotData2 = slots && slots[origDay2 + '_' + origSeg2];
+        if (slotData2 && !slotData2.isFull) {
+          // Fix 9: specific rejoin button copy
+          html += btnWrap(
+            '<button class="btn-primary" onclick="doRejoinDirect(\'' + origDay2 + '\',\'' + origSeg2 + '\')">Return to ' + origDay2 + ' ' + origSeg2 + ' spot &rarr;</button>',
+            'Restores you to your previously scheduled ' + origDay2 + ' ' + origSeg2 + ' spot instantly, if it\'s still available.'
+          );
+        } else if (slotData2 && slotData2.isFull) {
+          html += '<div class="notice notice-warn" style="margin-bottom:12px"><span class="ni">&#9888;</span><span>' +
+            'This segment is now full. ' +
+            '<button onclick="doRejoin()" style="background:none;border:none;color:var(--warn);font-family:\'DM Sans\',sans-serif;font-size:13px;font-weight:600;cursor:pointer;text-decoration:underline;padding:0">Choose another slot</button>. ' +
+            'The schedule locks June 1st.' +
+            '</span></div>';
+        }
+      }
+      // Fix 9: "Choose a different spot" with specific copy
+      html += btnWrap(
+        '<button class="btn-secondary" onclick="doRejoin()">Choose a different spot</button>',
+        'Pick any available spot during the week. Your original ' + (origDay2 ? origDay2 + ' ' + origSeg2 + ' ' : '') + 'spot will not be held \u2014 spots are first come, first served.'
+      );
+    } else {
+      html += btnWrap(
+        '<button class="btn-primary" onclick="doStartSwap()">Reschedule &rarr;</button>',
+        'Move instantly to any available slot. Your current spot will be released.'
+      );
+      html += btnWrap(
+        '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
+        'Your spot will be released immediately. You can rejoin into any open slot before June 1st.'
+      );
+    }
+
+  } else {
+    // Locked
+    html += '<div class="notice notice-warn"><span class="ni">&#128274;</span><span>' +
+      'The schedule is now locked. To request a change, email <a href="mailto:info@keylab.nyc">info@keylab.nyc</a>. Changes are not guaranteed.' +
+      '</span></div>';
+    html += btnWrap('<button class="btn-secondary" onclick="doStartMessage()">Send a message</button>',
+      'Contact us for assistance.');
+    if (!isInactive) {
+      html += btnWrap(
+        '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
+        'Your spot will be released immediately. The schedule is locked so rejoining is not guaranteed \u2014 contact us at info@keylab.nyc.'
+      );
+    }
+  }
+
+  return html;
+}
+
+// ── Screen: Guest selector ─────────────────────────────────────
+function rGuestSelect() {
+  var s = student;
+  var dateLabels = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
+  var sessionLabel = s.seg === 'Early' ? 'Early session' : s.seg === 'Late' ? 'Late session' : 'Single session';
+  var timeLabel = {Early:'4:00 PM', Late:'5:00 PM', Single:'4:00 PM'}[s.seg] || '';
+  var slotDisplay = esc(s.day) + ', ' + (dateLabels[s.day] || '') + ' \u2014 ' + sessionLabel + ', ' + timeLabel;
+  var isPerformer = pendingConfirmStatus === 'confirmed';
+  var heading = isPerformer ? 'Confirm as performer' : 'Confirm as attending non-performer';
+
+  var html = '<div class="card">' +
+    '<div class="card-title">' + heading + '</div>' +
+    '<div class="guest-summary">' +
+    '<strong>' + esc(s.name) + '</strong><br>' +
+    slotDisplay +
+    '</div>' +
+    errFrag();
+
+  // Re-confirmation flow: student already has guest names on file
+  if (s.guestNames && s.guestNames.length > 0) {
+    html += '<p style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Your guests on file:</p>';
+    html += '<p style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.4">Edit a name or remove a guest seat below.</p>';
+
+    if (pendingGuestList.length === 0) {
+      html += '<div class="notice notice-warn" style="margin-bottom:12px"><span class="ni">&#9888;</span><span>All guest seats removed. Submitting will set your guest count to 0.</span></div>';
+    }
+
+    for (var gi = 0; gi < pendingGuestList.length; gi++) {
+      html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">' +
+        '<input type="text" id="gname-' + gi + '" value="' + esc(pendingGuestList[gi]) + '" ' +
+        'style="flex:1;font-family:\'DM Sans\',sans-serif;font-size:14px;padding:8px 11px;border:1px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text)">' +
+        '<button onclick="removeGuestSlot(' + gi + ')" style="flex-shrink:0;background:none;border:1.5px solid #f5a89e;border-radius:7px;color:var(--err);font-size:12px;padding:6px 10px;cursor:pointer;font-family:\'DM Sans\',sans-serif">Remove</button>' +
+        '</div>';
+    }
+
+    html += '<div class="notice notice-info" style="margin-top:4px;margin-bottom:14px"><span class="ni">&#8505;</span><span>' +
+      'Guest seats are set at confirmation. Extra seats can be requested by emailing <a href="mailto:info@keylab.nyc" style="color:inherit;text-decoration:underline">info@keylab.nyc</a> — additional seats are not guaranteed.' +
+      '</span></div>' +
+      '<button class="btn-primary" onclick="doConfirmWithGuestNames()">Confirm &rarr;</button>';
+
+  } else {
+    // First-time confirmation flow
+    var opts = '<option value="">Select\u2026</option>';
+    for (var i = 0; i <= 3; i++) {
+      opts += '<option value="' + i + '"' + (i === parseInt(s.guests) ? ' selected' : '') + '>' + i + (i === 1 ? ' guest' : ' guests') + '</option>';
+    }
+    html += '<p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.5">You may bring up to 3 guests. Four people total including your child.</p>' +
+      '<p style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px">How many guests will be attending?</p>' +
+      '<div class="guest-select-wrap">' +
+      '<label>Number of guests</label>' +
+      '<select id="guest-count-sel" onchange="updateGuestNameFields()">' + opts + '</select>' +
+      '</div>' +
+      '<div id="guest-name-fields"></div>' +
+      '<div class="notice notice-info" style="margin-top:14px;margin-bottom:14px"><span class="ni">&#8505;</span><span>' +
+      'Guest seats are set at confirmation. Extra seats can be requested by emailing <a href="mailto:info@keylab.nyc" style="color:inherit;text-decoration:underline">info@keylab.nyc</a> — additional seats are not guaranteed.' +
+      '</span></div>' +
+      '<button class="btn-primary" onclick="doConfirmWithGuests()">Confirm &rarr;</button>';
+  }
+
+  html += '</div>' +
+    '<div class="back-row"><button class="btn-secondary" onclick="state=\'found\';errMsg=\'\';render()">Manage my booking</button></div>';
+  return html;
+}
+
+function updateGuestNameFields() {
+  var sel = document.getElementById("guest-count-sel");
+  var container = document.getElementById("guest-name-fields");
+  if (!sel || !container) return;
+  var count = parseInt(sel.value);
+  if (isNaN(count) || count === 0) { container.innerHTML = ''; return; }
+  var html = '<p style="font-size:13px;font-weight:600;color:var(--text);margin:12px 0 8px">Guest names:</p>';
+  for (var i = 0; i < count; i++) {
+    html += '<div style="margin-bottom:8px">' +
+      '<input type="text" id="gname-' + i + '" placeholder="Guest ' + (i + 1) + ' name" ' +
+      'style="width:100%;font-family:\'DM Sans\',sans-serif;font-size:14px;padding:8px 11px;border:1px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text)">' +
+      '</div>';
+  }
+  container.innerHTML = html;
+}
+
+function removeGuestSlot(idx) {
+  // Snapshot current input values into pendingGuestList before removing
+  for (var i = 0; i < pendingGuestList.length; i++) {
+    var inp = document.getElementById("gname-" + i);
+    if (inp) pendingGuestList[i] = inp.value.trim() || pendingGuestList[i];
+  }
+  pendingGuestList.splice(idx, 1);
+  errMsg = '';
+  render(); // re-render guest-select with updated list
+}
+
+function doConfirmWithGuestNames() {
+  errMsg = '';
+  // Read current input values (rendered by index from pendingGuestList)
+  var names = [];
+  for (var i = 0; i < pendingGuestList.length; i++) {
+    var inp = document.getElementById("gname-" + i);
+    var nm = inp ? inp.value.trim() : pendingGuestList[i];
+    if (!nm) { showErr("Please enter a name for each guest, or remove the empty seat."); return; }
+    names.push(nm);
+  }
+  var status = pendingConfirmStatus;
+  var count = names.length;
+  state = "loading"; render();
+  api({action:"confirm", studentId:student.id, password:lookupPw, status:status, guests:count, guestNames:names, email:lookupEmail}, function(e, r) {
+    if (e || !r || !r.ok) {
+      if (r && r.slotFull) {
+        errMsg = "This segment just filled up. Please choose another slot below.";
+        api({action:"getSlots"}, function(e2, r2) {
+          if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
+          state = "rejoin-pick"; render();
+        });
+        return;
+      }
+      state = "guest-select"; showErr((r && r.error) || "Could not save. Please try again."); return;
+    }
+    student.status = status;
+    student.guests = count;
+    student.guestNames = names;
+    if (r.earlyConfirm) {
+      student.earlyConfirm = true;
+      var tags = student.tags || '';
+      if (tags.indexOf('early-confirm') === -1) student.tags = tags ? tags + '|early-confirm' : 'early-confirm';
+    }
+    state = "confirm-sent"; render();
+  });
+}
+
+// ── Calendar link helper ───────────────────────────────────────
+var SLOT_DATES = {
+  Monday:    {Early:"20260615T200000Z", Late:"20260615T210000Z"},
+  Tuesday:   {Early:"20260616T200000Z", Late:"20260616T210000Z"},
+  Wednesday: {Early:"20260617T200000Z", Late:"20260617T210000Z"},
+  Thursday:  {Early:"20260618T200000Z", Late:"20260618T210000Z"},
+  Friday:    {Single:"20260619T200000Z"}
+};
+var SLOT_DATES_END = {
+  Monday:    {Early:"20260615T210000Z", Late:"20260615T220000Z"},
+  Tuesday:   {Early:"20260616T210000Z", Late:"20260616T220000Z"},
+  Wednesday: {Early:"20260617T210000Z", Late:"20260617T220000Z"},
+  Thursday:  {Early:"20260618T210000Z", Late:"20260618T220000Z"},
+  Friday:    {Single:"20260619T210000Z"}
+};
+
+function calendarLinks(s) {
+  var title     = 'Performance Party - ' + s.name;
+  var location  = '94 Luquer St, Brooklyn NY 11231';
+  var arrive    = ARRIVE[s.seg] || '';
+  var tFull     = TIMES[s.day] && TIMES[s.day][s.seg] ? TIMES[s.day][s.seg] : '';
+  var desc      = arrive + '. Performance: ' + tFull + '. Teacher: ' + (s.teacher || 'TBD') + '. Guests: ' + (parseInt(s.guests) || 0) + '.';
+  var dtStart   = SLOT_DATES[s.day] && SLOT_DATES[s.day][s.seg] ? SLOT_DATES[s.day][s.seg] : '';
+  var dtEnd     = SLOT_DATES_END[s.day] && SLOT_DATES_END[s.day][s.seg] ? SLOT_DATES_END[s.day][s.seg] : '';
+  if (!dtStart) return '';
+
+  var gcUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+    '&text=' + encodeURIComponent(title) +
+    '&dates=' + dtStart + '/' + dtEnd +
+    '&details=' + encodeURIComponent(desc) +
+    '&location=' + encodeURIComponent(location);
+
+  var ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'BEGIN:VEVENT',
+    'DTSTART:' + dtStart,
+    'DTEND:' + dtEnd,
+    'SUMMARY:' + title,
+    'DESCRIPTION:' + desc.replace(/,/g, '\\,'),
+    'LOCATION:' + location,
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+  var icsUri = 'data:text/calendar;charset=utf8,' + encodeURIComponent(ics);
+
+  return '<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">' +
+    '<a href="' + gcUrl + '" target="_blank" style="' +
+      'flex:1;min-width:120px;text-align:center;padding:9px 14px;border-radius:7px;' +
+      'background:var(--blue-lt);color:var(--blue);font-size:13px;font-weight:500;' +
+      'text-decoration:none;border:1px solid #bfdbfe;display:block">' +
+      '&#128197; Add to Google Calendar</a>' +
+    '<a href="' + icsUri + '" download="keylab-performance-party.ics" style="' +
+      'flex:1;min-width:120px;text-align:center;padding:9px 14px;border-radius:7px;' +
+      'background:var(--bg2);color:var(--text2);font-size:13px;font-weight:500;' +
+      'text-decoration:none;border:1px solid var(--border);display:block">' +
+      '&#128197; Add to Apple / Outlook</a>' +
+    '</div>';
+}
+
+// ── Screen: Confirm sent ───────────────────────────────────────
+function rConfirmSent() {
+  var s = student;
+  var isGuest = s.status === 'confirmed-guest';
+  var firstName = esc(s.name.trim().split(/\s+/)[0]);
+  var dateLabels = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
+  var sessionLabel = s.seg === 'Early' ? 'Early session' : s.seg === 'Late' ? 'Late session' : 'Single session';
+  var timeLabel = {Early:'4:00 PM', Late:'5:00 PM', Single:'4:00 PM'}[s.seg] || '';
+  var arriveLabel = {Early:'3:30\u20133:50 PM', Late:'4:45\u20135:00 PM', Single:'3:30\u20133:50 PM'}[s.seg] || '';
+
+  var guestNamesHtml = '';
+  if (s.guestNames && s.guestNames.length > 0) {
+    guestNamesHtml = '<div class="confirm-row"><span class="confirm-key">Guest names</span><span class="confirm-val">' +
+      s.guestNames.map(function(n) { return esc(n); }).join('<br>') +
+      '</span></div>';
+  }
+
+  return '<div class="card">' +
+    '<div class="confirm-icon">&#9989;</div>' +
+    '<div class="confirm-title">You\'re confirmed!</div>' +
+    '<div class="confirm-sub">' +
+    (isGuest
+      ? firstName + ' is confirmed as an attending non-performer! Please see details below. Thanks for joining the event and being a part of performance party week!'
+      : 'We\'re so excited to have ' + firstName + ' performing. See you at the party!') +
+    '</div>' +
+    '<div class="confirm-detail">' +
+    '<div class="confirm-row"><span class="confirm-key">Date</span><span class="confirm-val">' + esc(s.day) + ', ' + esc(dateLabels[s.day] || '') + '</span></div>' +
+    '<div class="confirm-row"><span class="confirm-key">Session</span><span class="confirm-val">' + sessionLabel + ' &mdash; ' + timeLabel + '</span></div>' +
+    '<div class="confirm-row"><span class="confirm-key">Duration</span><span class="confirm-val">Approx. 45 min &ndash; 1 hour</span></div>' +
+    '<div class="confirm-row"><span class="confirm-key">Arrive by</span><span class="confirm-val">' + arriveLabel + '</span></div>' +
+    '<div class="confirm-row"><span class="confirm-key">Teacher</span><span class="confirm-val">' + esc(s.teacher || 'TBD') + '</span></div>' +
+    '<div class="confirm-row"><span class="confirm-key">Guests</span><span class="confirm-val">' + (parseInt(s.guests) || 0) + '</span></div>' +
+    guestNamesHtml +
+    '</div>' +
+    '<div class="notice notice-info"><span class="ni">&#128197;</span><span>If you added your email address, a confirmation email will be sent shortly. Click below to add the event to your calendar.</span></div>' +
+    calendarLinks(s) +
+    '</div>' +
+    '<div class="back-row"><button class="btn-secondary" onclick="state=\'found\';render()">Manage your booking</button></div>';
+}
+
+// ── Screen: Cancel ─────────────────────────────────────────────
+function rCancel() {
+  return '<div class="card">' +
+    '<div class="card-title">Cancel participation</div>' +
+    '<div class="notice notice-warn"><span class="ni">&#9888;</span><span>' +
+    'Your spot will be <strong>released immediately</strong> and may be taken by another family. If you want to rejoin, you can book into any available slot up until June 1st.' +
+    '</span></div>' +
+    errFrag() +
+    '<div class="field"><label>Reason for cancelling</label>' +
+    '<textarea id="cancel-note" rows="4" placeholder="Please let us know why you\'re cancelling so we can improve our events." style="resize:vertical"></textarea>' +
+    '</div>' +
+    '<button class="btn-cancel" id="cancel-btn" onclick="doSubmitCancel()">Confirm cancellation</button>' +
+    '</div>' +
+    '<div class="back-row"><button class="btn-ghost" onclick="goBack()">&#8592; Never mind, keep my spot</button></div>';
+}
+
+// ── Screen: Cancel confirmed ───────────────────────────────────
+// ── Screen: Rejoin slot picker (single select) ────────────────
+function rRejoinPick() {
+  var DAYS  = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+  var SEGS  = {Monday:['Early','Late'],Tuesday:['Early','Late'],Wednesday:['Early','Late'],Thursday:['Early','Late'],Friday:['Single']};
+  var PTIMES = {Monday:{Early:'4:00 PM',Late:'5:00 PM'},Tuesday:{Early:'4:00 PM',Late:'5:00 PM'},Wednesday:{Early:'4:00 PM',Late:'5:00 PM'},Thursday:{Early:'4:00 PM',Late:'5:00 PM'},Friday:{Single:'4:00 PM'}};
+
+  var grid = '<div class="pref-grid">';
+  DAYS.forEach(function(day) {
+    SEGS[day].forEach(function(seg) {
+      var key = day + '_' + seg;
+      var slotData = slots && slots[key];
+      var isFull = slotData && slotData.isFull;
+      var open = slotData ? slotData.open : 0;
+      var cls = 'slot-btn' + (isFull ? '' : '');
+      grid += '<button class="' + cls + '" ' +
+        (isFull ? 'disabled' : 'onclick="doRejoinFromPick(\'' + day + '\',\'' + seg + '\')"') + '>' +
+        '<div class="slot-name">' + day + (seg === 'Single' ? '' : ' ' + seg) + '</div>' +
+        '<div class="slot-time">' + PTIMES[day][seg] + '</div>' +
+        '<div class="slot-avail ' + (isFull ? 'full' : 'open') + '">' + (isFull ? 'Full' : open + ' spot' + (open === 1 ? '' : 's') + ' open') + '</div>' +
+        '</button>';
+    });
+  });
+  grid += '</div>';
+
+  return '<div class="card">' +
+    '<div class="card-title">Choose a slot to rejoin</div>' +
+    '<p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.45">' +
+    'Select one available slot. You\'ll be confirmed immediately. The schedule locks June 1st.' +
+    '</p>' +
+    errFrag() +
+    grid +
+    '<p style="font-size:12px;color:var(--text3);margin-top:4px;line-height:1.4">Spots are first come, first served.</p>' +
+    '</div>' +
+    '<div class="back-row"><button class="btn-ghost" onclick="goBack()">&#8592; Back</button></div>';
+}
+
+function doGoToRejoinPick() {
+  state = 'rejoin-pick'; errMsg = ''; render();
+}
+
+function doRejoinFromPick(toDay, toSeg) {
+  errMsg = '';
+  state = "loading"; render();
+  api({action:"rejoin", studentId:student.id, password:lookupPw, toDay:toDay, toSeg:toSeg, email:lookupEmail}, function(e, r) {
+    if (e || !r || !r.ok) {
+      if (r && r.slotFull) {
+        // Slot just filled — refresh and stay on picker
+        api({action:"getSlots"}, function(e2, r2) {
+          if (!e2 && r2 && r2.ok) { slots = r2.slots; }
+          state = "rejoin-pick";
+          errMsg = "That slot just filled up. Please choose another.";
+          render();
+        });
+      } else {
+        state = "rejoin-pick"; showErr((r && r.error) || "Could not book. Please try again.");
+      }
+      return;
+    }
+    student.day = toDay; student.seg = toSeg; student.status = 'confirmed';
+    api({action:"getSlots"}, function(e2, r2) {
+      if (!e2 && r2 && r2.ok) { slots = r2.slots; }
+      window._swapResult = r.confirmation;
+      state = "swap-confirmed"; render();
+    });
+  });
+}
+
+function rCancelConfirmed() {
+  var tags = student.tags || '';
+  var origMatch = tags.match(/orig:([A-Za-z]+)_([A-Za-z]+)/);
+  var origDay = origMatch ? origMatch[1] : null;
+  var origSeg = origMatch ? origMatch[2] : null;
+  var origKey = origDay && origSeg ? origDay + '_' + origSeg : null;
+  var origAvailable = origKey && slots && slots[origKey] && !slots[origKey].isFull;
+  var origFull = origKey && slots && slots[origKey] && slots[origKey].isFull;
+  var canPickAny = (phase === 'open' || phase === 'locked');
+
+  var rejoinBlock = '';
+  if (origAvailable) {
+    rejoinBlock =
+      '<div class="notice notice-info" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#128260;</span><span>Your original slot is still available if you changed your mind.</span></div>' +
+      btnWrap('<button class="btn-primary" onclick="doRejoin()">Return to ' + origDay + ' ' + origSeg + ' \u2192</button>', 'Restores your original spot instantly.');
+  } else if (origFull && !canPickAny) {
+    rejoinBlock =
+      '<div class="notice notice-warn" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#9888;</span><span>Your original segment is now full. Check back on May 1st when self-service scheduling opens, or submit a scheduling request and we\'ll be in touch with an update asap.</span></div>' +
+      btnWrap('<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>', 'Tell us your preferred days. We\'ll contact you with available options.');
+  } else if (canPickAny) {
+    rejoinBlock =
+      '<div class="notice notice-info" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#128260;</span><span>You can rejoin into any available slot. The schedule locks June 1st.</span></div>' +
+      btnWrap('<button class="btn-secondary" onclick="doGoToRejoinPick()">Choose an available slot</button>', 'Pick any open slot during the week.');
+  } else {
+    // pre/priority, no orig tag or orig unavailable — offer scheduling request
+    rejoinBlock =
+      '<div class="notice notice-info" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#128197;</span><span>Self-service scheduling opens May 1st. Submit a scheduling request and we\'ll be in touch asap.</span></div>' +
+      btnWrap('<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>', 'Tell us your preferred days. We\'ll contact you with available options.');
+  }
+
+  return '<div class="card">' +
+    '<div class="confirm-icon">&#128218;</div>' +
+    '<div class="confirm-title">Your spot has been released</div>' +
+    '<div class="confirm-sub">We\'re sorry to see you go. You\'re welcome back any time before June 1st.</div>' +
+    rejoinBlock +
+    '</div>' +
+    '<div class="back-row"><button class="btn-secondary" onclick="state=\'found\';render()">Manage my booking</button></div>';
+}
+
+// ── Screen: Preferences ────────────────────────────────────────
+function rPreferences() {
+  var DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+  var SEGS = {Monday:['Early','Late'],Tuesday:['Early','Late'],Wednesday:['Early','Late'],Thursday:['Early','Late'],Friday:['Single']};
+  var PTIMES = {Monday:{Early:'4:00 PM',Late:'5:00 PM'},Tuesday:{Early:'4:00 PM',Late:'5:00 PM'},Wednesday:{Early:'4:00 PM',Late:'5:00 PM'},Thursday:{Early:'4:00 PM',Late:'5:00 PM'},Friday:{Single:'4:00 PM'}};
+
+  var grid = '<div class="pref-grid">';
+  DAYS.forEach(function(day) {
+    SEGS[day].forEach(function(seg) {
+      var key = day + '_' + seg;
+      var isSel = prefSelected.indexOf(key) > -1;
+      var isCur = student.day === day && student.seg === seg;
+      var cls = 'pref-btn' + (isSel ? ' selected' : '') + (isCur ? ' current-slot' : '');
+      grid += '<button class="' + cls + '" onclick="togglePref(\'' + key + '\')">' +
+        '<div class="pref-name">' + day + (seg === 'Single' ? '' : ' ' + seg) + '</div>' +
+        '<div class="pref-time">' + PTIMES[day][seg] + (isCur ? ' \u2014 current' : '') + '</div>' +
+        '</button>';
+    });
+  });
+  grid += '</div>';
+
+  var isInactivePref = student && (student.status === 'cancelled' || student.status === 'not-participating');
+  var holdNotice = '';
+  if (!isInactivePref) {
+    holdNotice = '<div class="notice notice-info" style="margin-bottom:14px"><span class="ni">&#128274;</span><span>' +
+      '<strong>Your current spot is held</strong> while we review your request. We\'ll contact you to confirm as soon as possible.' +
+      '</span></div>';
+  }
+
+  var priorityNote = (phase === 'pre')
+    ? '<div class="notice notice-warn" style="margin-bottom:14px"><span class="ni">&#128197;</span><span>' +
+      '<strong>Priority deadline April 27th:</strong> Families who request by April 27th receive priority placement into available spots. Rescheduling is not guaranteed and based on availability.' +
+      '</span></div>'
+    : '';
+
+  return '<div class="card">' +
+    '<div class="card-title">Request a reschedule</div>' +
+    '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Request to reschedule. Select the segments that work best for you. We\'ll do our best to accommodate you if we have room. You can also self book into any open segment here anytime from May 1st. The schedule locks on June 1st.</p>' +
+    errFrag() +
+    priorityNote +
+    holdNotice +
+    grid +
+    '<div class="field"><label>Additional notes <span style="font-weight:400;color:var(--text3)">(optional)</span></label>' +
+    '<textarea id="pref-note" rows="3" placeholder="Any scheduling conflicts, sibling arrangements, or other notes." style="resize:vertical"></textarea></div>' +
+    '<button class="btn-primary" id="pref-btn" onclick="doSubmitPreferences()">Submit preferences</button>' +
+    '</div>' +
+    '<div class="back-row"><button class="btn-ghost" onclick="goBack()">&#8592; Cancel</button></div>';
+}
+
+// ── Screen: Pref sent ──────────────────────────────────────────
+function rPrefSent() {
+  var phaseNote = phase === 'pre'
+    ? 'Your current spot is being held while we review requests. We\'ll be in touch before May 1st.'
+    : phase === 'open'
+    ? 'Your current spot is being held while we review requests. The schedule locks June 1st.'
+    : 'Your request has been received. We\'ll be in touch as soon as possible.';
+  return '<div class="card">' +
+    '<div class="confirm-icon">&#128197;</div>' +
+    '<div class="confirm-title">Request received!</div>' +
+    '<div class="confirm-sub">Your scheduling preference has been submitted. We\'ll do our best to accommodate you.</div>' +
+    '<div class="notice notice-info"><span class="ni">&#128274;</span><span>' + phaseNote + '</span></div>' +
+    '</div>' +
+    '<div class="back-row"><button class="btn-secondary" onclick="state=\'found\';render()">Manage my booking</button></div>';
+}
+
+// ── Screen: Swap ───────────────────────────────────────────────
+function rSwap() {
+  var DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+  var SEGS = {Monday:['Early','Late'],Tuesday:['Early','Late'],Wednesday:['Early','Late'],Thursday:['Early','Late'],Friday:['Single']};
+  var STIMES = {Monday:{Early:'4:00 PM',Late:'5:00 PM'},Tuesday:{Early:'4:00 PM',Late:'5:00 PM'},Wednesday:{Early:'4:00 PM',Late:'5:00 PM'},Thursday:{Early:'4:00 PM',Late:'5:00 PM'},Friday:{Single:'4:00 PM'}};
+
+  var origDay = window._rejoinOrigDay;
+  var origSeg = window._rejoinOrigSeg;
+  var origFull = origDay && origSeg && slots && slots[origDay + '_' + origSeg] && slots[origDay + '_' + origSeg].isFull;
+
+  var grid = '<div class="swap-grid">';
+  DAYS.forEach(function(day) {
+    SEGS[day].forEach(function(seg) {
+      var key = day + '_' + seg;
+      var isCur = student.day === day && student.seg === seg;
+      var isOrig = origDay === day && origSeg === seg;
+      var slotInfo = slots && slots[key];
+      var isFull = slotInfo ? slotInfo.isFull : false;
+      var openCount = slotInfo ? slotInfo.open : 0;
+      var cls = 'slot-btn' + (isCur ? ' current' : '') + (isOrig ? ' is-orig' : '');
+      var availText = isCur ? 'Current slot' : (isFull ? 'Full' : openCount + ' spot' + (openCount === 1 ? '' : 's') + ' available');
+      var availCls = (isFull && !isCur) ? 'full' : 'open';
+      grid += '<button class="' + cls + '" onclick="doSwap(\'' + day + '\',\'' + seg + '\')"' + ((isFull && !isCur) ? ' disabled' : '') + '>' +
+        '<div class="slot-name">' + day + (seg === 'Single' ? '' : ' ' + seg) + '</div>' +
+        '<div class="slot-time">' + STIMES[day][seg] + '</div>' +
+        '<div class="slot-avail ' + availCls + '">' + availText + '</div>' +
+        '</button>';
+    });
+  });
+  grid += '</div>';
+
+  return '<div class="card">' +
+    '<div class="card-title">Reschedule your slot</div>' +
+    (origFull
+      ? '<div class="notice notice-warn"><span class="ni">&#9888;</span><span>Your original slot <strong>' + origDay + ' ' + origSeg + '</strong> is full. Choose another available slot below.</span></div>'
+      : (origDay ? '<div class="notice notice-info"><span class="ni">&#128260;</span><span>Your original slot <strong>' + origDay + ' ' + origSeg + '</strong> has space \u2014 it\'s highlighted below.</span></div>' : '')) +
+    errFrag() +
+    grid +
+    '<p style="font-size:12px;color:var(--text3);margin-top:4px;line-height:1.4">Spots are first come, first served.</p>' +
+    '</div>' +
+    '<div class="back-row"><button class="btn-ghost" onclick="goBack()">&#8592; Cancel</button></div>';
+}
+
+// ── Screen: Swap confirmed ─────────────────────────────────────
+function rSwapConfirmed() {
+  var s = student;
+  var c = window._swapResult || {};
+  var isRejoin = !c.fromDay;
+  var dateLabels = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
+  var sessionLabel = s.seg === 'Early' ? 'Early session' : s.seg === 'Late' ? 'Late session' : 'Single session';
+  var timeLabel = {Early:'4:00 PM', Late:'5:00 PM', Single:'4:00 PM'}[s.seg] || '';
+  var arriveLabel = {Early:'3:30\u20133:50 PM', Late:'4:45\u20135:00 PM', Single:'3:30\u20133:50 PM'}[s.seg] || '';
+  return '<div class="card">' +
+    '<div class="confirm-icon">&#9989;</div>' +
+    '<div class="confirm-title">' + (isRejoin ? 'Welcome back!' : 'You\'re rescheduled!') + '</div>' +
+    '<div class="confirm-sub">' + (isRejoin
+      ? 'Great to have ' + esc(c.studentName || s.name) + ' back \u2014 spot confirmed!'
+      : esc(c.studentName || s.name) + '\'s booking has been updated. Here are the new details.') + '</div>' +
+    '<div class="confirm-detail">' +
+    '<div class="confirm-row"><span class="confirm-key">Date</span><span class="confirm-val">' + esc(s.day) + ', ' + esc(dateLabels[s.day] || '') + '</span></div>' +
+    '<div class="confirm-row"><span class="confirm-key">Session</span><span class="confirm-val">' + sessionLabel + ' &mdash; ' + timeLabel + '</span></div>' +
+    '<div class="confirm-row"><span class="confirm-key">Duration</span><span class="confirm-val">Approx. 45 min &ndash; 1 hour</span></div>' +
+    '<div class="confirm-row"><span class="confirm-key">Arrive by</span><span class="confirm-val">' + arriveLabel + '</span></div>' +
+    '<div class="confirm-row"><span class="confirm-key">Teacher</span><span class="confirm-val">' + esc(s.teacher || 'TBD') + '</span></div>' +
+    '<div class="confirm-row"><span class="confirm-key">Guests</span><span class="confirm-val">' + (parseInt(s.guests) || 0) + '</span></div>' +
+    '</div>' +
+    '<div class="notice notice-info"><span class="ni">&#128197;</span><span>If you added your email address, a confirmation email will be sent shortly. Add your new slot to your calendar below \u2014 if you had a previous calendar event, you can delete it.</span></div>' +
+    calendarLinks(s) +
+    '</div>' +
+    '<div class="back-row"><button class="btn-secondary" onclick="state=\'found\';render()">Manage my booking</button></div>';
+}
+
+// ── Screen: Messaging ──────────────────────────────────────────
+function rMessaging() {
+  var phaseNote = '';
+  if (phase === 'locked') {
+    phaseNote = '<div class="notice notice-warn" style="margin-bottom:14px"><span class="ni">&#128274;</span><span>The schedule is locked. We\'ll review your request and respond as soon as possible. Changes are not guaranteed.</span></div>';
+  } else if (phase === 'priority') {
+    phaseNote = '<div class="notice notice-info" style="margin-bottom:14px"><span class="ni">&#8505;</span><span>We\'re processing priority requests. The schedule opens for self-service rescheduling May 1st.</span></div>';
+  } else if (phase === 'pre') {
+    phaseNote = '<div class="notice notice-info" style="margin-bottom:14px"><span class="ni">&#8505;</span><span>Rescheduling opens May 1st. Send us a message if you have an urgent conflict.</span></div>';
+  }
+  return '<div class="card">' +
+    '<div class="card-title">Send a message to Keylab</div>' +
+    phaseNote + errFrag() +
+    '<div class="field"><label>Your message</label>' +
+    '<textarea id="msg-text" rows="5" placeholder="Let us know what you need \u2014 scheduling questions, conflicts, etc." style="resize:vertical"></textarea></div>' +
+    '<p style="font-size:12px;color:var(--text3);margin-bottom:14px">Messages go directly to the Keylab team. We\'ll follow up as soon as possible.</p>' +
+    '<button class="btn-primary" id="send-btn" onclick="doSendMessage()">Send message</button>' +
+    '</div>' +
+    '<div class="back-row"><button class="btn-ghost" onclick="goBack()">&#8592; Cancel</button></div>';
+}
+
+// ── Screen: Message sent ───────────────────────────────────────
+function rMsgSent() {
+  return '<div class="card">' +
+    '<div class="msg-sent">' +
+    '<div class="icon">&#9993;&#65039;</div>' +
+    '<div class="confirm-title" style="font-size:17px">Message received!</div>' +
+    '<p style="color:var(--text2);font-size:13px;margin-top:6px;line-height:1.5">Your message has been received by the Keylab team. We\'ll follow up at your email address as soon as possible. For urgent matters, email us directly at <a href="mailto:info@keylab.nyc" style="color:var(--blue)">info@keylab.nyc</a>.</p>' +
+    '</div></div>' +
+    '<div class="back-row"><button class="btn-secondary" onclick="state=\'found\';render()">Manage my booking</button></div>';
+}
+
+// ── Info Accordion ─────────────────────────────────────────────
+function renderInfo(ctx) {
+  var el = document.getElementById("info-section");
+  if (!el) return;
+
+  var panels = [];
+
+  panels.push({
+    id: "info-event",
+    title: "&#128197;  Event details & schedule",
+    body: '<h4>Performance Week</h4>' +
+      '<p>Monday, June 15 through Friday, June 19 at Keylab, 94 Luquer St., Brooklyn, NY 11231.</p>' +
+      '<h4>Session Times</h4>' +
+      '<ul>' +
+      '<li><strong>Early session</strong> (Mon\u2013Thu): Performance begins 4:00 PM &middot; Arrive 3:30\u20133:50 PM</li>' +
+      '<li><strong>Late session</strong> (Mon\u2013Thu): Performance begins 5:00 PM &middot; Arrive 4:45\u20135:00 PM</li>' +
+      '<li><strong>Friday</strong> (single session): Performance begins 4:00 PM &middot; Arrive 3:30\u20133:50 PM</li>' +
+      '</ul>' +
+      '<h4>After the Performance</h4>' +
+      '<p>Join us upstairs for pizza, snacks and beverages after each performance.</p>' +
+      '<h4>Juneteenth Note</h4>' +
+      '<p>Friday, June 19 is Juneteenth. NYC public schools will be closed, but Keylab will be open and hosting our performance party as scheduled.</p>'
+  });
+
+  panels.push({
+    id: "info-guests",
+    title: "&#128101;  Guests & arrival",
+    body: '<h4>Guest Limit</h4>' +
+      '<p>Up to 3 guest seats can be requested per student, four persons max (performer + guests). If your family needs more seats, please send us a message and we\'ll do our best to accommodate you if we have space available.</p>' +
+      '<p>Once you\'ve submitted your guest list, you can edit names or remove a seat through your booking page, but additional guest seats cannot be added through this tool. Email <a href="mailto:info@keylab.nyc">info@keylab.nyc</a> to request more seats — additional guests are not guaranteed.</p>' +
+      '<h4>Arrival</h4>' +
+      '<p>Please arrive during the arrival window listed for your session. Students who arrive late will be admitted between performances and moved to the end of the roster.</p>' +
+      '<h4>Staying for the Full Performance</h4>' +
+      '<p>Please plan to stay for the entire performance to support all student performers.</p>'
+  });
+
+  panels.push({
+    id: "info-dates",
+    title: "&#128467;  Key dates",
+    body: '<ul>' +
+      '<li><strong>April 27:</strong> Priority deadline for responses and guaranteed guest allowance</li>' +
+      '<li><strong>May 1:</strong> Schedule opens for self-service rescheduling</li>' +
+      '<li><strong>June 1:</strong> Schedule locks \u2014 after this date, contact us at info@keylab.nyc to request changes</li>' +
+      '<li><strong>June 15\u201319:</strong> Performance Party Week!</li>' +
+      '</ul>' +
+      '<p style="margin-top:8px">Spots are first-come, first-served after May 1st. Once you give up your current slot it immediately becomes available to other families.</p>'
+  });
+
+  if (ctx === "found") {
+    if (phase === 'pre' || phase === 'open') {
+      panels.push({
+        id: "info-reschedule",
+        title: "&#128260;  Rescheduling",
+        body: (phase === 'pre'
+          ? '<ul>' +
+            '<li>Spots are locked until May 1st, when the schedule opens for instant self-service rescheduling.</li>' +
+            '<li>Before May 1st, submit a scheduling request using the button on your booking page. We\'ll do our best to accommodate you based on availability.</li>' +
+            '<li><strong>Your current spot is held</strong> while we review your request \u2014 you won\'t lose your place during the review period.</li>' +
+            '<li>Families who request before April 27th receive priority placement.</li>' +
+            '<li>From May 1st, you can reschedule instantly to any open spot during the week.</li>' +
+            '</ul>'
+          : '<ul>' +
+            '<li>From May 1st\u201331st, you can reschedule instantly to any open slot during the week using the button above.</li>' +
+            '</ul>') +
+          '<ul>' +
+          '<li>From June 1st, the schedule will be locked. Contact <a href="mailto:info@keylab.nyc">info@keylab.nyc</a> to request changes after that date.</li>' +
+          '<li>Changes are not guaranteed but we\'ll do our best subject to availability.</li>' +
+          '<li>If you reschedule to a day other than your regular lesson day, your regular teacher may not be available. We\'ll assign a Keylab teacher to support your child if needed.</li>' +
+          '</ul>'
+      });
+    }
+    if (phase === 'priority') {
+      panels.push({
+        id: "info-priority",
+        title: "&#8987;  Priority scheduling",
+        body: '<p>We\'re currently reviewing all priority scheduling requests submitted before April 27th. The schedule will open for self-service rescheduling on <strong>May 1st</strong>.</p>' +
+          '<p>If you submitted a preference request before April 27th, we\'ll do our best to accommodate you and will be in touch if we can make a change before May 1st.</p>' +
+          '<p>Starting May 1st, you can use this tool to reschedule yourself into any open slot. Spots are first-come, first-served.</p>'
+      });
+    }
+    if (phase === 'locked') {
+      panels.push({
+        id: "info-locked",
+        title: "&#128274;  Schedule is locked",
+        body: '<p>The schedule is now locked as of June 1st. Your confirmed assignment above is final.</p>' +
+          '<p>If you need to make a change, please send us a message using the button above or email <a href="mailto:info@keylab.nyc">info@keylab.nyc</a>. We\'ll do our best to accommodate requests if we have space available, but changes are not guaranteed.</p>'
+      });
+    }
+  }
+
+  panels.push({
+    id: "info-bring",
+    title: "&#127928;  What to bring",
+    body: '<h4>Instruments & Equipment We Provide</h4>' +
+      '<ul>' +
+      '<li>Digital pianos</li>' +
+      '<li>Guitar &amp; bass amps</li>' +
+      '<li>Digital drum set</li>' +
+      '<li>Vocal mics &amp; music stands</li>' +
+      '<li>Sound system</li>' +
+      '</ul>' +
+      '<h4>What Students Should Bring</h4>' +
+      '<ul>' +
+      '<li>Students who bring their own instrument or laptop to lessons should bring it to the performance if possible.</li>' +
+      '<li>Students should bring copies of their own sheet music. We\'ll do our best to have copies available, but last minute requests may not be able to be accommodated.</li>' +
+      '</ul>'
+  });
+
+  panels.push({
+    id: "info-faq",
+    title: "&#10067;  Common questions",
+    body: '<h4>Is participation mandatory?</h4>' +
+      '<p>No \u2014 but all students are invited to perform! If you\'re not sure your child is ready, ask their teacher.</p>' +
+      '<h4>Is there a fee?</h4>' +
+      '<p>No, participation is completely free.</p>' +
+      '<h4>Will there be food?</h4>' +
+      '<p>Yes! Pizza, snacks and beverages will be provided after each performance.</p>' +
+      '<h4>What if my child can\'t attend their scheduled day?</h4>' +
+      '<p>You can self-service reschedule starting May 1st. While we can\'t guarantee availability, we\'ll do our best to help. Email <a href="mailto:info@keylab.nyc">info@keylab.nyc</a> for assistance.</p>' +
+      '<h4>Can I request a specific spot in the order?</h4>' +
+      '<p>We\'re unable to guarantee specific spots on the performance roster, but we\'ll do our best to honor requests if we can.</p>' +
+      '<h4>Can I share my login link with family members or friends?</h4>' +
+      '<p>Your login is unique to your child\'s booking. Any changes made using your password take effect immediately and will affect your booking \u2014 we recommend not sharing your login details with others.</p>'
+  });
+
+  var h = '<div class="info-heading">More information</div>';
+  h += panels.map(function(p) {
+    return '<div class="info-section">' +
+      '<button class="info-toggle" id="btn-' + p.id + '" onclick="toggleInfo(\'' + p.id + '\')">' +
+      '<span>' + p.title + '</span><span class="arrow">&#9660;</span></button>' +
+      '<div class="info-body" id="body-' + p.id + '">' + p.body + '</div>' +
+      '</div>';
+  }).join('');
+
+  el.innerHTML = h;
+}
+
+function toggleInfo(id) {
+  var btn  = document.getElementById("btn-" + id);
+  var body = document.getElementById("body-" + id);
+  if (!body) return;
+  var open = body.classList.contains("open");
+  body.classList.toggle("open", !open);
+  if (btn) btn.classList.toggle("open", !open);
+}
+
+// ── Boot ───────────────────────────────────────────────────────
+render();
+renderInfo("lookup");
+</script>
+</body>
+</html>
