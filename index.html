@@ -1172,15 +1172,19 @@ function rAuth() {
     (isInactive ? 'Log in to manage your booking.' : 'Enter your password to continue.') +
     '</p>';
 
-  // Password + email fields
+  // Password + email fields — dynamic based on whether email is on file
+  var emailBlock = m.hasEmail
+    ? '<div style="background:var(--info-lt);border:1px solid #bfdbfe;border-radius:8px;padding:10px 13px;margin-bottom:14px;font-size:13px;color:var(--info)">&#10003; Confirmation emails will be sent to your email on file.</div>'
+    : '<div class="field"><label>Email address <span style="font-weight:400;color:var(--text3)">(optional)</span></label>' +
+      '<input id="femail" type="email" placeholder="your@email.com" autocomplete="email" ' +
+      'onkeydown="if(event.key===&apos;Enter&apos;)doAuthWithIntent(null)">' +
+      '<div class="hint">No email on file — add yours to receive confirmation emails.</div></div>';
+
   html += '<div class="field"><label>Password</label>' +
     '<input id="fpw" type="password" placeholder="e.g. EmmaC2026" autocomplete="current-password" ' +
-    'onkeydown="if(event.key===\'Enter\')document.getElementById(\'femail\').focus()">' +
+    'onkeydown="if(event.key===&apos;Enter&apos;)doFpwEnter()">' +
     '<div class="hint">First name + last initial + 2026. Example: <strong>EmmaC2026</strong></div></div>' +
-    '<div class="field"><label>Email address</label>' +
-    '<input id="femail" type="email" placeholder="your@email.com" autocomplete="email" ' +
-    'onkeydown="if(event.key===\'Enter\')doAuthWithIntent(null)">' +
-    '<div class="hint">We\'ll send confirmations here. Leave blank if we already have your email.</div></div>';
+    emailBlock;
 
   html += errFrag();
 
@@ -2196,6 +2200,11 @@ function toggleInfo(id) {
   var open = body.classList.contains("open");
   body.classList.toggle("open", !open);
   if (btn) btn.classList.toggle("open", !open);
+}
+
+function doFpwEnter() {
+  var fe = document.getElementById('femail');
+  if (fe) fe.focus(); else doAuthWithIntent(null);
 }
 
 // ── Boot ───────────────────────────────────────────────────────
