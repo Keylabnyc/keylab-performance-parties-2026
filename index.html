@@ -604,6 +604,7 @@ var pendingConfirmStatus = "confirmed";
 var prefSelected = [];
 var pendingGuestList = [];
 var pendingAuthIntent = null; // 'confirm-performer' | 'confirm-guest' | 'cancel' | null
+var emailSaveSuccess = false;
 
 var TIMES = {
   Monday:    {Early:"Monday, June 15 \u2014 4:00 PM",  Late:"Monday, June 15 \u2014 5:00 PM"},
@@ -752,6 +753,7 @@ function doSaveEmail() {
   api({action:"lookup", name:lookupName, studentId:(student && student.id), password:lookupPw, email:lookupEmail}, function(e, r) {
     if (!e && r && r.ok && r.student) {
       student.email = lookupEmail;
+      emailSaveSuccess = true;
     }
     render();
   });
@@ -1312,13 +1314,29 @@ function rFound() {
 
   html += '</div>';
 
+  // Scheduling request callout
+  var schedSegs = getLatestSchedRequest(s.notes);
+  if (schedSegs && !isInactive) {
+    html += '<div class="notice notice-info" style="flex-direction:column;gap:6px">' +
+      '<div style="font-size:13px;font-weight:600;color:var(--info)">&#128197; Scheduling request under review</div>' +
+      '<div style="font-size:13px"><strong>Held spot:</strong> ' + esc(s.day) + (s.seg !== 'Single' ? ' ' + esc(s.seg) : '') + '</div>' +
+      '<div style="font-size:13px"><strong>Requested segments:</strong> ' + schedSegs.map(function(s) { return esc(s); }).join(', ') + '</div>' +
+      '<div style="font-size:12px;color:var(--info);margin-top:2px">We\'ll update you as soon as possible. Your current spot is held in the meantime.</div>' +
+      '</div>';
+  }
+
   // Admin note callout
   if (s.adminNote) {
     html += '<div class="admin-note-callout"><strong>Note from Keylab:</strong> ' + esc(s.adminNote) + '</div>';
   }
 
-  // Prompt for email if none on file
-  if (!lookupEmail) {
+  // Email notice — success confirmation or prompt to add
+  if (emailSaveSuccess) {
+    html += '<div class="notice notice-success" style="margin-bottom:0"><span class="ni">&#10003;</span><span>' +
+      '<strong>Email saved!</strong> Confirmation emails will be sent to ' + esc(lookupEmail) + '.' +
+      '</span></div>';
+    emailSaveSuccess = false;
+  } else if (!lookupEmail) {
     html += '<div class="notice notice-warn" style="margin-bottom:0"><span class="ni">&#9993;</span><span>' +
       '<strong>No email on file.</strong> Add your email address so we can send you confirmations.' +
       '<div style="display:flex;gap:8px;margin-top:8px">' +
@@ -1924,7 +1942,7 @@ function rPreferences() {
 
   return '<div class="card">' +
     '<div class="card-title">Request a reschedule</div>' +
-    '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Request to reschedule. Select the segments that work best for you. We\'ll do our best to accommodate you if we have room. You can also self book into any open segment here anytime from May 1st. The schedule locks on June 1st.</p>' +
+    '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Select one or more segments that can work for you. Add any scheduling preference info in the notes area before submitting \u2014 we\'ll do our best to place you in a preferred slot and will update you asap.</p>' +
     errFrag() +
     priorityNote +
     holdNotice +
@@ -2200,6 +2218,24 @@ function toggleInfo(id) {
   var open = body.classList.contains("open");
   body.classList.toggle("open", !open);
   if (btn) btn.classList.toggle("open", !open);
+}
+
+function getLatestSchedRequest(notes) {
+  if (!notes || !notes.trim()) return null;
+  var chunks = notes.trim().split(/\n\n+/);
+  for (var i = chunks.length - 1; i >= 0; i--) {
+    var m = chunks[i].trim().match(/^\[([^\]]+)\]\s+SCHEDULING REQUEST\s+\u2014\s+([\s\S]*)$/);
+    if (m) {
+      var body = m[2].trim();
+      var slotMatch = body.match(/Preferred slots:\s*([^.]+)/);
+      if (slotMatch) {
+        return slotMatch[1].trim().split(',').map(function(s) {
+          return s.trim().replace('_', ' ');
+        });
+      }
+    }
+  }
+  return null;
 }
 
 function doFpwEnter() {
