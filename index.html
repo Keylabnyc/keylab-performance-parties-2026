@@ -743,6 +743,27 @@ function doAuth() {
   });
 }
 
+// ── Withdraw scheduling request ────────────────────────────────
+function doWithdrawSchedRequest() {
+  if (!confirm('Withdraw your scheduling request? This will remove your request from our records. You can always submit a new one.')) return;
+  state = 'loading'; render();
+  api({action:'withdrawSchedRequest', studentId:student.id, password:lookupPw}, function(e, r) {
+    if (e || !r || !r.ok) {
+      state = 'found'; showErr((r && r.error) || 'Could not withdraw request. Please try again.');
+      return;
+    }
+    student.schedRequest = null;
+    if (student.notes) {
+      var chunks = student.notes.trim().split(/\n\n+/);
+      var kept = chunks.filter(function(c) {
+        return !/^\[([^\]]+)\]\s+SCHEDULING REQUEST\s+\u2014/.test(c.trim());
+      });
+      student.notes = kept.join('\n\n');
+    }
+    state = 'found'; errMsg = ''; render();
+  });
+}
+
 // ── Confirm — guest selector flow ──────────────────────────────
 function doSaveEmail() {
   var inp = document.getElementById("email-collect");
@@ -1158,11 +1179,22 @@ function rAuth() {
 
   // Scheduling request callout (pre-login)
   if (m.schedRequest && m.schedRequest.length) {
+    var srReqListPre = m.schedRequest.map(function(x) { return esc(x); }).join(', ');
+    var srTitlePre, srBodyPre;
+    var stPre = m.status || 'unconfirmed';
+    if (stPre === 'confirmed' || stPre === 'confirmed-guest') {
+      srTitlePre = '&#128197; Scheduling request on file';
+      srBodyPre = 'Your current spot (' + esc(m.day) + (m.seg !== 'Single' ? ' ' + esc(m.seg) : '') + ') is yours until you cancel. Requested: ' + srReqListPre + '. Log in to manage your request.';
+    } else if (stPre === 'unconfirmed') {
+      srTitlePre = '&#128197; Scheduling request on file';
+      srBodyPre = 'You have a scheduling request on file for: ' + srReqListPre + '. Log in to confirm your spot or manage your request.';
+    } else {
+      srTitlePre = '&#128197; Scheduling request on file';
+      srBodyPre = 'You have a scheduling request on file for: ' + srReqListPre + '. Log in to manage your options.';
+    }
     html += '<div style="background:var(--info-lt);border:1px solid #bfdbfe;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:var(--info)">' +
-      '<div style="font-weight:600;margin-bottom:4px">&#128197; Scheduling request under review</div>' +
-      '<div><strong>Held spot:</strong> ' + esc(m.day) + (m.seg !== 'Single' ? ' ' + esc(m.seg) : '') + '</div>' +
-      '<div><strong>Requested:</strong> ' + m.schedRequest.map(function(x) { return esc(x); }).join(', ') + '</div>' +
-      '<div style="margin-top:4px;font-size:12px">Your request is under review — we\'ll update you as soon as possible.</div>' +
+      '<div style="font-weight:600;margin-bottom:4px">' + srTitlePre + '</div>' +
+      '<div style="line-height:1.5">' + srBodyPre + '</div>' +
       '</div>';
   }
 
@@ -1327,12 +1359,55 @@ function rFound() {
   // Scheduling request callout
   var schedSegs = s.schedRequest || getLatestSchedRequest(s.notes);
   if (schedSegs && schedSegs.length) {
-    html += '<div class="notice notice-info" style="flex-direction:column;gap:6px">' +
-      '<div style="font-size:13px;font-weight:600;color:var(--info)">&#128197; Scheduling request under review</div>' +
-      '<div style="font-size:13px"><strong>Held spot:</strong> ' + esc(s.day) + (s.seg !== 'Single' ? ' ' + esc(s.seg) : '') + '</div>' +
-      '<div style="font-size:13px"><strong>Requested segments:</strong> ' + schedSegs.map(function(s) { return esc(s); }).join(', ') + '</div>' +
-      '<div style="font-size:12px;color:var(--info);margin-top:2px">We\'ll update you as soon as possible. Your current spot is held in the meantime.</div>' +
-      '</div>';
+    var sr = s;
+    var srStatus = sr.status;
+    var srDay = sr.day, srSeg = sr.seg;
+    var srReqList = schedSegs.map(function(x) { return esc(x); }).join(', ');
+    var srTitle, srBody, srShowWithdraw;
+
+    if (srStatus === 'confirmed' || srStatus === 'confirmed-guest') {
+      srTitle = '&#128197; You have a scheduling request on file';
+      srBody = 'Your current spot (' + esc(srDay) + (srSeg !== 'Single' ? ' ' + esc(srSeg) : '') + ') is yours until you cancel it — submitting a request doesn\'t change anything automatically. ' +
+        'Requested: <strong>' + srReqList + '</strong>. ' +
+        (phase === 'open'
+          ? 'Since we\'re in the open phase, you can also self-service reschedule using the button below.'
+          : phase === 'locked'
+            ? 'The schedule is now locked — contact us at <a href="mailto:info@keylab.nyc" style="color:var(--info)">info@keylab.nyc</a> to make a change.'
+            : 'We\'re reviewing priority requests and will reach out as soon as possible.') +
+        ' Need to change your requested segments? Email us at <a href="mailto:info@keylab.nyc" style="color:var(--info)">info@keylab.nyc</a> and we\'ll update your request.';
+      srShowWithdraw = true;
+    } else if (srStatus === 'unconfirmed') {
+      srTitle = '&#128197; You have a scheduling request on file';
+      srBody = 'You\'re not yet confirmed, so your spot isn\'t reserved. Requested segments: <strong>' + srReqList + '</strong>. ' +
+        'To secure a spot now, use the buttons below to confirm your current assigned segment. Or stay unconfirmed and we\'ll do our best to place you based on your request. ' +
+        'Need to change your requested segments? Email us at <a href="mailto:info@keylab.nyc" style="color:var(--info)">info@keylab.nyc</a>.';
+      srShowWithdraw = true;
+    } else {
+      srTitle = '&#128197; You have a scheduling request on file';
+      var srCancelledOptions;
+      if (phase === 'pre') {
+        srCancelledOptions = 'You can rejoin your original segment if space is available (use the button below), or wait for us to reach out. Self-service scheduling opens May 1st.';
+      } else if (phase === 'priority') {
+        srCancelledOptions = 'We\'re in our priority processing window right now — self-service scheduling opens May 1st. We\'ll be in touch as soon as we can.';
+      } else if (phase === 'open') {
+        srCancelledOptions = 'Scheduling is open! Use the buttons below to rejoin your original segment or pick any open spot. Spots are first come, first served — the schedule locks June 1st.';
+      } else {
+        srCancelledOptions = 'The schedule is locked. Please email us at <a href="mailto:info@keylab.nyc" style="color:var(--info)">info@keylab.nyc</a> and we\'ll do our best to find you a spot.';
+      }
+      srBody = 'Requested segments: <strong>' + srReqList + '</strong>. ' + srCancelledOptions +
+        ' Need to change your requested segments? Email us at <a href="mailto:info@keylab.nyc" style="color:var(--info)">info@keylab.nyc</a>.';
+      srShowWithdraw = true;
+    }
+
+    html += '<div style="background:var(--info-lt);border:1px solid #bfdbfe;border-radius:8px;padding:12px 14px;margin-bottom:16px">' +
+      '<div style="font-size:13px;font-weight:600;color:var(--info);margin-bottom:6px">' + srTitle + '</div>' +
+      '<div style="font-size:13px;color:var(--info);line-height:1.5">' + srBody + '</div>';
+    if (srShowWithdraw) {
+      html += '<div style="margin-top:10px">' +
+        '<button onclick="doWithdrawSchedRequest()" style="font-family:\'DM Sans\',sans-serif;font-size:12px;color:var(--text3);background:none;border:1px solid var(--border);border-radius:6px;padding:5px 12px;cursor:pointer">Withdraw scheduling request</button>' +
+        '</div>';
+    }
+    html += '</div>';
   }
 
   // Admin note callout
