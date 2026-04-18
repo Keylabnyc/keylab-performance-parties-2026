@@ -787,7 +787,7 @@ function doConfirmWithGuests() {
   api({action:"confirm", studentId:student.id, password:lookupPw, status:status, guests:gCount, guestNames:names, email:lookupEmail}, function(e, r) {
     if (e || !r || !r.ok) {
       if (r && r.slotFull) {
-        errMsg = "This segment just filled up. Please choose another slot below.";
+        errMsg = "This segment just filled up. Please choose another spot below.";
         api({action:"getSlots"}, function(e2, r2) {
           if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
           state = "rejoin-pick"; render();
@@ -855,7 +855,7 @@ function togglePref(key) {
 
 function doSubmitPreferences() {
   errMsg = '';
-  if (!prefSelected.length) { showErr("Please select at least one slot."); return; }
+  if (!prefSelected.length) { showErr("Please select at least one segment."); return; }
   var note = (document.getElementById("pref-note") || {}).value || "";
   var btn = document.getElementById("pref-btn");
   if (btn) { btn.disabled = true; btn.textContent = "Submitting\u2026"; }
@@ -952,10 +952,10 @@ function doRejoinDirect(toDay, toSeg) {
           if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
           if (phase === 'open') {
             state = "swap"; window._rejoinOrigDay = null; window._rejoinOrigSeg = null;
-            errMsg = "This segment is now full. Choose another slot below. The schedule locks June 1st.";
+            errMsg = "This segment is now full. Choose another spot below. The schedule locks June 1st.";
           } else {
             state = "rejoin-pick";
-            errMsg = "This segment is now full. Choose another slot below. The schedule locks June 1st.";
+            errMsg = "This segment is now full. Choose another spot below. The schedule locks June 1st.";
           }
           render();
         });
@@ -1078,11 +1078,11 @@ function rPickStudent() {
   var isMultiSlot = lookupMatches.length > 1 &&
     lookupMatches.every(function(m) { return m.tags && m.tags.indexOf('multi-day') > -1; });
   var html = '<div class="card">' +
-    '<div class="card-title">' + (isMultiSlot ? 'Choose a performance slot' : 'Select your child') + '</div>';
+    '<div class="card-title">' + (isMultiSlot ? 'Choose a performance segment' : 'Select your child') + '</div>';
   if (isMultiSlot) {
     html += '<div class="notice notice-warn" style="margin-bottom:16px"><span class="ni">&#9888;</span><span>' +
       '<strong>' + esc(lookupMatches[0].name.trim().split(/\s+/)[0]) + ' is scheduled in multiple slots.</strong> ' +
-      'Select the slot you\'d like to confirm. <strong>The other slot will be released</strong> when you confirm.' +
+      'Select the segment you'd like to confirm. <strong>The other spot will be released</strong> when you confirm.' +
       '</span></div>';
   } else {
     html += '<p style="font-size:13px;color:var(--text2);margin-bottom:16px">We found multiple students named <strong>' + esc(lookupName) + '</strong>. Select your child:</p>';
@@ -1186,7 +1186,7 @@ function rAuth() {
 
   // Password + email fields — dynamic based on whether email is on file
   var emailBlock = m.hasEmail
-    ? '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 13px;margin-bottom:14px;font-size:13px;color:#166534">&#10003; We have <strong>' + esc(student && student.email ? student.email : lookupEmail) + '</strong> on file — confirmations will be sent to this address. You can update it below if needed.</div>'
+    ? '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 13px;margin-bottom:14px;font-size:13px;color:#166534">Your email <strong>' + esc(student && student.email ? student.email : lookupEmail) + '</strong> is on file! Enter your password to log in.</div>'
     : '<div class="field"><label>Email address <span style="font-weight:400;color:var(--text3)">(optional)</span></label>' +
       '<input id="femail" type="email" placeholder="your@email.com" autocomplete="email" ' +
       'onkeydown="if(event.key===&apos;Enter&apos;)doAuthWithIntent(null)">' +
@@ -1207,9 +1207,9 @@ function rAuth() {
   if (lookupMatches.length > 1 && m.tags && m.tags.indexOf('multi-day') > -1) {
     var otherMatch = lookupMatches.filter(function(x) { return x.id !== m.id; })[0];
     var dateLabels2 = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
-    var otherSlotLabel = otherMatch ? (otherMatch.day + (otherMatch.seg !== 'Single' ? ' ' + otherMatch.seg : '') + ' \u2014 ' + (dateLabels2[otherMatch.day] || '')) : 'the other slot';
+    var otherSlotLabel = otherMatch ? (otherMatch.day + (otherMatch.seg !== 'Single' ? ' ' + otherMatch.seg : '') + ' \u2014 ' + (dateLabels2[otherMatch.day] || '')) : 'the other spot';
     html += '<div class="notice notice-warn" style="margin-bottom:4px"><span class="ni">&#9888;</span><span>' +
-      'Confirming this slot will <strong>automatically release ' + otherSlotLabel + '</strong>. Only one performance per student.' +
+      'Confirming this segment will <strong>automatically release ' + otherSlotLabel + '</strong>. Only one performance per student.' +
       '</span></div>';
   }
 
@@ -1226,8 +1226,8 @@ function rAuth() {
     }
     if (!isGuest) {
       var attendBtnStyle = st === 'unconfirmed'
-        ? 'display:block;width:100%;padding:12px 20px;background:transparent;color:var(--acc-dk);font-family:\'DM Sans\',sans-serif;font-size:15px;font-weight:500;border:1.5px solid var(--acc);border-radius:8px;cursor:pointer'
-        : 'display:block;width:100%;padding:12px 20px;background:transparent;color:var(--blue);font-family:\'DM Sans\',sans-serif;font-size:15px;font-weight:500;border:1.5px solid var(--blue);border-radius:8px;cursor:pointer';
+        ? 'display:block;width:100%;padding:13px 20px;background:var(--blue);color:#fff;font-family:\'DM Sans\',sans-serif;font-size:15px;font-weight:600;border:none;border-radius:8px;cursor:pointer'
+        : 'display:block;width:100%;padding:12px 20px;background:var(--blue);color:#fff;font-family:\'DM Sans\',sans-serif;font-size:15px;font-weight:500;border:none;border-radius:8px;cursor:pointer';
       html += btnWrap(
         '<button onclick="doAuthWithIntent(\'confirm-guest\')" style="' + attendBtnStyle + '">' + (isConfirmed ? 'Change to attending, not performing' : 'Attending, not performing') + '</button>',
         'Your child will attend and cheer on the performers but will not perform.'
@@ -1241,7 +1241,7 @@ function rAuth() {
     }
     html += btnWrap(
       '<button onclick="doAuthWithIntent(\'cancel\')" style="display:block;width:100%;padding:12px 20px;background:transparent;color:var(--err);font-family:\'DM Sans\',sans-serif;font-size:15px;font-weight:500;border:1.5px solid #f5a89e;border-radius:8px;cursor:pointer">Cancel / Not Attending</button>',
-      'Your spot will be released. You can rejoin into any open slot up until June 1st.'
+      'Your spot will be released. You can rejoin into any open spot up until June 1st.'
     );
   } else {
     html += btnWrap(
@@ -1331,7 +1331,7 @@ function rFound() {
       '<div style="font-size:13px;font-weight:600;color:var(--info)">&#128197; Scheduling request under review</div>' +
       '<div style="font-size:13px"><strong>Held spot:</strong> ' + esc(s.day) + (s.seg !== 'Single' ? ' ' + esc(s.seg) : '') + '</div>' +
       '<div style="font-size:13px"><strong>Requested segments:</strong> ' + schedSegs.map(function(s) { return esc(s); }).join(', ') + '</div>' +
-      '<div style="font-size:12px;color:var(--info);margin-top:2px">We\'ll update you as soon as possible. Your current spot is held in the meantime.</div>' +
+      '<div style="font-size:12px;color:var(--info);margin-top:2px">Your request is under review. Visit keylab.nyc/performance-parties for details.</div>' +
       '</div>';
   }
 
@@ -1394,7 +1394,7 @@ function rActions(s, isInactive) {
       '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
       phase === 'locked'
         ? 'Your spot will be released. The schedule is locked so rejoining is not guaranteed \u2014 contact us at info@keylab.nyc.'
-        : 'Your spot will be released immediately. You can rejoin into any open slot up until June 1st.'
+        : 'Your spot will be released immediately. You can rejoin into any open spot up until June 1st.'
     );
     html += '<button class="text-link" onclick="doStartMessage()">Send a message to Keylab &rarr;</button>';
     return html;
@@ -1413,7 +1413,7 @@ function rActions(s, isInactive) {
       '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
       phase === 'locked'
         ? 'Your spot will be released. The schedule is locked so rejoining is not guaranteed \u2014 contact us at info@keylab.nyc.'
-        : 'Your spot will be released immediately. You can rejoin into any open slot up until June 1st.'
+        : 'Your spot will be released immediately. You can rejoin into any open spot up until June 1st.'
     );
     return html;
   }
@@ -1462,7 +1462,7 @@ function rActions(s, isInactive) {
     var isInactivePre = isInactive;
     var schedReqDesc2 = isInactivePre
       ? 'Tell us your preferred days. We\'ll contact you with available options.'
-      : 'Tell us your preferred days. Your current spot stays held while we review.';
+      : 'Tell us your preferred days. Your request is under review. Visit keylab.nyc/performance-parties for details.';
     html += btnWrap(
       '<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>',
       schedReqDesc2
@@ -1470,7 +1470,7 @@ function rActions(s, isInactive) {
     if (!isInactive) {
       html += btnWrap(
         '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
-        'Your spot will be released immediately. You can rejoin into any open slot up until June 1st.'
+        'Your spot will be released immediately. You can rejoin into any open spot up until June 1st.'
       );
     }
 
@@ -1503,7 +1503,7 @@ function rActions(s, isInactive) {
     } else {
       html += btnWrap(
         '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
-        'Your spot will be released immediately. You can rejoin into any open slot using this tool.'
+        'Your spot will be released immediately. You can rejoin into any open spot using this tool.'
       );
     }
     html += '<button class="text-link" onclick="doStartMessage()">Send a message &rarr;</button>';
@@ -1525,7 +1525,7 @@ function rActions(s, isInactive) {
         } else if (slotData2 && slotData2.isFull) {
           html += '<div class="notice notice-warn" style="margin-bottom:12px"><span class="ni">&#9888;</span><span>' +
             'This segment is now full. ' +
-            '<button onclick="doRejoin()" style="background:none;border:none;color:var(--warn);font-family:\'DM Sans\',sans-serif;font-size:13px;font-weight:600;cursor:pointer;text-decoration:underline;padding:0">Choose another slot</button>. ' +
+            '<button onclick="doRejoin()" style="background:none;border:none;color:var(--warn);font-family:\'DM Sans\',sans-serif;font-size:13px;font-weight:600;cursor:pointer;text-decoration:underline;padding:0">Choose another spot</button>. ' +
             'The schedule locks June 1st.' +
             '</span></div>';
         }
@@ -1538,11 +1538,11 @@ function rActions(s, isInactive) {
     } else {
       html += btnWrap(
         '<button class="btn-primary" onclick="doStartSwap()">Reschedule &rarr;</button>',
-        'Move instantly to any available slot. Your current spot will be released.'
+        'Move instantly to any available spot. Your current spot will be released.'
       );
       html += btnWrap(
         '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
-        'Your spot will be released immediately. You can rejoin into any open slot before June 1st.'
+        'Your spot will be released immediately. You can rejoin into any open spot before June 1st.'
       );
     }
 
@@ -1671,7 +1671,7 @@ function doConfirmWithGuestNames() {
   api({action:"confirm", studentId:student.id, password:lookupPw, status:status, guests:count, guestNames:names, email:lookupEmail}, function(e, r) {
     if (e || !r || !r.ok) {
       if (r && r.slotFull) {
-        errMsg = "This segment just filled up. Please choose another slot below.";
+        errMsg = "This segment just filled up. Please choose another spot below.";
         api({action:"getSlots"}, function(e2, r2) {
           if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
           state = "rejoin-pick"; render();
@@ -1797,7 +1797,7 @@ function rCancel() {
   return '<div class="card">' +
     '<div class="card-title">Cancel participation</div>' +
     '<div class="notice notice-warn"><span class="ni">&#9888;</span><span>' +
-    'Your spot will be <strong>released immediately</strong> and may be taken by another family. If you want to rejoin, you can book into any available slot up until June 1st.' +
+    'Your spot will be <strong>released immediately</strong> and may be taken by another family. If you want to rejoin, you can book into any available spot up until June 1st.' +
     '</span></div>' +
     errFrag() +
     '<div class="field"><label>Reason for cancelling</label>' +
@@ -1836,7 +1836,7 @@ function rRejoinPick() {
   return '<div class="card">' +
     '<div class="card-title">Choose a slot to rejoin</div>' +
     '<p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.45">' +
-    'Select one available slot. You\'ll be confirmed immediately. The schedule locks June 1st.' +
+    'Select one available spot. You\'ll be confirmed immediately. The schedule locks June 1st.' +
     '</p>' +
     errFrag() +
     grid +
@@ -1859,7 +1859,7 @@ function doRejoinFromPick(toDay, toSeg) {
         api({action:"getSlots"}, function(e2, r2) {
           if (!e2 && r2 && r2.ok) { slots = r2.slots; }
           state = "rejoin-pick";
-          errMsg = "That slot just filled up. Please choose another.";
+          errMsg = "That spot just filled up. Please choose another.";
           render();
         });
       } else {
@@ -1897,7 +1897,7 @@ function rCancelConfirmed() {
       btnWrap('<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>', 'Tell us your preferred days. We\'ll contact you with available options.');
   } else if (canPickAny) {
     rejoinBlock =
-      '<div class="notice notice-info" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#128260;</span><span>You can rejoin into any available slot. The schedule locks June 1st.</span></div>' +
+      '<div class="notice notice-info" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#128260;</span><span>You can rejoin into any available spot. The schedule locks June 1st.</span></div>' +
       btnWrap('<button class="btn-secondary" onclick="doGoToRejoinPick()">Choose an available slot</button>', 'Pick any open slot during the week.');
   } else {
     // pre/priority, no orig tag or orig unavailable — offer scheduling request
@@ -1940,7 +1940,7 @@ function rPreferences() {
   var holdNotice = '';
   if (!isInactivePref) {
     holdNotice = '<div class="notice notice-info" style="margin-bottom:14px"><span class="ni">&#128274;</span><span>' +
-      '<strong>Your current spot is held</strong> while we review your request. We\'ll contact you to confirm as soon as possible.' +
+      '<strong>Your request is under review.</strong> Visit keylab.nyc/performance-parties for details.' +
       '</span></div>';
   }
 
@@ -1952,7 +1952,7 @@ function rPreferences() {
 
   return '<div class="card">' +
     '<div class="card-title">Request a reschedule</div>' +
-    '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Select one or more segments that can work for you. Add any scheduling preference info in the notes area before submitting \u2014 we\'ll do our best to place you in a preferred slot and will update you asap.</p>' +
+    '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Select one or more segments that can work for you. Add any scheduling preference info in the notes area before submitting \u2014 we\'ll do our best to place you in a preferred segment and will update you asap.</p>' +
     errFrag() +
     priorityNote +
     holdNotice +
@@ -1967,9 +1967,9 @@ function rPreferences() {
 // ── Screen: Pref sent ──────────────────────────────────────────
 function rPrefSent() {
   var phaseNote = phase === 'pre'
-    ? 'Your current spot is being held while we review requests. We\'ll be in touch before May 1st.'
+    ? 'Your request is under review. Visit keylab.nyc/performance-parties for details.'
     : phase === 'open'
-    ? 'Your current spot is being held while we review requests. The schedule locks June 1st.'
+    ? 'Your request is under review. Visit keylab.nyc/performance-parties for details.'
     : 'Your request has been received. We\'ll be in touch as soon as possible.';
   return '<div class="card">' +
     '<div class="confirm-icon">&#128197;</div>' +
@@ -2000,7 +2000,7 @@ function rSwap() {
       var isFull = slotInfo ? slotInfo.isFull : false;
       var openCount = slotInfo ? slotInfo.open : 0;
       var cls = 'slot-btn' + (isCur ? ' current' : '') + (isOrig ? ' is-orig' : '');
-      var availText = isCur ? 'Current slot' : (isFull ? 'Full' : openCount + ' spot' + (openCount === 1 ? '' : 's') + ' available');
+      var availText = isCur ? 'Current segment' : (isFull ? 'Full' : openCount + ' spot' + (openCount === 1 ? '' : 's') + ' available');
       var availCls = (isFull && !isCur) ? 'full' : 'open';
       grid += '<button class="' + cls + '" onclick="doSwap(\'' + day + '\',\'' + seg + '\')"' + ((isFull && !isCur) ? ' disabled' : '') + '>' +
         '<div class="slot-name">' + day + (seg === 'Single' ? '' : ' ' + seg) + '</div>' +
@@ -2129,7 +2129,7 @@ function renderInfo(ctx) {
       '<li><strong>June 1:</strong> Schedule locks \u2014 after this date, contact us at info@keylab.nyc to request changes</li>' +
       '<li><strong>June 15\u201319:</strong> Performance Party Week!</li>' +
       '</ul>' +
-      '<p style="margin-top:8px">Spots are first-come, first-served after May 1st. Once you give up your current slot it immediately becomes available to other families.</p>'
+      '<p style="margin-top:8px">Spots are first-come, first-served after May 1st. Once you give up your current spot it immediately becomes available to other families.</p>'
   });
 
   if (ctx === "found") {
@@ -2141,12 +2141,12 @@ function renderInfo(ctx) {
           ? '<ul>' +
             '<li>Spots are locked until May 1st, when the schedule opens for instant self-service rescheduling.</li>' +
             '<li>Before May 1st, submit a scheduling request using the button on your booking page. We\'ll do our best to accommodate you based on availability.</li>' +
-            '<li><strong>Your current spot is held</strong> while we review your request \u2014 you won\'t lose your place during the review period.</li>' +
+            '<li>Your request is under review. Visit keylab.nyc/performance-parties for details.</li>' +
             '<li>Families who request before April 27th receive priority placement.</li>' +
             '<li>From May 1st, you can reschedule instantly to any open spot during the week.</li>' +
             '</ul>'
           : '<ul>' +
-            '<li>From May 1st\u201331st, you can reschedule instantly to any open slot during the week using the button above.</li>' +
+            '<li>From May 1st\u201331st, you can reschedule instantly to any open spot during the week using the button above.</li>' +
             '</ul>') +
           '<ul>' +
           '<li>From June 1st, the schedule will be locked. Contact <a href="mailto:info@keylab.nyc">info@keylab.nyc</a> to request changes after that date.</li>' +
@@ -2161,7 +2161,7 @@ function renderInfo(ctx) {
         title: "&#8987;  Priority scheduling",
         body: '<p>We\'re currently reviewing all priority scheduling requests submitted before April 27th. The schedule will open for self-service rescheduling on <strong>May 1st</strong>.</p>' +
           '<p>If you submitted a preference request before April 27th, we\'ll do our best to accommodate you and will be in touch if we can make a change before May 1st.</p>' +
-          '<p>Starting May 1st, you can use this tool to reschedule yourself into any open slot. Spots are first-come, first-served.</p>'
+          '<p>Starting May 1st, you can use this tool to reschedule yourself into any open spot. Spots are first-come, first-served.</p>'
       });
     }
     if (phase === 'locked') {
