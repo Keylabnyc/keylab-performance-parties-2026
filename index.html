@@ -1262,11 +1262,18 @@ function rFound() {
   // Scheduling request callout
   var schedSegs = s.schedRequest || getLatestSchedRequest(s.notes);
   if (schedSegs && schedSegs.length) {
-    html += '<div class="notice notice-info" style="flex-direction:column;gap:6px">' +
-      '<div style="font-size:13px;font-weight:600;color:var(--info)">&#128197; Scheduling request under review</div>' +
-      '<div style="font-size:13px"><strong>Held spot:</strong> ' + esc(s.day) + (s.seg !== 'Single' ? ' ' + esc(s.seg) : '') + '</div>' +
-      '<div style="font-size:13px"><strong>Requested segments:</strong> ' + schedSegs.map(function(s) { return esc(s); }).join(', ') + '</div>' +
-      '<div style="font-size:12px;color:var(--info);margin-top:2px">Your request is under review. Visit keylab.nyc/performance-parties for details.</div>' +
+    html += '<div style="background:var(--green-lt);border:1px solid #bbf7d0;border-radius:10px;padding:16px;margin-bottom:4px">' +
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">' +
+      '<span style="font-size:18px">&#10003;</span>' +
+      '<div style="font-size:15px;font-weight:600;color:var(--green)">Your scheduling request is in.</div>' +
+      '</div>' +
+      '<div style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.5">' +
+      '<strong>Requested:</strong> ' + schedSegs.map(function(x) { return esc(x); }).join(', ') +
+      '</div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+      '<button onclick="doModifyRequest()" style="font-family:DM Sans,sans-serif;font-size:13px;font-weight:500;padding:8px 16px;background:var(--blue);color:#fff;border:none;border-radius:7px;cursor:pointer">Modify request</button>' +
+      '<button onclick="doCancelRequest()" style="font-family:DM Sans,sans-serif;font-size:13px;font-weight:500;padding:8px 16px;background:transparent;color:var(--err);border:1.5px solid #e5c5c2;border-radius:7px;cursor:pointer">Cancel request</button>' +
+      '</div>' +
       '</div>';
   }
 
@@ -1305,6 +1312,7 @@ function rFound() {
 // ── Unified action block ───────────────────────────────────────
 function rActions(s, isInactive) {
   var html = '';
+  var hasPendingRequest = !!(s.schedRequest && s.schedRequest.length) || !!(getLatestSchedRequest(s.notes));
 
   // ── Confirmed performer: dedicated "Make a Change" section ────
   if (!isInactive && s.status === 'confirmed') {
@@ -1317,10 +1325,12 @@ function rActions(s, isInactive) {
     } else if (phase === 'pre' || phase === 'priority') {
       // Fix 7: status-aware scheduling request copy
       var schedReqDesc = 'Self-service rescheduling opens May 1st, but you can also request to be placed into any segment during performance week. We\'ll put a hold on your current spot so you don\'t lose it, review your request, and contact you asap with an update.';
-      html += btnWrap(
-        '<button class="btn-secondary" onclick="doStartPreferences()">Request a reschedule</button>',
-        schedReqDesc
-      );
+      if (!hasPendingRequest) {
+        html += btnWrap(
+          '<button class="btn-secondary" onclick="doStartPreferences()">Request a reschedule</button>',
+          schedReqDesc
+        );
+      }
     }
     // Change to attending (not performing)
     if (phase !== 'locked') {
@@ -1402,10 +1412,12 @@ function rActions(s, isInactive) {
     var schedReqDesc2 = isInactivePre
       ? 'Tell us your preferred days. We\'ll contact you with available options.'
       : 'Tell us your preferred days. Your request is under review. Visit keylab.nyc/performance-parties for details.';
-    html += btnWrap(
-      '<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>',
-      schedReqDesc2
-    );
+    if (!hasPendingRequest) {
+      html += btnWrap(
+        '<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>',
+        schedReqDesc2
+      );
+    }
     if (!isInactive) {
       html += btnWrap(
         '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
@@ -1435,10 +1447,12 @@ function rActions(s, isInactive) {
             '</span></div>';
         }
       }
-      html += btnWrap(
-        '<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>',
-        'We\'ll do our best to find you an available spot. Self-service rescheduling opens May 1st — schedule locks June 1st.'
-      );
+      if (!hasPendingRequest) {
+        html += btnWrap(
+          '<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>',
+          'We\'ll do our best to find you an available spot. Self-service rescheduling opens May 1st — schedule locks June 1st.'
+        );
+      }
     } else {
       html += btnWrap(
         '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
@@ -1838,7 +1852,7 @@ function rCancelConfirmed() {
   } else if (origFull && !canPickAny) {
     rejoinBlock =
       '<div class="notice notice-warn" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#9888;</span><span>Your original segment is now full. Check back on May 1st when self-service scheduling opens, or submit a scheduling request and we\'ll be in touch with an update asap.</span></div>' +
-      btnWrap('<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>', 'Tell us your preferred days. We\'ll contact you with available options.');
+      (!hasPendingRequest ? btnWrap('<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>', 'Tell us your preferred days. We\'ll contact you with available options.') : '');
   } else if (canPickAny) {
     rejoinBlock =
       '<div class="notice notice-info" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#128260;</span><span>You can rejoin into any available spot. The schedule locks June 1st.</span></div>' +
@@ -1847,7 +1861,7 @@ function rCancelConfirmed() {
     // pre/priority, no orig tag or orig unavailable — offer scheduling request
     rejoinBlock =
       '<div class="notice notice-info" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#128197;</span><span>Self-service scheduling opens May 1st. Submit a scheduling request and we\'ll be in touch asap.</span></div>' +
-      btnWrap('<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>', 'Tell us your preferred days. We\'ll contact you with available options.');
+      (!hasPendingRequest ? btnWrap('<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>', 'Tell us your preferred days. We\'ll contact you with available options.') : '');
   }
 
   return '<div class="card">' +
@@ -2190,6 +2204,33 @@ function getLatestSchedRequest(notes) {
     }
   }
   return null;
+}
+
+function doModifyRequest() {
+  var schedSegs = student.schedRequest || getLatestSchedRequest(student.notes);
+  if (schedSegs && schedSegs.length) {
+    prefSelected = schedSegs.map(function(s) {
+      return s.trim().replace(/ /g, '_');
+    });
+  } else {
+    prefSelected = [];
+  }
+  state = "preferences"; errMsg = ''; render();
+}
+
+function doCancelRequest() {
+  if (!confirm("Cancel your scheduling request? You can submit a new one at any time.")) return;
+  api({action:"markRead", password:lookupPw, studentId:student.id, mark:"resolved"}, function(e, r) {
+    if (e || !r || !r.ok) { showErr("Could not cancel request. Please try again."); return; }
+    student.schedRequest = null;
+    if (student.notes) {
+      var now = new Date();
+      var pad = function(n) { return n < 10 ? '0'+n : String(n); };
+      var ts = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+      student.notes = student.notes + '\n\n[' + ts + '] RESOLVED \u2014 Scheduling request cancelled by family.';
+    }
+    errMsg = ''; render();
+  });
 }
 
 function doFpwEnter() {
