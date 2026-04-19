@@ -606,6 +606,7 @@ var prefSelected = [];
 var pendingGuestList = [];
 var pendingAuthIntent = null; // 'confirm-performer' | 'confirm-guest' | 'cancel' | null
 var emailSaveSuccess = false;
+var managingBooking = false; // toggled by "Manage my booking" button
 
 var TIMES = {
   Monday:    {Early:"Monday, June 15 \u2014 4:00 PM",  Late:"Monday, June 15 \u2014 5:00 PM"},
@@ -723,23 +724,9 @@ function doAuth() {
     api({action:"getSlots"}, function(e2, r2) {
       if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
       else { phase = phase || 'pre'; }
-      // Act on intent immediately
-      var intent = pendingAuthIntent;
       pendingAuthIntent = null;
-      if (intent === 'confirm-performer' || intent === 'confirm-guest') {
-        var confirmStatus = intent === 'confirm-performer' ? 'confirmed' : 'confirmed-guest';
-        pendingConfirmStatus = confirmStatus;
-        pendingGuestList = (student.guestNames && student.guestNames.length > 0) ? student.guestNames.slice() : [];
-        state = "guest-select"; errMsg = ''; render();
-      } else if (intent === 'update-guests') {
-        pendingConfirmStatus = student.status; // keep current status
-        pendingGuestList = (student.guestNames && student.guestNames.length > 0) ? student.guestNames.slice() : [];
-        state = "guest-select"; errMsg = ''; render();
-      } else if (intent === 'cancel') {
-        state = "cancel"; errMsg = ''; render();
-      } else {
-        state = "found"; render();
-      }
+      managingBooking = false;
+      state = "found"; errMsg = ''; render();
     });
   });
 }
@@ -1177,81 +1164,28 @@ function rAuth() {
       '</div>';
   }
 
-  // ── Zone 2: Action area (login required) ─────────────────────
+  // ── Zone 2: Password entry ────────────────────────────────────
   html += '<div class="action-divider"></div>';
 
-  // Prompt line
-  html += '<p style="font-size:14px;font-weight:500;color:var(--text2);margin-bottom:14px">' +
-    (isInactive ? 'Log in to manage your booking.' : 'Enter your password to continue.') +
-    '</p>';
-
-  // Password + email fields — dynamic based on whether email is on file
+  // Email on file message
   var emailBlock = m.hasEmail
-    ? '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 13px;margin-bottom:14px;font-size:13px;color:#166534">Your email <strong>' + esc(student && student.email ? student.email : lookupEmail) + '</strong> is on file! Enter your password to log in.</div>'
+    ? '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 13px;margin-bottom:14px;font-size:13px;color:#166534">Your email <strong>' + esc(m.email || lookupEmail) + '</strong> is on file!</div>'
     : '<div class="field"><label>Email address <span style="font-weight:400;color:var(--text3)">(optional)</span></label>' +
       '<input id="femail" type="email" placeholder="your@email.com" autocomplete="email" ' +
-      'onkeydown="if(event.key===&apos;Enter&apos;)doAuthWithIntent(null)">' +
+      'onkeydown="if(event.key===&apos;Enter&apos;)doAuth()">' +
       '<div class="hint">No email on file — add yours to receive confirmation emails.</div></div>';
 
+  html += emailBlock;
   html += '<div class="field"><label>Password</label>' +
     '<input id="fpw" type="password" placeholder="Your password" autocomplete="current-password" ' +
-    'onkeydown="if(event.key===&apos;Enter&apos;)doFpwEnter()">' +
-    '<div class="hint">Check the Performance Party email sent to you previously for your password.</div></div>' +
-    emailBlock;
+    'onkeydown="if(event.key===&apos;Enter&apos;)doAuth()">' +
+    '<div class="hint">Check the Performance Party email sent to you previously for your password.</div></div>';
 
   html += errFrag();
 
-  // Context-aware action buttons
-  html += '<div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">';
+  html += '<button class="btn-primary" onclick="doAuth()">Log in &rarr;</button>';
 
-  // Multi-slot reminder above buttons
-  if (lookupMatches.length > 1 && m.tags && m.tags.indexOf('multi-day') > -1) {
-    var otherMatch = lookupMatches.filter(function(x) { return x.id !== m.id; })[0];
-    var dateLabels2 = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
-    var otherSlotLabel = otherMatch ? (otherMatch.day + (otherMatch.seg !== 'Single' ? ' ' + otherMatch.seg : '') + ' \u2014 ' + (dateLabels2[otherMatch.day] || '')) : 'the other spot';
-    html += '<div class="notice notice-warn" style="margin-bottom:4px"><span class="ni">&#9888;</span><span>' +
-      'Confirming this segment will <strong>automatically release ' + otherSlotLabel + '</strong>. Only one performance per student.' +
-      '</span></div>';
-  }
-
-  if (!isInactive) {
-    if (!isConfirmed) {
-      // Primary CTA — green for unconfirmed, blue if already confirmed-guest switching
-      var confirmBtnStyle = st === 'unconfirmed'
-        ? 'display:block;width:100%;padding:13px 20px;background:var(--blue);color:#fff;font-family:\'DM Sans\',sans-serif;font-size:15px;font-weight:600;border:none;border-radius:8px;cursor:pointer'
-        : 'display:block;width:100%;padding:12px 20px;background:var(--blue);color:#fff;font-family:\'DM Sans\',sans-serif;font-size:15px;font-weight:500;border:none;border-radius:8px;cursor:pointer';
-      html += btnWrap(
-        '<button onclick="doAuthWithIntent(\'confirm-performer\')" style="' + confirmBtnStyle + '">Confirm as performer &rarr;</button>',
-        'Your child will perform. You\'ll select guest count and names on the next screen.'
-      );
-    }
-    if (!isGuest) {
-      var attendBtnStyle = st === 'unconfirmed'
-        ? 'display:block;width:100%;padding:13px 20px;background:var(--blue);color:#fff;font-family:\'DM Sans\',sans-serif;font-size:15px;font-weight:600;border:none;border-radius:8px;cursor:pointer'
-        : 'display:block;width:100%;padding:12px 20px;background:var(--blue);color:#fff;font-family:\'DM Sans\',sans-serif;font-size:15px;font-weight:500;border:none;border-radius:8px;cursor:pointer';
-      html += btnWrap(
-        '<button onclick="doAuthWithIntent(\'confirm-guest\')" style="' + attendBtnStyle + '">' + (isConfirmed ? 'Change to attending, not performing' : 'Attending, not performing') + '</button>',
-        'Your child will attend and cheer on the performers but will not perform.'
-      );
-    }
-    if (isConfirmed || isGuest) {
-      html += btnWrap(
-        '<button onclick="doAuthWithIntent(\'update-guests\')" style="display:block;width:100%;padding:12px 20px;background:transparent;color:var(--blue);font-family:\'DM Sans\',sans-serif;font-size:15px;font-weight:500;border:1.5px solid var(--blue);border-radius:8px;cursor:pointer">Update guest list</button>',
-        'Edit guest names or remove a seat.'
-      );
-    }
-    html += btnWrap(
-      '<button onclick="doAuthWithIntent(\'cancel\')" style="display:block;width:100%;padding:12px 20px;background:transparent;color:var(--err);font-family:\'DM Sans\',sans-serif;font-size:15px;font-weight:500;border:1.5px solid #f5a89e;border-radius:8px;cursor:pointer">Cancel / Not Attending</button>',
-      'Your spot will be released. You can rejoin into any open spot up until June 1st.'
-    );
-  } else {
-    html += btnWrap(
-      '<button onclick="doAuthWithIntent(null)" style="display:block;width:100%;padding:12px 20px;background:var(--blue);color:#fff;font-family:\'DM Sans\',sans-serif;font-size:15px;font-weight:500;border:none;border-radius:8px;cursor:pointer">Log in to manage booking &rarr;</button>',
-      'View rejoin options and submit scheduling requests.'
-    );
-  }
-
-  html += '</div></div>' +
+  html += '</div>' +
     '<div class="back-row"><button class="btn-ghost" onclick="state=\'' + (lookupMatches.length > 1 ? 'pick-student' : 'lookup') + '\';errMsg=\'\';render()">&#8592; Back</button></div>';
   return html;
 }
@@ -1359,8 +1293,17 @@ function rFound() {
   }
 
   html += '<div class="action-divider"></div>';
-  html += rActions(s, isInactive);
-  html += '<div class="back-row"><button class="btn-ghost" onclick="student=null;selectedMatch=null;lookupMatches=[];state=\'lookup\';errMsg=\'\';render()">&#8592; Back</button></div>';
+
+  var isConfirmedAny = s.status === 'confirmed' || s.status === 'confirmed-guest';
+  if (isConfirmedAny && !managingBooking) {
+    // Show single "Manage my booking" button — actions hidden until tapped
+    html += '<button class="btn-secondary" onclick="managingBooking=true;render()" ' +
+      'style="width:100%;text-align:center">Manage my booking</button>';
+  } else {
+    html += rActions(s, isInactive);
+  }
+
+  html += '<div class="back-row"><button class="btn-ghost" onclick="student=null;selectedMatch=null;lookupMatches=[];managingBooking=false;state=\'lookup\';errMsg=\'\';render()">&#8592; Back</button></div>';
   return html;
 }
 
@@ -2256,7 +2199,7 @@ function getLatestSchedRequest(notes) {
 
 function doFpwEnter() {
   var fe = document.getElementById('femail');
-  if (fe) fe.focus(); else doAuthWithIntent(null);
+  if (fe) fe.focus(); else doAuth();
 }
 
 // ── Boot ───────────────────────────────────────────────────────
