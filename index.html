@@ -25,11 +25,13 @@
     --blue-dk: #1d4ed8;
     --blue-lt: #eff6ff;
     --warn:    #92540a;
-    --warn-lt: #fff7ed;
+    --warn-lt: #fffbeb;
     --info:    #1d5fa8;
     --info-lt: #f0f7ff;
     --err:     #c0392b;
-    --err-lt:  #fff1f0;
+    --err-lt:  #fef2f2;
+    --green:   #16a34a;
+    --green-lt:#f0fdf4;
     --radius:  12px;
     --shadow:  0 1px 4px rgba(0,0,0,.06), 0 4px 20px rgba(0,0,0,.05);
   }
@@ -177,7 +179,7 @@
     font-family: 'DM Sans', sans-serif;
     font-size: 15px;
     font-weight: 500;
-    border: 1.5px solid #f5a89e;
+    border: 1.5px solid #e5c5c2;
     border-radius: 8px;
     cursor: pointer;
     text-align: center;
@@ -234,7 +236,7 @@
     align-items: flex-start;
   }
   .ni { flex-shrink: 0; margin-top: 1px; }
-  .notice-success { background: var(--acc-lt); color: var(--acc-dk); }
+  .notice-success { background: var(--green-lt); color: var(--green); }
   .notice-warn { background: var(--warn-lt); color: var(--warn); }
   .notice-info { background: var(--info-lt); color: var(--info); }
   .notice-err { background: var(--err-lt); color: var(--err); }
@@ -248,10 +250,10 @@
     font-weight: 600;
     letter-spacing: .01em;
   }
-  .pill-unconfirmed { background: #fff7ed; color: #92540a; }
-  .pill-confirmed { background: #fff0e8; color: #c04106; }
+  .pill-unconfirmed { background: #f8fafc; color: #64748b; }
+  .pill-confirmed { background: var(--green-lt); color: var(--green); }
   .pill-confirmed-guest { background: #eff6ff; color: #1d4ed8; }
-  .pill-cancelled { background: #fff1f0; color: #c0392b; }
+  .pill-cancelled { background: #fef2f2; color: #dc2626; }
   .pill-not-participating { background: #f4f2ef; color: #9a958e; }
 
   /* ── Status explanation line ── */
@@ -265,8 +267,8 @@
 
   /* ── Admin note callout ── */
   .admin-note-callout {
-    background: #fffbf5;
-    border: 1px solid #fde4c0;
+    background: var(--bg2);
+    border: 1px solid var(--border);
     border-radius: 8px;
     padding: 12px 14px;
     margin-top: 12px;
@@ -323,7 +325,6 @@
     padding: 7px 12px;
     border-radius: 7px;
     margin-bottom: 14px;
-    border: 1px solid #ffd4b8;
   }
   .assign-meta {
     border-top: 1px solid var(--border);
@@ -352,15 +353,15 @@
     font-size: 12px;
     font-weight: 600;
   }
-  .status-confirmed { background: #fff0e8; color: #c04106; }
+  .status-confirmed { background: var(--green-lt); color: var(--green); }
   .status-confirmed-guest { background: #eff6ff; color: #1d4ed8; }
-  .status-cancelled { background: #fff1f0; color: #c0392b; }
-  .status-unconfirmed { background: #fff7ed; color: #92540a; }
+  .status-cancelled { background: #fef2f2; color: #dc2626; }
+  .status-unconfirmed { background: #f8fafc; color: #64748b; }
 
   /* ── Cancelled notice ── */
   .cancelled-notice {
     background: var(--err-lt);
-    border: 1px solid #fdb8b0;
+    border: 1px solid #fecaca;
     border-radius: 8px;
     padding: 14px 16px;
     margin-bottom: 16px;
@@ -392,7 +393,7 @@
   .slot-name { font-size: 14px; font-weight: 600; color: var(--text); }
   .slot-time { font-size: 12px; color: var(--text3); margin-top: 2px; }
   .slot-avail { font-size: 11px; margin-top: 5px; }
-  .slot-avail.open { color: var(--acc); }
+  .slot-avail.open { color: var(--green); }
   .slot-avail.full { color: var(--err); }
 
   /* ── Pref grid ── */
@@ -1168,7 +1169,7 @@ function rAuth() {
 
   // Unconfirmed: prominent amber callout (updated copy — spots not "released", just unprotected)
   if (st === 'unconfirmed') {
-    html += '<div style="background:#fff7ed;border:2px solid #fb923c;border-radius:10px;padding:16px 16px 14px;margin-bottom:16px">' +
+    html += '<div style="background:#fffbeb;border:2px solid #d97706;border-radius:10px;padding:16px 16px 14px;margin-bottom:16px">' +
       '<div style="font-size:14px;font-weight:700;color:#92540a;margin-bottom:6px">&#9888;&#65039; Action required — your spot is not yet confirmed</div>' +
       '<p style="font-size:13px;color:#92540a;line-height:1.5;margin-bottom:0">' +
       'Please confirm your participation before May 1st. After May 1st, performance segments are open to all families on a first come first served basis with a maximum of 10 performers per segment.' +
