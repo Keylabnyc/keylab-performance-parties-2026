@@ -605,7 +605,9 @@ var selectedMatch = null; // {id, name, day, seg} chosen from picker
 var pendingConfirmStatus = "confirmed";
 var prefSelected = [];
 var pendingGuestList = [];
-var pendingAuthIntent = null; // 'confirm-performer' | 'confirm-guest' | 'cancel' | null
+var pendingAuthIntent = null;
+var pendingSwapDay = null;
+var pendingSwapSeg = null; // 'confirm-performer' | 'confirm-guest' | 'cancel' | null
 var emailSaveSuccess = false;
 var managingBooking = false; // toggled by "Manage my booking" button
 
@@ -972,6 +974,12 @@ function doStartSwap() {
   });
 }
 
+function doPickSwap(toDay, toSeg) {
+  pendingSwapDay = toDay;
+  pendingSwapSeg = toSeg;
+  errMsg = ''; state = "swap-confirm"; render();
+}
+
 function doSwap(toDay, toSeg) {
   errMsg = '';
   state = "swapping"; render();
@@ -1033,6 +1041,7 @@ function render() {
       root.innerHTML = rRejoinPick(); renderInfo("found");
     },
     "swap":             function() { root.innerHTML = rSwap();            renderInfo("found"); },
+    "swap-confirm":     function() { root.innerHTML = rSwapConfirm();    renderInfo("found"); },
     "swap-confirmed":   function() { root.innerHTML = rSwapConfirmed();   renderInfo("found"); },
     "confirm-sent":     function() { root.innerHTML = rConfirmSent();     renderInfo("found"); },
     "messaging":        function() { root.innerHTML = rMessaging();       renderInfo("found"); },
@@ -1977,7 +1986,7 @@ function rSwap() {
       var cls = 'slot-btn' + (isCur ? ' current' : '') + (isOrig ? ' is-orig' : '');
       var availText = isCur ? 'Current segment' : (isFull ? 'Full' : openCount + ' spot' + (openCount === 1 ? '' : 's') + ' available');
       var availCls = (isFull && !isCur) ? 'full' : 'open';
-      grid += '<button class="' + cls + '" onclick="doSwap(\'' + day + '\',\'' + seg + '\')"' + ((isFull && !isCur) ? ' disabled' : '') + '>' +
+      grid += '<button class="' + cls + '" onclick="doPickSwap(\'' + day + '\',\'' + seg + '\')"' + ((isFull && !isCur) ? ' disabled' : '') + '>' +
         '<div class="slot-name">' + day + (seg === 'Single' ? '' : ' ' + seg) + '</div>' +
         '<div class="slot-time">' + STIMES[day][seg] + '</div>' +
         '<div class="slot-avail ' + availCls + '">' + availText + '</div>' +
@@ -1996,6 +2005,39 @@ function rSwap() {
     '<p style="font-size:12px;color:var(--text3);margin-top:4px;line-height:1.4">Spots are first come, first served.</p>' +
     '</div>' +
     '<div class="back-row"><button class="btn-ghost" onclick="goBack()">&#8592; Cancel</button></div>';
+}
+
+// ── Screen: Swap confirm (pre-commit confirmation) ────────────
+function rSwapConfirm() {
+  var DATES = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
+  var STIMES = {Monday:{Early:'4:00 PM',Late:'5:00 PM'},Tuesday:{Early:'4:00 PM',Late:'5:00 PM'},
+                Wednesday:{Early:'4:00 PM',Late:'5:00 PM'},Thursday:{Early:'4:00 PM',Late:'5:00 PM'},
+                Friday:{Single:'4:00 PM'}};
+  var SEGLBL = {Early:'Early session',Late:'Late session',Single:'Single session'};
+  var ARRIVE = {Early:'Arrive 3:30–3:50 PM',Late:'Arrive 4:45–5:00 PM',Single:'Arrive 3:30–3:50 PM'};
+  var day = pendingSwapDay;
+  var seg = pendingSwapSeg;
+  var curLabel = esc(student.day) + (student.seg !== 'Single' ? ' ' + esc(student.seg) : '');
+  var newDate = DATES[day] || '';
+  var newTime = (STIMES[day] && STIMES[day][seg]) || '';
+  var newSeg = SEGLBL[seg] || seg;
+  var newArrive = ARRIVE[seg] || '';
+  var h = '<div class="card">';
+  h += '<div class="card-title">Confirm your move</div>';
+  h += '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5">Your current spot (' + curLabel + ') will be <strong>released immediately</strong>. This cannot be undone.</p>';
+  h += '<div class="assign-card" style="margin-bottom:20px">';
+  h += '<div class="assign-top"><div>';
+  h += '<div class="assign-label">New segment</div>';
+  h += '<div class="assign-day">' + esc(day) + ', ' + newDate + '</div>';
+  h += '<div class="assign-seg">' + newSeg + ' &mdash; ' + newTime + '</div>';
+  h += '</div></div>';
+  h += '<div class="arrive-badge">&#128336; ' + newArrive + '</div>';
+  h += '</div>';
+  h += errFrag();
+  h += '<button class="btn-primary" onclick="doSwap(pendingSwapDay,pendingSwapSeg)">Confirm move &rarr;</button>';
+  h += '</div>';
+  h += '<div class="back-row"><button class="btn-ghost" onclick="state=\'swap\';errMsg=\'\';render()">&#8592; Choose a different segment</button></div>';
+  return h;
 }
 
 // ── Screen: Swap confirmed ─────────────────────────────────────
