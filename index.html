@@ -618,18 +618,11 @@ var TIMES = {
 };
 var ARRIVE = {Early:"Arrive 3:30\u20133:50 PM", Late:"Arrive 4:45\u20135:00 PM", Single:"Arrive 3:30\u20133:50 PM"};
 
-// ── GITHUB VERSION: calls GAS backend via fetch() instead of google.script.run ──
-var GAS_URL = 'https://script.google.com/a/macros/keylab.nyc/s/AKfycbzenlfK9eu0G17af-fdjrkiRT-qZLcsLByN-QGb_SCIpmev_xoI3PkY6OW92nuiz4L45g/exec';
-
 function api(p, cb) {
-  fetch(GAS_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify(p)
-  })
-  .then(function(res) { return res.json(); })
-  .then(function(data) { cb(null, data); })
-  .catch(function(e) { cb(e); });
+  google.script.run
+    .withSuccessHandler(function(r) { try { cb(null, JSON.parse(r)); } catch(e) { cb(e); } })
+    .withFailureHandler(function(e) { cb(e); })
+    .callApi(JSON.stringify(p));
 }
 
 // Safety guard: ensure esc is always available before any callback fires
@@ -1262,6 +1255,7 @@ function rFound() {
 
   // Scheduling request callout
   var schedSegs = s.schedRequest || getLatestSchedRequest(s.notes);
+
   if (schedSegs && schedSegs.length) {
     html += '<div style="background:var(--green-lt);border:1px solid #bbf7d0;border-radius:10px;padding:16px;margin-bottom:4px">' +
       '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">' +
@@ -1543,6 +1537,7 @@ function rGuestSelect() {
   var isPerformer = pendingConfirmStatus === 'confirmed';
   var heading = isPerformer ? 'Confirm as performer' : 'Confirm as attending non-performer';
 
+  var firstName = esc((student && student.name || '').trim().split(/\s+/)[0]);
   var descLine = isPerformer
     ? firstName + ' will have a confirmed spot as a performer.'
     : firstName + ' will attend and cheer on the performers but will not perform. You can still bring up to 3 guests, 4 people total.';
@@ -2223,9 +2218,11 @@ function getLatestSchedRequest(notes) {
 }
 
 function doModifyRequest() {
+  // Pre-populate prefSelected with currently requested segments
   var schedSegs = student.schedRequest || getLatestSchedRequest(student.notes);
   if (schedSegs && schedSegs.length) {
     prefSelected = schedSegs.map(function(s) {
+      // Convert "Monday Early" to "Monday_Early"
       return s.trim().replace(/ /g, '_');
     });
   } else {
@@ -2238,8 +2235,10 @@ function doCancelRequest() {
   if (!confirm("Cancel your scheduling request? You can submit a new one at any time.")) return;
   api({action:"markRead", password:lookupPw, studentId:student.id, mark:"resolved"}, function(e, r) {
     if (e || !r || !r.ok) { showErr("Could not cancel request. Please try again."); return; }
+    // Clear schedRequest from student object so callout disappears
     student.schedRequest = null;
     if (student.notes) {
+      // Append RESOLVED note to notes so getLatestSchedRequest returns null
       var now = new Date();
       var pad = function(n) { return n < 10 ? '0'+n : String(n); };
       var ts = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
