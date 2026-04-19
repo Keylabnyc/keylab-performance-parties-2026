@@ -1575,8 +1575,13 @@ function rGuestSelect() {
   var isPerformer = pendingConfirmStatus === 'confirmed';
   var heading = isPerformer ? 'Confirm as performer' : 'Confirm as attending non-performer';
 
+  var descLine = isPerformer
+    ? firstName + ' will have a confirmed spot as a performer.'
+    : firstName + ' will attend and cheer on the performers but will not perform. You can still bring up to 3 guests, 4 people total.';
+
   var html = '<div class="card">' +
     '<div class="card-title">' + heading + '</div>' +
+    '<p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.5">' + descLine + '</p>' +
     '<div class="guest-summary">' +
     '<strong>' + esc(s.name) + '</strong><br>' +
     slotDisplay +
@@ -1596,7 +1601,7 @@ function rGuestSelect() {
       html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">' +
         '<input type="text" id="gname-' + gi + '" value="' + esc(pendingGuestList[gi]) + '" ' +
         'style="flex:1;font-family:\'DM Sans\',sans-serif;font-size:14px;padding:8px 11px;border:1px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text)">' +
-        '<button onclick="removeGuestSlot(' + gi + ')" style="flex-shrink:0;background:none;border:1.5px solid #f5a89e;border-radius:7px;color:var(--err);font-size:12px;padding:6px 10px;cursor:pointer;font-family:\'DM Sans\',sans-serif">Remove</button>' +
+        '<button onclick="removeGuestSlot(' + gi + ')" style="flex-shrink:0;background:none;border:1.5px solid #e5c5c2;border-radius:7px;color:var(--err);font-size:12px;padding:6px 10px;cursor:pointer;font-family:\'DM Sans\',sans-serif">Remove</button>' +
         '</div>';
     }
 
