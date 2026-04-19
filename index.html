@@ -1492,11 +1492,11 @@ function rActions(s, isInactive) {
     } else if (s.status === 'unconfirmed') {
       // Unconfirmed in open phase — show confirm options first
       html += btnWrap(
-        '<button class="btn-primary" onclick="doStartConfirm(&apos;confirmed&apos;)">Confirm as performer &rarr;</button>',
+        '<button class="btn-primary" onclick="doStartConfirm(\'confirmed\')">Confirm as performer &rarr;</button>',
         'Your child will perform. You\'ll select guest count and names on the next screen.'
       );
       html += btnWrap(
-        '<button class="btn-primary" onclick="doStartConfirm(&apos;confirmed-guest&apos;)">Attending, not performing</button>',
+        '<button class="btn-primary" onclick="doStartConfirm(\'confirmed-guest\')">Attending, not performing</button>',
         'Your child will attend and cheer on the performers but will not perform.'
       );
       html += btnWrap(
