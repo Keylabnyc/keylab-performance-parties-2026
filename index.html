@@ -1062,7 +1062,7 @@ function rLookup() {
   return '<div class="card">' +
     '<div class="card-title">Find your booking</div>' +
     '<div class="notice notice-info" style="margin-bottom:16px"><span class="ni">&#128197;</span>' +
-    '<span>Your child has a reserved spot on their regular lesson day. If this doesn\'t work for you, you can self-service reschedule online here into any open spot from May 4th.</span></div>' +
+    '<span>Hi Keylab Parents! Your child has a reserved performance spot on their regular lesson day. If their currently assigned spot doesn\'t work for you, you can self-service reschedule online here into any open spot from May 4th until June 1st.</span></div>' +
     errFrag() +
     '<div class="field"><label>Student\'s first name</label>' +
     '<input id="fn" type="text" placeholder="e.g. Emma" autocomplete="off" ' +
@@ -2126,6 +2126,17 @@ function renderInfo(ctx) {
   });
 
   panels.push({
+    id: "info-multiple",
+    title: "&#128106;  Families with enrolled siblings or a child with more than one enrollment",
+    body: '<h4>Siblings on different lesson days</h4>' +
+      '<p>If you have siblings enrolled on different days, each child has a reserved spot on their regular lesson day. Most families prefer to come on the same day, but this is not required.</p>' +
+      '<p>If you want to keep the current assignments, just confirm here. If you want to schedule them into the same performance segment, you will need to contact us before May 4th for guaranteed placement into either of their currently scheduled spots. Once scheduled, the other spot will be released.</p>' +
+      '<h4>Students with multiple enrollments</h4>' +
+      '<p>If your child takes more than one lesson per week on different days, they have a reserved spot on each day, but will only be performing in one spot.</p>' +
+      '<p>Simply confirm the spot that works best for you and the other will be released automatically.</p>'
+  });
+
+  panels.push({
     id: "info-guests",
     title: "&#128101;  Guests & arrival",
     body: '<h4>Guest Limit</h4>' +
@@ -2141,8 +2152,8 @@ function renderInfo(ctx) {
     id: "info-dates",
     title: "&#128467;  Key dates",
     body: '<ul>' +
-      '<li><strong>April 30:</strong> Priority deadline for responses and guaranteed guest allowance</li>' +
-      '<li><strong>May 1:</strong> Schedule opens for self-service rescheduling</li>' +
+      '<li><strong>April 30:</strong> Priority deadline</li>' +
+      '<li><strong>May 4:</strong> Schedule opens for self-service rescheduling</li>' +
       '<li><strong>June 1:</strong> Schedule locks \u2014 after this date, contact us at info@keylab.nyc to request changes</li>' +
       '<li><strong>June 15\u201319:</strong> Performance Party Week!</li>' +
       '</ul>' +
@@ -2158,7 +2169,6 @@ function renderInfo(ctx) {
           ? '<ul>' +
             '<li>Spots are locked until May 4th, when the schedule opens for instant self-service rescheduling.</li>' +
             '<li>Before May 4th, submit a scheduling request using the button on your booking page. We\'ll do our best to accommodate you based on availability.</li>' +
-            '<li>Your request is under review. Visit keylab.nyc/performance-parties for details.</li>' +
             '<li>Families who request before April 30th receive priority placement.</li>' +
             '<li>From May 4th, you can reschedule instantly to any open spot during the week.</li>' +
             '</ul>'
