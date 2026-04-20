@@ -1983,8 +1983,9 @@ function rPreferences() {
   grid += '</div>';
 
   var isInactivePref = student && (student.status === 'cancelled' || student.status === 'not-participating');
+  var hasPendingPref = !!(student && (student.schedRequest && student.schedRequest.length) || getLatestSchedRequest(student && student.notes));
   var holdNotice = '';
-  if (!isInactivePref) {
+  if (!isInactivePref && hasPendingPref) {
     holdNotice = '<div class="notice notice-info" style="margin-bottom:14px"><span class="ni">&#128274;</span><span>' +
       '<strong>Your request is under review.</strong> Visit keylab.nyc/performance-parties for details.' +
       '</span></div>';
