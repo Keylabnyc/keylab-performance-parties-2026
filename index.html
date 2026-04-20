@@ -887,7 +887,7 @@ function doRejoinWithFreshSlots() {
           if (e || !r || !r.ok) {
             // Slot raced to full between check and write — show dead-end
             state = "found";
-            showErr("Your original segment just filled up. Check back on May 1st when self-service scheduling opens, or submit a scheduling request and we\u2019ll be in touch asap.");
+            showErr("Your original segment just filled up. Check back on May 4th when self-service scheduling opens, or submit a scheduling request and we\u2019ll be in touch asap.");
             render(); return;
           }
           student.day = origDay; student.seg = origSeg; student.status = 'confirmed';
@@ -901,7 +901,7 @@ function doRejoinWithFreshSlots() {
       } else {
         // Orig slot full or unknown — dead-end, no grid
         state = "found";
-        errMsg = "Your original segment is now full. Check back on May 1st when self-service scheduling opens, or submit a scheduling request and we\u2019ll be in touch with an update asap.";
+        errMsg = "Your original segment is now full. Check back on May 4th when self-service scheduling opens, or submit a scheduling request and we\u2019ll be in touch with an update asap.";
         render();
         return;
       }
@@ -1062,7 +1062,7 @@ function rLookup() {
   return '<div class="card">' +
     '<div class="card-title">Find your booking</div>' +
     '<div class="notice notice-info" style="margin-bottom:16px"><span class="ni">&#128197;</span>' +
-    '<span><strong>Priority deadline:</strong> Responses received by Monday, April 27th will receive scheduling priority and a guaranteed guest allowance of up to 3 guests.</span></div>' +
+    '<span><strong>Priority deadline:</strong> Responses received by Thursday, April 30th will receive scheduling priority and a guaranteed guest allowance of up to 3 guests.</span></div>' +
     errFrag() +
     '<div class="field"><label>Student\'s first name</label>' +
     '<input id="fn" type="text" placeholder="e.g. Emma" autocomplete="off" ' +
@@ -1169,7 +1169,7 @@ function rAuth() {
     html += '<div style="background:#fffbeb;border:2px solid #d97706;border-radius:10px;padding:16px 16px 14px;margin-bottom:16px">' +
       '<div style="font-size:14px;font-weight:700;color:#92540a;margin-bottom:6px">&#9888;&#65039; Action required — your spot is not yet confirmed</div>' +
       '<p style="font-size:13px;color:#92540a;line-height:1.5;margin-bottom:0">' +
-      'Please confirm your participation before May 1st. After May 1st, performance segments are open to all families on a first come first served basis with a maximum of 10 performers per segment.' +
+      'Please confirm your participation before May 4th. After May 4th, performance segments are open to all families on a first come first served basis with a maximum of 10 performers per segment.' +
       '</p>' +
       '</div>';
   }
@@ -1334,7 +1334,7 @@ function rActions(s, isInactive) {
       );
     } else if (phase === 'pre' || phase === 'priority') {
       // Fix 7: status-aware scheduling request copy
-      var schedReqDesc = 'Self-service rescheduling opens May 1st, but you can also request to be placed into any segment during performance week. We\'ll put a hold on your current spot so you don\'t lose it, review your request, and contact you asap with an update.';
+      var schedReqDesc = 'Self-service rescheduling opens May 4th, but you can also request to be placed into any segment during performance week. We\'ll put a hold on your current spot so you don\'t lose it, review your request, and contact you asap with an update.';
       if (!hasPendingRequest) {
         html += btnWrap(
           '<button class="btn-secondary" onclick="doStartPreferences()">Request a reschedule</button>',
@@ -1383,7 +1383,7 @@ function rActions(s, isInactive) {
       // Only show priority deadline banner if not yet confirmed
       if (s.status !== 'confirmed' && s.status !== 'confirmed-guest') {
         html += '<div class="notice notice-info"><span class="ni">&#128197;</span><span>' +
-          '<strong>Priority deadline April 27th:</strong> Confirm by April 27th for scheduling priority and a guaranteed guest allowance of up to 3 guests.' +
+          '<strong>Priority deadline April 30th:</strong> Confirm by April 30th for scheduling priority and a guaranteed guest allowance of up to 3 guests.' +
           '</span></div>';
       }
       if (s.status !== 'confirmed') {
@@ -1399,7 +1399,7 @@ function rActions(s, isInactive) {
         );
       }
     } else {
-      // Inactive — offer original slot restore only (no grid picker until May 1st)
+      // Inactive — offer original slot restore only (no grid picker until May 4th)
       var tags = s.tags || '';
       var origMatch = tags.match(/orig:([A-Za-z]+)_([A-Za-z]+)/);
       if (origMatch) {
@@ -1412,7 +1412,7 @@ function rActions(s, isInactive) {
           );
         } else {
           html += '<div class="notice notice-warn" style="margin-bottom:12px"><span class="ni">&#9888;</span><span>' +
-            'Your original segment is now full. Check back on May 1st when self-service scheduling opens, or submit a scheduling request and we\'ll be in touch with an update asap.' +
+            'Your original segment is now full. Check back on May 4th when self-service scheduling opens, or submit a scheduling request and we\'ll be in touch with an update asap.' +
             '</span></div>';
         }
       }
@@ -1437,7 +1437,7 @@ function rActions(s, isInactive) {
 
   } else if (phase === 'priority') {
     html += '<div class="notice notice-info"><span class="ni">&#8987;</span><span>' +
-      'We\'re finalizing priority scheduling requests. Self-service rescheduling opens <strong>May 1st</strong>.' +
+      'We\'re finalizing priority scheduling requests. Self-service rescheduling opens <strong>May 4th</strong>.' +
       '</span></div>';
     if (isInactive) {
       // Inactive students can still rejoin original slot during priority phase
@@ -1453,14 +1453,14 @@ function rActions(s, isInactive) {
           );
         } else {
           html += '<div class="notice notice-warn" style="margin-bottom:12px"><span class="ni">&#9888;</span><span>' +
-            'Your original segment is now full. Check back on May 1st when self-service scheduling opens, or submit a scheduling request and we\'ll be in touch with an update asap.' +
+            'Your original segment is now full. Check back on May 4th when self-service scheduling opens, or submit a scheduling request and we\'ll be in touch with an update asap.' +
             '</span></div>';
         }
       }
       if (!hasPendingRequest) {
         html += btnWrap(
           '<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>',
-          'We\'ll do our best to find you an available spot. Self-service rescheduling opens May 1st — schedule locks June 1st.'
+          'We\'ll do our best to find you an available spot. Self-service rescheduling opens May 4th — schedule locks June 1st.'
         );
       }
     } else {
@@ -1877,7 +1877,7 @@ function rCancelConfirmed() {
       btnWrap('<button class="btn-primary" onclick="doRejoin()">Return to ' + origDay + ' ' + origSeg + ' \u2192</button>', 'Restores your original spot instantly.');
   } else if (origFull && !canPickAny) {
     rejoinBlock =
-      '<div class="notice notice-warn" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#9888;</span><span>Your original segment is now full. Check back on May 1st when self-service scheduling opens, or submit a scheduling request and we\'ll be in touch with an update asap.</span></div>' +
+      '<div class="notice notice-warn" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#9888;</span><span>Your original segment is now full. Check back on May 4th when self-service scheduling opens, or submit a scheduling request and we\'ll be in touch with an update asap.</span></div>' +
       (!hasPendingRequest ? btnWrap('<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>', 'Tell us your preferred days. We\'ll contact you with available options.') : '');
   } else if (canPickAny) {
     rejoinBlock =
@@ -1886,7 +1886,7 @@ function rCancelConfirmed() {
   } else {
     // pre/priority, no orig tag or orig unavailable — offer scheduling request
     rejoinBlock =
-      '<div class="notice notice-info" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#128197;</span><span>Self-service scheduling opens May 1st. Submit a scheduling request and we\'ll be in touch asap.</span></div>' +
+      '<div class="notice notice-info" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#128197;</span><span>Self-service scheduling opens May 4th. Submit a scheduling request and we\'ll be in touch asap.</span></div>' +
       (!hasPendingRequest ? btnWrap('<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>', 'Tell us your preferred days. We\'ll contact you with available options.') : '');
   }
 
@@ -1930,7 +1930,7 @@ function rPreferences() {
 
   var priorityNote = (phase === 'pre')
     ? '<div class="notice notice-warn" style="margin-bottom:14px"><span class="ni">&#128197;</span><span>' +
-      '<strong>Priority deadline April 27th:</strong> Families who request by April 27th receive priority placement into available spots. Rescheduling is not guaranteed and based on availability.' +
+      '<strong>Priority deadline April 30th:</strong> Families who request by April 30th receive priority placement into available spots. Rescheduling is not guaranteed and based on availability.' +
       '</span></div>'
     : '';
 
@@ -2075,9 +2075,9 @@ function rMessaging() {
   if (phase === 'locked') {
     phaseNote = '<div class="notice notice-warn" style="margin-bottom:14px"><span class="ni">&#128274;</span><span>The schedule is locked. We\'ll review your request and respond as soon as possible. Changes are not guaranteed.</span></div>';
   } else if (phase === 'priority') {
-    phaseNote = '<div class="notice notice-info" style="margin-bottom:14px"><span class="ni">&#8505;</span><span>We\'re processing priority requests. The schedule opens for self-service rescheduling May 1st.</span></div>';
+    phaseNote = '<div class="notice notice-info" style="margin-bottom:14px"><span class="ni">&#8505;</span><span>We\'re processing priority requests. The schedule opens for self-service rescheduling May 4th.</span></div>';
   } else if (phase === 'pre') {
-    phaseNote = '<div class="notice notice-info" style="margin-bottom:14px"><span class="ni">&#8505;</span><span>Rescheduling opens May 1st. Send us a message if you have an urgent conflict.</span></div>';
+    phaseNote = '<div class="notice notice-info" style="margin-bottom:14px"><span class="ni">&#8505;</span><span>Rescheduling opens May 4th. Send us a message if you have an urgent conflict.</span></div>';
   }
   return '<div class="card">' +
     '<div class="card-title">Send a message to Keylab</div>' +
@@ -2141,12 +2141,12 @@ function renderInfo(ctx) {
     id: "info-dates",
     title: "&#128467;  Key dates",
     body: '<ul>' +
-      '<li><strong>April 27:</strong> Priority deadline for responses and guaranteed guest allowance</li>' +
+      '<li><strong>April 30:</strong> Priority deadline for responses and guaranteed guest allowance</li>' +
       '<li><strong>May 1:</strong> Schedule opens for self-service rescheduling</li>' +
       '<li><strong>June 1:</strong> Schedule locks \u2014 after this date, contact us at info@keylab.nyc to request changes</li>' +
       '<li><strong>June 15\u201319:</strong> Performance Party Week!</li>' +
       '</ul>' +
-      '<p style="margin-top:8px">Spots are first-come, first-served after May 1st. Once you give up your current spot it immediately becomes available to other families.</p>'
+      '<p style="margin-top:8px">Spots are first-come, first-served after May 4th. Once you give up your current spot it immediately becomes available to other families.</p>'
   });
 
   if (ctx === "found") {
@@ -2156,14 +2156,14 @@ function renderInfo(ctx) {
         title: "&#128260;  Rescheduling",
         body: (phase === 'pre'
           ? '<ul>' +
-            '<li>Spots are locked until May 1st, when the schedule opens for instant self-service rescheduling.</li>' +
-            '<li>Before May 1st, submit a scheduling request using the button on your booking page. We\'ll do our best to accommodate you based on availability.</li>' +
+            '<li>Spots are locked until May 4th, when the schedule opens for instant self-service rescheduling.</li>' +
+            '<li>Before May 4th, submit a scheduling request using the button on your booking page. We\'ll do our best to accommodate you based on availability.</li>' +
             '<li>Your request is under review. Visit keylab.nyc/performance-parties for details.</li>' +
-            '<li>Families who request before April 27th receive priority placement.</li>' +
-            '<li>From May 1st, you can reschedule instantly to any open spot during the week.</li>' +
+            '<li>Families who request before April 30th receive priority placement.</li>' +
+            '<li>From May 4th, you can reschedule instantly to any open spot during the week.</li>' +
             '</ul>'
           : '<ul>' +
-            '<li>From May 1st\u201331st, you can reschedule instantly to any open spot during the week using the button above.</li>' +
+            '<li>From May 4th\u201331st, you can reschedule instantly to any open spot during the week using the button above.</li>' +
             '</ul>') +
           '<ul>' +
           '<li>From June 1st, the schedule will be locked. Contact <a href="mailto:info@keylab.nyc">info@keylab.nyc</a> to request changes after that date.</li>' +
@@ -2176,9 +2176,9 @@ function renderInfo(ctx) {
       panels.push({
         id: "info-priority",
         title: "&#8987;  Priority scheduling",
-        body: '<p>We\'re currently reviewing all priority scheduling requests submitted before April 27th. The schedule will open for self-service rescheduling on <strong>May 1st</strong>.</p>' +
-          '<p>If you submitted a preference request before April 27th, we\'ll do our best to accommodate you and will be in touch if we can make a change before May 1st.</p>' +
-          '<p>Starting May 1st, you can use this tool to reschedule yourself into any open spot. Spots are first-come, first-served.</p>'
+        body: '<p>We\'re currently reviewing all priority scheduling requests submitted before April 30th. The schedule will open for self-service rescheduling on <strong>May 4th</strong>.</p>' +
+          '<p>If you submitted a preference request before April 30th, we\'ll do our best to accommodate you and will be in touch if we can make a change before May 4th.</p>' +
+          '<p>Starting May 4th, you can use this tool to reschedule yourself into any open spot. Spots are first-come, first-served.</p>'
       });
     }
     if (phase === 'locked') {
@@ -2219,7 +2219,7 @@ function renderInfo(ctx) {
       '<h4>Will there be food?</h4>' +
       '<p>Yes! Pizza, snacks and beverages will be provided after each performance.</p>' +
       '<h4>What if my child can\'t attend their scheduled day?</h4>' +
-      '<p>You can self-service reschedule starting May 1st. While we can\'t guarantee availability, we\'ll do our best to help. Email <a href="mailto:info@keylab.nyc">info@keylab.nyc</a> for assistance.</p>' +
+      '<p>You can self-service reschedule starting May 4th. While we can\'t guarantee availability, we\'ll do our best to help. Email <a href="mailto:info@keylab.nyc">info@keylab.nyc</a> for assistance.</p>' +
       '<h4>Can I request a specific spot in the order?</h4>' +
       '<p>We\'re unable to guarantee specific spots on the performance roster, but we\'ll do our best to honor requests if we can.</p>' +
       '<h4>Can I share my login link with family members or friends?</h4>' +
