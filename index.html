@@ -1398,6 +1398,44 @@ function rActions(s, isInactive) {
     return html;
   }
 
+  // ── Saturday/unassigned families: no segment, skip confirm buttons ──
+  var isSaturday = (s.tags || '').indexOf('saturday') > -1 || (!s.day && !s.seg);
+  if (isSaturday) {
+    if (phase === 'pre' || phase === 'priority') {
+      html += '<div class="notice notice-info"><span class="ni">&#127926;</span><span>' +
+        'Submit a scheduling request and we\'ll do our best to place your child before May 4th. From May 4th you can self-service reschedule into any open spot.' +
+        '</span></div>';
+      if (!hasPendingRequest) {
+        html += btnWrap(
+          '<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>',
+          'Tell us your preferred days and we\'ll be in touch with available options.'
+        );
+      }
+      html += btnWrap(
+        '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
+        'Let us know if your child won\'t be joining us this year.'
+      );
+    } else if (phase === 'open') {
+      html += '<div class="notice notice-info"><span class="ni">&#127926;</span><span>' +
+        'The schedule is now open! Pick any available spot below. Spots are first come, first served. The schedule locks June 1st.' +
+        '</span></div>';
+      html += btnWrap(
+        '<button class="btn-primary" onclick="doRejoin()">Choose a performance spot &rarr;</button>',
+        'Pick any available spot during performance week.'
+      );
+      html += btnWrap(
+        '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
+        'Let us know if your child won\'t be joining us this year.'
+      );
+    } else {
+      // Locked
+      html += '<div class="notice notice-warn"><span class="ni">&#128274;</span><span>' +
+        'The schedule is now locked. To request a spot, email <a href="mailto:info@keylab.nyc">info@keylab.nyc</a>. Changes are not guaranteed.' +
+        '</span></div>';
+    }
+    return html;
+  }
+
   // ── Standard phase logic (unconfirmed + inactive) ─────────────
   if (phase === 'pre') {
     if (!isInactive) {
