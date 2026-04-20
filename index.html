@@ -1125,7 +1125,9 @@ function rAuth() {
       '<div class="assign-day">' + esc(m.name || '') + '</div></div>' +
       '<span class="status-pill ' + statusPillClass(st) + '">' + statusLabel(st) + '</span>' +
       '</div>' +
-      '<p style="font-size:13px;color:var(--err);margin-top:8px;line-height:1.4">Your child is not currently scheduled. Log in to rejoin or submit a scheduling request.</p>';
+      (m.tags && m.tags.indexOf('saturday') > -1
+        ? '<div class="notice notice-info" style="margin-top:8px"><span class="ni">&#127926;</span><span>Performance Party Week runs Monday\u2013Friday, June 15\u201319. Since your child\u2019s regular lesson day is Saturday, they don\u2019t have a pre-assigned spot \u2014 but we\u2019d love to have them perform! Log in to request a preferred day before May 4th, or self-service reschedule into any open spot from May 4th.</span></div>'
+        : '<p style="font-size:13px;color:var(--text2);margin-top:8px;line-height:1.4">Your child is not currently scheduled. Log in to manage your booking.</p>');
   } else {
     html += '<div class="assign-top">' +
       '<div><div class="assign-label">' + esc(m.name || '') + (isGuest ? ' is attending:' : st === 'unconfirmed' ? ' is invited to perform:' : ' is scheduled to perform:') + '</div>' +
@@ -1233,9 +1235,9 @@ function rFound() {
       '<div class="assign-day">' + firstName + '</div></div>' +
       '<span class="status-pill ' + statusPillClass(s.status) + '">' + statusLabel(s.status) + '</span>' +
       '</div>' +
-      '<p style="font-size:13px;color:var(--err);margin-top:8px;line-height:1.4">' +
-      'Your child is not currently scheduled. Use the options below to rejoin or submit a scheduling request.' +
-      '</p>';
+      (s.tags && s.tags.indexOf('saturday') > -1
+        ? '<div class="notice notice-info" style="margin-top:8px"><span class="ni">&#127926;</span><span>' + firstName + '\u2019s regular lesson day is Saturday and Performance Party Week runs Monday\u2013Friday. They don\u2019t have a pre-assigned spot \u2014 but we\u2019d love to have them perform! Use the options below to find an open spot.</span></div>'
+        : '<p style="font-size:13px;color:var(--text2);margin-top:8px;line-height:1.4">Your child is not currently scheduled. Use the options below to manage your booking.</p>');
   } else {
     html += '<div class="assign-top">' +
       '<div><div class="assign-label">' +
@@ -1420,7 +1422,7 @@ function rActions(s, isInactive) {
     // Fix 7: status-aware scheduling request copy
     var isInactivePre = isInactive;
     var schedReqDesc2 = isInactivePre
-      ? 'Tell us your preferred days. We\'ll contact you with available options.'
+      ? 'Submit a scheduling request and we\'ll do our best to place your child before May 4th. From May 4th you can instantly self-service reschedule into any open spot.'
       : 'Tell us your preferred days. Your request is under review. Visit keylab.nyc/performance-parties for details.';
     if (!hasPendingRequest) {
       html += btnWrap(
@@ -1494,9 +1496,12 @@ function rActions(s, isInactive) {
         }
       }
       // Fix 9: "Choose a different spot" with specific copy
+      var isSaturdayOpen = s.tags && s.tags.indexOf('saturday') > -1;
       html += btnWrap(
-        '<button class="btn-secondary" onclick="doRejoin()">Choose a different spot</button>',
-        'Pick any available spot during the week. Your original ' + (origDay2 ? origDay2 + ' ' + origSeg2 + ' ' : '') + 'spot will not be held \u2014 spots are first come, first served.'
+        '<button class="btn-secondary" onclick="doRejoin()">Choose a performance spot</button>',
+        isSaturdayOpen
+          ? 'Pick any available spot during performance week. Spots are first come, first served. The schedule locks June 1st.'
+          : 'Pick any available spot during the week. Your original ' + (origDay2 ? origDay2 + ' ' + origSeg2 + ' ' : '') + 'spot will not be held \u2014 spots are first come, first served.'
       );
     } else if (s.status === 'unconfirmed') {
       // Unconfirmed in open phase — show confirm options first
@@ -2113,14 +2118,15 @@ function renderInfo(ctx) {
     title: "&#128197;  Event details & schedule",
     body: '<h4>Performance Week</h4>' +
       '<p>Monday, June 15 through Friday, June 19 at Keylab, 94 Luquer St., Brooklyn, NY 11231.</p>' +
-      '<h4>Session Times</h4>' +
+      '<h4>Performance Times</h4>' +
       '<ul>' +
-      '<li><strong>Early session</strong> (Mon\u2013Thu): Performance begins 4:00 PM &middot; Arrive 3:30\u20133:50 PM</li>' +
-      '<li><strong>Late session</strong> (Mon\u2013Thu): Performance begins 5:00 PM &middot; Arrive 4:45\u20135:00 PM</li>' +
-      '<li><strong>Friday</strong> (single session): Performance begins 4:00 PM &middot; Arrive 3:30\u20133:50 PM</li>' +
+      '<li><strong>Early Performance</strong> (Mon\u2013Thu): Begins 4:00 PM &middot; Arrive 3:30\u20133:50 PM</li>' +
+      '<li><strong>Late Performance</strong> (Mon\u2013Thu): Begins 5:00 PM &middot; Arrive 4:45\u20135:00 PM</li>' +
+      '<li><strong>Friday</strong> (single performance): Begins 4:00 PM &middot; Arrive 3:30\u20133:50 PM</li>' +
+      '<li><strong>Saturday students:</strong> Performance Party Week runs Monday\u2013Friday. Saturday lesson students don\u2019t have a pre-assigned spot but are warmly invited \u2014 use the booking tool to find an open spot.</li>' +
       '</ul>' +
       '<h4>After the Performance</h4>' +
-      '<p>Join us upstairs for pizza, snacks and beverages after each performance.</p>' +
+      '<p>Join us upstairs for pizza, snacks and beverages after each performance. There will be a jam session every day after the late performance!</p>' +
       '<h4>Juneteenth Note</h4>' +
       '<p>Friday, June 19 is Juneteenth. NYC public schools will be closed, but Keylab will be open and hosting our performance party as scheduled.</p>'
   });
