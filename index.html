@@ -1251,7 +1251,7 @@ function rAuth() {
 
   // Scheduling request callout (pre-login)
   if (m.schedRequest && m.schedRequest.length) {
-    html += '<div style="background:var(--info-lt);border:1px solid #bfdbfe;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:var(--info)">' +
+    html += '<div class="notice notice-info" style="margin-bottom:16px;flex-direction:column;gap:4px">' +
       '<div style="font-weight:600;margin-bottom:4px">&#128197; Scheduling request under review</div>' +
       '<div><strong>Held spot:</strong> ' + (m.day && m.seg ? esc(m.day) + (m.seg !== 'Single' ? ' ' + esc(m.seg) : '') : 'Currently unassigned \u2014 no spot is being held') + '</div>' +
       '<div><strong>Requested:</strong> ' + m.schedRequest.filter(function(x){return x;}).map(function(x) { return esc(x); }).join(', ') + '</div>' +
@@ -1381,19 +1381,17 @@ function rFound() {
     var heldSpot = (s.day && s.seg)
       ? esc(s.day) + (s.seg !== 'Single' ? ' ' + esc(s.seg) : '')
       : 'Currently unassigned \u2014 no spot is being held';
-    html += '<div style="background:var(--green-lt);border:1px solid #bbf7d0;border-radius:10px;padding:16px;margin-bottom:4px">' +
-      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">' +
-      '<div style="font-size:15px;font-weight:600;color:var(--text)">Your scheduling request has been received and is being reviewed.</div>' +
-      '</div>' +
-      '<div style="font-size:13px;color:var(--text2);margin-bottom:4px;line-height:1.5">' +
+    html += '<div class="notice notice-info" style="flex-direction:column;gap:6px;margin-bottom:4px">' +
+      '<div style="font-size:15px;font-weight:600">Your scheduling request has been received and is being reviewed.</div>' +
+      '<div style="font-size:13px;margin-bottom:2px;line-height:1.5">' +
       '<strong>Held spot:</strong> ' + heldSpot +
       '</div>' +
-      '<div style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.5">' +
+      '<div style="font-size:13px;margin-bottom:10px;line-height:1.5">' +
       '<strong>Requested:</strong> ' + schedSegs.filter(function(x) { return x; }).map(function(x) { return esc(x); }).join(', ') +
       '</div>' +
       '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
-      '<button onclick="doModifyRequest()" style="font-family:DM Sans,sans-serif;font-size:13px;font-weight:500;padding:8px 16px;background:var(--blue);color:#fff;border:none;border-radius:7px;cursor:pointer">Modify request</button>' +
-      '<button onclick="doCancelRequest()" style="font-family:DM Sans,sans-serif;font-size:13px;font-weight:500;padding:8px 16px;background:transparent;color:var(--err);border:1.5px solid #e5c5c2;border-radius:7px;cursor:pointer">Cancel request</button>' +
+      '<button onclick="doModifyRequest()" class="btn-primary" style="width:auto;padding:8px 16px;font-size:13px">Modify request</button>' +
+      '<button onclick="doCancelRequest()" class="btn-cancel" style="width:auto;padding:8px 16px;font-size:13px">Cancel request</button>' +
       '</div>' +
       '</div>';
   }
