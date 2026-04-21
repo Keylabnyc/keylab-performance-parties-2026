@@ -72,6 +72,8 @@
     .btn-cancel:hover { background: #7a2020 !important; }
     .btn-nav { background: #4e5052 !important; color: #f4f4f2 !important; border: none !important; }
     .btn-nav:hover { background: #5a5c5e !important; }
+    .confirm-title { color: #90b8e0; }
+    .confirm-sub { color: #e8e8e4; }
   }
 
   html {
@@ -1135,10 +1137,15 @@ function rLookup() {
   return '<div class="card">' +
     '<div class="card-title">Find your booking</div>' +
     '<div class="notice notice-info" style="margin-bottom:16px"><span class="ni">&#128197;</span>' +
-    '<span><strong>Hi Keylab Parents!</strong><br><br>' +
-    '<strong>Monday\u2013Friday students</strong> have a reserved spot on their regular lesson day. If their currently assigned spot works, you can confirm their participation as a performer or an attending non-performer and add guests here. If the spot doesn\u2019t work, you can self-service reschedule online into any open spot from May 4th until June 1st.<br><br>' +
-    '<strong>Saturday students:</strong> Performance Party Week runs Monday\u2013Friday, so Saturday students don\u2019t have a pre-assigned spot, but we\u2019d love for them to join during the week if they can make it! Submit a scheduling request here before May 4th and we\u2019ll prioritize your placement before the schedule opens on May 4th.<br><br>' +
-    'From May 4th, all families can self-book into any open spot, submit schedule change requests, and change status from performer to attending non-performer until June 1st.</span></div>' +
+    '<span><strong>Hi Keylab Parents!</strong> Here is some helpful info for using this site and managing your child\u2019s performance scheduling details. We are looking forward to celebrating with everyone!<br><br>' +
+    '<strong>Monday\u2013Friday students</strong> have a reserved spot on their regular lesson day.<br>' +
+    '&nbsp;&nbsp;&bull; If their currently assigned spot works, you can confirm their participation as a performer or an attending non-performer and add guests here.<br>' +
+    '&nbsp;&nbsp;&bull; If the spot doesn\u2019t work, you can self-service reschedule online into any open spot from May 4th until June 1st.<br><br>' +
+    '<strong>Saturday students</strong><br>' +
+    '&nbsp;&nbsp;&bull; Performance Party Week runs Monday\u2013Friday, so Saturday students don\u2019t have a pre-assigned spot, but we\u2019d love for them to join during the week if they can make it!<br>' +
+    '&nbsp;&nbsp;&bull; Submit a scheduling request here before May 4th and we\u2019ll prioritize your placement before the schedule opens on May 4th.<br><br>' +
+    '<strong>Rescheduling Opens May 4th</strong><br>' +
+    '&nbsp;&nbsp;&bull; Families can self-book online here into any open spot, or submit schedule change requests, until June 1st.</span></div>' +
     errFrag() +
     '<div class="field"><label>Student\'s first name</label>' +
     '<input id="fn" type="text" placeholder="e.g. Emma" autocomplete="off" ' +
