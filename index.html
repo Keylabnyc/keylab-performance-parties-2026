@@ -508,8 +508,8 @@
 
   /* ── Confirm sent ── */
   .confirm-icon { font-size: 36px; text-align: center; margin-bottom: 10px; }
-  .confirm-title { font-size: 20px; font-weight: 700; text-align: center; color: var(--blue); margin-bottom: 6px; }
-  .confirm-sub { font-size: 14px; color: var(--text2); text-align: center; margin-bottom: 18px; line-height: 1.5; }
+  .confirm-title { font-size: 20px; font-weight: 700; text-align: center; color: var(--text); margin-bottom: 6px; }
+  .confirm-sub { font-size: 14px; color: var(--text); text-align: center; margin-bottom: 18px; line-height: 1.5; }
   .confirm-detail {
     background: var(--bg2);
     border: 1px solid var(--border);
@@ -1145,7 +1145,8 @@ function rLookup() {
     '&nbsp;&nbsp;&bull; Performance Party Week runs Monday\u2013Friday, so Saturday students don\u2019t have a pre-assigned spot, but we\u2019d love for them to join during the week if they can make it!<br>' +
     '&nbsp;&nbsp;&bull; Submit a scheduling request here before May 4th and we\u2019ll prioritize your placement before the schedule opens on May 4th.<br><br>' +
     '<strong>Rescheduling Opens May 4th</strong><br>' +
-    '&nbsp;&nbsp;&bull; Families can self-book online here into any open spot, or submit schedule change requests, until June 1st.</span></div>' +
+    '&nbsp;&nbsp;&bull; Families can self-book online here into any open spot, or submit schedule change requests, until June 1st.<br><br>' +
+    '<em>Not Participating This Year?</em> Log in to cancel and free up your spot for another family.</span></div>' +
     errFrag() +
     '<div class="field"><label>Student\'s first name</label>' +
     '<input id="fn" type="text" placeholder="e.g. Emma" autocomplete="off" ' +
@@ -2087,8 +2088,9 @@ function rPreferences() {
       var isSel = prefSelected.indexOf(key) > -1;
       var isReq = prefRequested.indexOf(key) > -1;
       var isCur = curKey === key;
-      var cls = 'pref-btn' + (isSel ? ' selected' : '') + (isReq && !isSel ? ' already-requested' : '') + (isCur ? ' current-slot' : '');
-      grid += '<button class="' + cls + '" onclick="togglePref(\'' + key + '\')">' +
+      var isDisabled = isCur || isReq;
+      var cls = 'pref-btn' + (isSel ? ' selected' : '') + (isReq && !isCur ? ' already-requested' : '') + (isCur ? ' current-slot' : '');
+      grid += '<button class="' + cls + '" ' + (isDisabled ? 'disabled style="opacity:0.6;cursor:not-allowed"' : 'onclick="togglePref(\'' + key + '\')"') + '>' +
         '<div class="pref-name">' + day + (seg === 'Single' ? '' : ' ' + seg) + '</div>' +
         '<div class="pref-time">' + PTIMES[day][seg] + '</div>' +
         (isCur && currentLabel ? '<div class="pref-time" style="color:var(--info);margin-top:3px">' + currentLabel + '</div>' : '') +
