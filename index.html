@@ -734,6 +734,14 @@ function doAuth() {
   });
 }
 
+// ── Refresh student data from sheet ───────────────────────────
+function refreshStudent(cb) {
+  api({action:"lookup", name:selectedMatch ? selectedMatch.name : lookupName, studentId:student.id, password:lookupPw, email:lookupEmail}, function(e, r) {
+    if (!e && r && r.ok && r.student) { student = r.student; }
+    if (cb) cb();
+  });
+}
+
 // ── Confirm — guest selector flow ──────────────────────────────
 function doSaveEmail() {
   var inp = document.getElementById("email-collect");
@@ -797,7 +805,7 @@ function doConfirmWithGuests() {
         student.tags = tags ? tags + '|early-confirm' : 'early-confirm';
       }
     }
-    state = "confirm-sent"; render();
+    refreshStudent(function() { state = "confirm-sent"; render(); });
   });
 }
 
@@ -817,12 +825,16 @@ function doSubmitCancel() {
       return;
     }
     student.status = 'cancelled';
-    // Mirror the orig: tag the backend just wrote, so rCancelConfirmed can find it
-    var tags = student.tags || '';
-    if (tags.indexOf('orig:') === -1) {
-      var origTag = 'orig:' + student.day + '_' + student.seg;
-      student.tags = tags ? tags + '|' + origTag : origTag;
+    // Only write orig: tag if student has an assigned spot
+    if (student.day && student.seg) {
+      var tags = student.tags || '';
+      if (tags.indexOf('orig:') === -1) {
+        var origTag = 'orig:' + student.day + '_' + student.seg;
+        student.tags = tags ? tags + '|' + origTag : origTag;
+      }
     }
+    // Clear any pending scheduling request
+    student.schedRequest = null;
     // Refresh slots so rejoin buttons appear immediately on the booking screen
     api({action:"getSlots"}, function(e2, r2) {
       if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
@@ -833,7 +845,7 @@ function doSubmitCancel() {
 
 // ── Preferences ────────────────────────────────────────────────
 function doStartPreferences() {
-  prefSelected = [student.day + '_' + student.seg];
+  prefSelected = (student.day && student.seg) ? [student.day + '_' + student.seg] : [];
   state = "preferences"; errMsg = ''; render();
 }
 
@@ -859,7 +871,7 @@ function doSubmitPreferences() {
       showErr((r && r.error) || "Could not submit. Please try again.");
       return;
     }
-    state = "pref-sent"; render();
+    refreshStudent(function() { state = "pref-sent"; render(); });
   });
 }
 
@@ -1170,8 +1182,8 @@ function rAuth() {
   if (m.schedRequest && m.schedRequest.length) {
     html += '<div style="background:var(--info-lt);border:1px solid #bfdbfe;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:var(--info)">' +
       '<div style="font-weight:600;margin-bottom:4px">&#128197; Scheduling request under review</div>' +
-      '<div><strong>Held spot:</strong> ' + esc(m.day) + (m.seg !== 'Single' ? ' ' + esc(m.seg) : '') + '</div>' +
-      '<div><strong>Requested:</strong> ' + m.schedRequest.map(function(x) { return esc(x); }).join(', ') + '</div>' +
+      '<div><strong>Held spot:</strong> ' + (m.day && m.seg ? esc(m.day) + (m.seg !== 'Single' ? ' ' + esc(m.seg) : '') : 'Currently unassigned \u2014 no spot is being held') + '</div>' +
+      '<div><strong>Requested:</strong> ' + m.schedRequest.filter(function(x){return x;}).map(function(x) { return esc(x); }).join(', ') + '</div>' +
       '<div style="margin-top:4px;font-size:12px">Your request is under review — we\'ll update you as soon as possible.</div>' +
       '</div>';
   }
@@ -1293,13 +1305,18 @@ function rFound() {
   // Scheduling request callout
   var schedSegs = s.schedRequest || getLatestSchedRequest(s.notes);
   if (schedSegs && schedSegs.length) {
+    var heldSpot = (s.day && s.seg)
+      ? esc(s.day) + (s.seg !== 'Single' ? ' ' + esc(s.seg) : '')
+      : 'Currently unassigned \u2014 no spot is being held';
     html += '<div style="background:var(--green-lt);border:1px solid #bbf7d0;border-radius:10px;padding:16px;margin-bottom:4px">' +
       '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">' +
-      '<span style="font-size:18px">&#10003;</span>' +
-      '<div style="font-size:15px;font-weight:600;color:var(--green)">Your scheduling request is in.</div>' +
+      '<div style="font-size:15px;font-weight:600;color:var(--text)">Your scheduling request has been received and is being reviewed.</div>' +
+      '</div>' +
+      '<div style="font-size:13px;color:var(--text2);margin-bottom:4px;line-height:1.5">' +
+      '<strong>Held spot:</strong> ' + heldSpot +
       '</div>' +
       '<div style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.5">' +
-      '<strong>Requested:</strong> ' + schedSegs.map(function(x) { return esc(x); }).join(', ') +
+      '<strong>Requested:</strong> ' + schedSegs.filter(function(x) { return x; }).map(function(x) { return esc(x); }).join(', ') +
       '</div>' +
       '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
       '<button onclick="doModifyRequest()" style="font-family:DM Sans,sans-serif;font-size:13px;font-weight:500;padding:8px 16px;background:var(--blue);color:#fff;border:none;border-radius:7px;cursor:pointer">Modify request</button>' +
@@ -2353,14 +2370,14 @@ function doModifyRequest() {
 
 function doCancelRequest() {
   if (!confirm("Cancel your scheduling request? You can submit a new one at any time.")) return;
-  api({action:"markRead", password:lookupPw, studentId:student.id, mark:"resolved"}, function(e, r) {
+  api({action:"withdrawSchedRequest", studentId:student.id, password:lookupPw}, function(e, r) {
     if (e || !r || !r.ok) { showErr("Could not cancel request. Please try again."); return; }
     student.schedRequest = null;
     if (student.notes) {
       var now = new Date();
       var pad = function(n) { return n < 10 ? '0'+n : String(n); };
       var ts = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
-      student.notes = student.notes + '\n\n[' + ts + '] RESOLVED \u2014 Scheduling request cancelled by family.';
+      student.notes = student.notes + '\n\n[' + ts + '] RESOLVED \u2014 Scheduling request withdrawn by family.';
     }
     errMsg = ''; render();
   });
