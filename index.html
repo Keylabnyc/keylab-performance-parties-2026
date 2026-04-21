@@ -253,7 +253,7 @@
   }
   .pill-unconfirmed { background: #f8fafc; color: #64748b; }
   .pill-confirmed { background: var(--green-lt); color: var(--green); }
-  .pill-confirmed-guest { background: #eff6ff; color: #1d4ed8; }
+  .pill-confirmed-guest { background: var(--green-lt); color: var(--green); }
   .pill-cancelled { background: #fef2f2; color: #dc2626; }
   .pill-not-participating { background: #f4f2ef; color: #9a958e; }
 
@@ -602,6 +602,7 @@ var student = null;
 var slots   = null;
 var phase   = "pre";
 var errMsg  = "";
+var schedRequestCancelled = false;
 var lookupName = "", lookupPw = "", lookupEmail = "";
 var lookupMatches = []; // for multi-match picker
 var selectedMatch = null; // {id, name, day, seg} chosen from picker
@@ -1310,7 +1311,11 @@ function rFound() {
 
   // Scheduling request callout
   var schedSegs = s.schedRequest || getLatestSchedRequest(s.notes);
-  if (schedSegs && schedSegs.length) {
+
+  if (schedRequestCancelled) {
+    html += '<div class="notice notice-info" style="margin-bottom:4px"><span class="ni">&#10003;</span><span>Your scheduling request has been cancelled. You can submit a new one at any time.</span></div>';
+    schedRequestCancelled = false;
+  } else if (schedSegs && schedSegs.length) {
     var heldSpot = (s.day && s.seg)
       ? esc(s.day) + (s.seg !== 'Single' ? ' ' + esc(s.seg) : '')
       : 'Currently unassigned \u2014 no spot is being held';
@@ -2370,7 +2375,11 @@ function getLatestSchedRequest(notes) {
   if (!notes || !notes.trim()) return null;
   var chunks = notes.trim().split(/\n\n+/);
   for (var i = chunks.length - 1; i >= 0; i--) {
-    var m = chunks[i].trim().match(/^\[([^\]]+)\]\s+SCHEDULING REQUEST\s+\u2014\s+([\s\S]*)$/);
+    var chunk = chunks[i].trim();
+    if (/^\[([^\]]+)\]\s+RESOLVED\s+\u2014/.test(chunk) && /scheduling request withdrawn/i.test(chunk)) {
+      return null; // Most recent relevant entry is a withdrawal
+    }
+    var m = chunk.match(/^\[([^\]]+)\]\s+SCHEDULING REQUEST\s+\u2014\s+([\s\S]*)$/);
     if (m) {
       var body = m[2].trim();
       var slotMatch = body.match(/Preferred slots:\s*([^.]+)/);
@@ -2407,7 +2416,9 @@ function doCancelRequest() {
       var ts = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
       student.notes = student.notes + '\n\n[' + ts + '] RESOLVED \u2014 Scheduling request withdrawn by family.';
     }
-    errMsg = ''; render();
+    errMsg = '';
+    schedRequestCancelled = true;
+    render();
   });
 }
 
