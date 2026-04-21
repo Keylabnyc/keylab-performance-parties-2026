@@ -374,8 +374,8 @@
   .arrive-badge {
     font-size: 13px;
     font-weight: 500;
-    background: var(--acc-lt);
-    color: var(--acc-dk);
+    background: var(--bg2);
+    color: var(--text);
     padding: 7px 12px;
     border-radius: 7px;
     margin-bottom: 14px;
@@ -1261,7 +1261,7 @@ function rAuth() {
 
   // Email on file message
   var emailBlock = m.hasEmail
-    ? '<div class="notice notice-success" style="margin-bottom:14px">Your email <strong>' + esc(m.email || lookupEmail) + '</strong> is on file!</div>'
+    ? '<div class="notice notice-success" style="margin-bottom:14px">&#10003; Your email is on file — confirmations will be sent to the address we have on record.</div>'
     : '<div class="field"><label>Email address <span style="font-weight:400;color:var(--text3)">(optional)</span></label>' +
       '<input id="femail" type="email" placeholder="your@email.com" autocomplete="email" ' +
       'onkeydown="if(event.key===&apos;Enter&apos;)doAuth()">' +
