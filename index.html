@@ -64,12 +64,14 @@
       --green-lt:#142018;
       --shadow:  0 1px 3px rgba(0,0,0,.25), 0 4px 16px rgba(0,0,0,.2);
     }
-    .btn-primary { background: #1a4fc4; color: #ffffff; }
+    .btn-primary  { background: #1a4fc4; color: #ffffff; border: none; }
     .btn-primary:hover { background: #1440a8; }
-    .btn-secondary { background: #1a4fc4; color: #ffffff; border-color: #1a4fc4; }
-    .btn-secondary:hover { background: #1440a8; border-color: #1440a8; }
-    .btn-nav { color: #f4f4f2; border-color: #606264; }
-    .btn-nav:hover { background: #4e5052; }
+    .btn-secondary { background: #1a4fc4; color: #ffffff; border: none; }
+    .btn-secondary:hover { background: #1440a8; }
+    .btn-cancel { background: #8b2e2e; color: #ffffff; border: none; }
+    .btn-cancel:hover { background: #7a2020; }
+    .btn-nav { background: #4e5052; color: #f4f4f2; border: none; }
+    .btn-nav:hover { background: #5a5c5e; }
   }
 
   html {
@@ -1874,13 +1876,13 @@ function calendarLinks(s) {
   return '<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">' +
     '<a href="' + gcUrl + '" target="_blank" style="' +
       'flex:1;min-width:120px;text-align:center;padding:9px 14px;border-radius:7px;' +
-      'background:var(--blue-lt);color:var(--blue);font-size:13px;font-weight:500;' +
-      'text-decoration:none;border:1px solid #bfdbfe;display:block">' +
+      'background:var(--blue);color:#fff;font-size:13px;font-weight:500;' +
+      'text-decoration:none;display:block">' +
       '&#128197; Add to Google Calendar</a>' +
     '<a href="' + icsUri + '" download="keylab-performance-party.ics" style="' +
       'flex:1;min-width:120px;text-align:center;padding:9px 14px;border-radius:7px;' +
-      'background:var(--bg2);color:var(--text2);font-size:13px;font-weight:500;' +
-      'text-decoration:none;border:1px solid var(--border);display:block">' +
+      'background:var(--bg3);color:var(--text);font-size:13px;font-weight:500;' +
+      'text-decoration:none;display:block">' +
       '&#128197; Add to Apple / Outlook</a>' +
     '</div>';
 }
