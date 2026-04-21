@@ -410,9 +410,12 @@
     transition: border-color .15s, background .15s;
   }
   .pref-btn.selected { border-color: var(--acc); background: var(--acc-lt); }
+  .pref-btn.already-requested { border-color: var(--info); background: var(--info-lt); }
+  .pref-btn.already-requested.selected { border-color: var(--acc); background: var(--acc-lt); }
   .pref-btn.current-slot { border-color: var(--text3); }
   .pref-name { font-size: 13px; font-weight: 600; color: var(--text); }
   .pref-time { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .pref-already-label { font-size: 10px; color: var(--info); font-weight: 600; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.03em; }
 
   /* ── Guest select ── */
   .guest-summary {
@@ -1074,7 +1077,10 @@ function rLookup() {
   return '<div class="card">' +
     '<div class="card-title">Find your booking</div>' +
     '<div class="notice notice-info" style="margin-bottom:16px"><span class="ni">&#128197;</span>' +
-    '<span>Hi Keylab Parents! Your child has a reserved performance spot on their regular lesson day. If their currently assigned spot doesn\'t work for you, you can self-service reschedule online here into any open spot from May 4th until June 1st.</span></div>' +
+    '<span><strong>Hi Keylab Parents!</strong><br><br>' +
+    '<strong>Monday\u2013Friday students</strong> have a reserved spot on their regular lesson day. If their currently assigned spot works, you can confirm their participation as a performer or an attending non-performer and add guests here. If the spot doesn\u2019t work, you can self-service reschedule online into any open spot from May 4th until June 1st.<br><br>' +
+    '<strong>Saturday students:</strong> Performance Party Week runs Monday\u2013Friday, so Saturday students don\u2019t have a pre-assigned spot, but we\u2019d love for them to join during the week if they can make it! Submit a scheduling request here before May 4th and we\u2019ll prioritize your placement before the schedule opens on May 4th.<br><br>' +
+    'From May 4th, all families can self-book into any open spot, submit schedule change requests, and change status from performer to attending non-performer until June 1st.</span></div>' +
     errFrag() +
     '<div class="field"><label>Student\'s first name</label>' +
     '<input id="fn" type="text" placeholder="e.g. Emma" autocomplete="off" ' +
@@ -1984,16 +1990,38 @@ function rPreferences() {
   var SEGS = {Monday:['Early','Late'],Tuesday:['Early','Late'],Wednesday:['Early','Late'],Thursday:['Early','Late'],Friday:['Single']};
   var PTIMES = {Monday:{Early:'4:00 PM',Late:'5:00 PM'},Tuesday:{Early:'4:00 PM',Late:'5:00 PM'},Wednesday:{Early:'4:00 PM',Late:'5:00 PM'},Thursday:{Early:'4:00 PM',Late:'5:00 PM'},Friday:{Single:'4:00 PM'}};
 
+  // Already-requested segments (from existing request)
+  var schedSegs = student.schedRequest || getLatestSchedRequest(student.notes);
+  var prefRequested = schedSegs ? schedSegs.map(function(s) { return s.trim().replace(/ /g, '_'); }) : [];
+
+  // Current spot label logic
+  var curKey = (student.day && student.seg) ? student.day + '_' + student.seg : null;
+  function curLabel() {
+    if (!curKey) return null;
+    var slotData = slots && slots[curKey];
+    var st = student.status;
+    if (st === 'confirmed') return 'confirmed performer spot \u2014 will be released if request is approved';
+    if (st === 'confirmed-guest') return 'confirmed non-performer spot \u2014 will be released if request is approved';
+    // Unconfirmed
+    if (slotData && slotData.isFull) return 'currently full';
+    if (slotData && !slotData.isFull) return 'backup spot being held';
+    return null;
+  }
+  var currentLabel = curLabel();
+
   var grid = '<div class="pref-grid">';
   DAYS.forEach(function(day) {
     SEGS[day].forEach(function(seg) {
       var key = day + '_' + seg;
       var isSel = prefSelected.indexOf(key) > -1;
-      var isCur = student.day === day && student.seg === seg;
-      var cls = 'pref-btn' + (isSel ? ' selected' : '') + (isCur ? ' current-slot' : '');
+      var isReq = prefRequested.indexOf(key) > -1;
+      var isCur = curKey === key;
+      var cls = 'pref-btn' + (isSel ? ' selected' : '') + (isReq && !isSel ? ' already-requested' : '') + (isCur ? ' current-slot' : '');
       grid += '<button class="' + cls + '" onclick="togglePref(\'' + key + '\')">' +
         '<div class="pref-name">' + day + (seg === 'Single' ? '' : ' ' + seg) + '</div>' +
-        '<div class="pref-time">' + PTIMES[day][seg] + (isCur ? ' \u2014 current' : '') + '</div>' +
+        '<div class="pref-time">' + PTIMES[day][seg] + '</div>' +
+        (isCur && currentLabel ? '<div class="pref-time" style="color:var(--info);margin-top:3px">' + currentLabel + '</div>' : '') +
+        (isReq && !isCur ? '<div class="pref-already-label">already requested</div>' : '') +
         '</button>';
     });
   });
@@ -2025,7 +2053,7 @@ function rPreferences() {
     '<textarea id="pref-note" rows="3" placeholder="Any scheduling conflicts, sibling arrangements, or other notes." style="resize:vertical"></textarea></div>' +
     '<button class="btn-primary" id="pref-btn" onclick="doSubmitPreferences()">Submit preferences</button>' +
     '</div>' +
-    '<div class="back-row"><button class="btn-ghost" onclick="goBack()">&#8592; Cancel</button></div>';
+    '<div class="back-row"><button class="btn-ghost" onclick="goBack()">&#8592; Back</button></div>';
 }
 
 // ── Screen: Pref sent ──────────────────────────────────────────
