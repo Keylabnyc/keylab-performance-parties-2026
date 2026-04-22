@@ -904,14 +904,21 @@ function doSubmitCancel() {
 
 // ── Preferences ────────────────────────────────────────────────
 function doStartPreferences() {
-  prefSelected = [student.day + '_' + student.seg];
+  prefSelected = (student.day && student.seg) ? [{key: student.day + '_' + student.seg, type: 'preferred'}] : [];
   state = "preferences"; errMsg = ''; render();
 }
 
 function togglePref(key) {
-  var i = prefSelected.indexOf(key);
-  if (i > -1) prefSelected.splice(i, 1);
-  else prefSelected.push(key);
+  var TYPES = ['preferred', 'available', 'last-resort', 'sibling'];
+  var idx = -1;
+  for (var i = 0; i < prefSelected.length; i++) { if (prefSelected[i].key === key) { idx = i; break; } }
+  if (idx > -1) {
+    var nextIdx = TYPES.indexOf(prefSelected[idx].type) + 1;
+    if (nextIdx >= TYPES.length) { prefSelected.splice(idx, 1); }
+    else { prefSelected[idx].type = TYPES[nextIdx]; }
+  } else {
+    prefSelected.push({key: key, type: 'preferred'});
+  }
   render();
 }
 
@@ -921,8 +928,8 @@ function doSubmitPreferences() {
   var note = (document.getElementById("pref-note") || {}).value || "";
   var btn = document.getElementById("pref-btn");
   if (btn) { btn.disabled = true; btn.textContent = "Submitting\u2026"; }
-  var segments = prefSelected.map(function(k) {
-    var p = k.split('_'); return p[0] + ' ' + p[1];
+  var segments = prefSelected.map(function(x) {
+    var parts = x.key.split('_'); return parts[0] + ' ' + parts[1] + ' [' + x.type + ']';
   });
   api({action:"submitPreferences", studentId:student.id, password:lookupPw, segments:segments, note:note.trim(), email:lookupEmail}, function(e, r) {
     if (e || !r || !r.ok) {
@@ -930,7 +937,7 @@ function doSubmitPreferences() {
       showErr((r && r.error) || "Could not submit. Please try again.");
       return;
     }
-    state = "pref-sent"; render();
+    refreshStudent(function() { state = "pref-sent"; render(); });
   });
 }
 
@@ -1571,12 +1578,11 @@ function rActions(s, isInactive) {
     var isInactivePre = isInactive;
     var schedReqDesc2 = isInactivePre
       ? 'Submit a scheduling request and we\'ll do our best to place your child before May 4th. From May 4th you can instantly self-service reschedule into any open spot.'
-      : 'Tell us your preferred days. Your request is under review. Visit keylab.nyc/performance-parties for details.';
+      : '';
     if (!hasPendingRequest) {
-      html += btnWrap(
-        '<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>',
-        schedReqDesc2
-      );
+      html += isInactivePre
+        ? btnWrap('<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>', schedReqDesc2)
+        : '<div class="btn-wrap"><button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button></div>';
     }
     if (!isInactive) {
       html += btnWrap(
@@ -2460,33 +2466,44 @@ function getLatestSchedRequest(notes) {
 }
 
 function doModifyRequest() {
-  // Pre-populate prefSelected with currently requested segments
-  var schedSegs = student.schedRequest || getLatestSchedRequest(student.notes);
-  if (schedSegs && schedSegs.length) {
-    prefSelected = schedSegs.map(function(s) {
-      // Convert "Monday Early" to "Monday_Early"
-      return s.trim().replace(/ /g, '_');
+  var notes = student.notes || '';
+  var chunks = notes.trim() ? notes.trim().split(/\n\n+/) : [];
+  var rawSegs = null;
+  for (var i = chunks.length - 1; i >= 0; i--) {
+    var m = chunks[i].trim().match(/^\[([^\]]+)\]\s+SCHEDULING REQUEST\s+\u2014\s+([\s\S]*)$/);
+    if (m) {
+      var slotMatch = m[2].trim().match(/Preferred slots:\s*([^.]+)/);
+      if (slotMatch) { rawSegs = slotMatch[1].trim().split(','); break; }
+    }
+  }
+  if (rawSegs && rawSegs.length) {
+    prefSelected = rawSegs.map(function(s) {
+      var typeMatch = s.trim().match(/\[([^\]]+)\]$/);
+      var type = typeMatch ? typeMatch[1] : 'preferred';
+      var key = s.trim().replace(/\s*\[[^\]]+\]$/, '').trim().replace(/ /g, '_');
+      return {key: key, type: type};
     });
   } else {
-    prefSelected = [];
+    var schedSegs = student.schedRequest || getLatestSchedRequest(student.notes);
+    prefSelected = schedSegs ? schedSegs.map(function(s) { return {key: s.trim().replace(/ /g, '_'), type: 'preferred'}; }) : [];
   }
   state = "preferences"; errMsg = ''; render();
 }
 
 function doCancelRequest() {
   if (!confirm("Cancel your scheduling request? You can submit a new one at any time.")) return;
-  api({action:"markRead", password:lookupPw, studentId:student.id, mark:"resolved"}, function(e, r) {
+  api({action:"withdrawSchedRequest", studentId:student.id, password:lookupPw}, function(e, r) {
     if (e || !r || !r.ok) { showErr("Could not cancel request. Please try again."); return; }
-    // Clear schedRequest from student object so callout disappears
     student.schedRequest = null;
     if (student.notes) {
-      // Append RESOLVED note to notes so getLatestSchedRequest returns null
       var now = new Date();
       var pad = function(n) { return n < 10 ? '0'+n : String(n); };
       var ts = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
-      student.notes = student.notes + '\n\n[' + ts + '] RESOLVED \u2014 Scheduling request cancelled by family.';
+      student.notes = student.notes + '\n\n[' + ts + '] RESOLVED \u2014 Scheduling request withdrawn by family.';
     }
-    errMsg = ''; render();
+    errMsg = '';
+    schedRequestCancelled = true;
+    render();
   });
 }
 
