@@ -950,16 +950,6 @@ function doSubmitEditGuests() {
 }
 
 // ── Preferences ────────────────────────────────────────────────
-function attachPrefGrid() {
-  var grid = document.querySelector('.pref-grid');
-  if (!grid) return;
-  grid.addEventListener('click', function(e) {
-    var btn = e.target.closest('button[data-prefkey]');
-    if (!btn || btn.disabled) return;
-    togglePref(btn.getAttribute('data-prefkey'));
-  });
-}
-
 function doStartPreferences() {
   prefSelected = [];
   state = "preferences"; errMsg = ''; render();
@@ -967,22 +957,47 @@ function doStartPreferences() {
 
 function togglePref(key) {
   var CYCLE = ['preferred', 'available', 'last-resort', 'sibling'];
+  var PREF_LABELS = {preferred: '\u2b50 Preferred', available: '\u2713 Available', 'last-resort': '\u2193 Last resort', sibling: '\ud83d\udc6b Sibling'};
   var idx = -1;
   for (var i = 0; i < prefSelected.length; i++) { if (prefSelected[i].key === key) { idx = i; break; } }
   if (idx === -1) {
-    // Not selected — add with first type
     prefSelected.push({key: key, type: CYCLE[0]});
   } else {
     var nextTypeIdx = CYCLE.indexOf(prefSelected[idx].type) + 1;
     if (nextTypeIdx >= CYCLE.length) {
-      // End of cycle — remove
       prefSelected.splice(idx, 1);
     } else {
-      // Advance to next type
       prefSelected[idx].type = CYCLE[nextTypeIdx];
     }
   }
-  render();
+  // Update buttons in-place — do NOT call render() which replaces innerHTML
+  // and breaks inline onclick handlers in the GAS sandbox
+  var btns = document.querySelectorAll('.pref-grid button');
+  for (var bi = 0; bi < btns.length; bi++) {
+    var btn = btns[bi];
+    var bkey = btn.getAttribute('data-prefkey');
+    if (!bkey) continue;
+    var selObj = null;
+    for (var si = 0; si < prefSelected.length; si++) { if (prefSelected[si].key === bkey) { selObj = prefSelected[si]; break; } }
+    var isSel = !!selObj;
+    // Update selected class
+    if (isSel) { btn.classList.add('selected'); } else { btn.classList.remove('selected'); }
+    // Update or remove type label div
+    var labelDiv = btn.querySelector('.pref-type-label');
+    if (isSel) {
+      var labelText = PREF_LABELS[selObj.type] || selObj.type;
+      if (!labelDiv) {
+        labelDiv = document.createElement('div');
+        labelDiv.className = 'pref-time pref-type-label';
+        labelDiv.style.fontWeight = '600';
+        labelDiv.style.marginTop = '4px';
+        btn.appendChild(labelDiv);
+      }
+      labelDiv.textContent = labelText;
+    } else {
+      if (labelDiv) labelDiv.parentNode.removeChild(labelDiv);
+    }
+  }
 }
 
 function doSubmitPreferences() {
@@ -1173,7 +1188,7 @@ function render() {
     "auth":             function() { root.innerHTML = rAuth();            renderInfo("lookup"); },
     "found":            function() { root.innerHTML = rFound();           renderInfo("found"); },
     "guest-select":     function() { root.innerHTML = rGuestSelect(); renderInfo("found"); updateGuestNameFields(); },
-    "preferences":      function() { root.innerHTML = rPreferences();     renderInfo("found"); attachPrefGrid(); },
+    "preferences":      function() { root.innerHTML = rPreferences();     renderInfo("found"); },
     "pref-sent":        function() { root.innerHTML = rPrefSent();        renderInfo("found"); },
     "cancel":           function() { root.innerHTML = rCancel();          renderInfo("found"); },
     "cancel-confirmed": function() { root.innerHTML = rCancelConfirmed(); renderInfo("found"); },
@@ -2233,8 +2248,8 @@ function rPreferences() {
       var isCur = curKey === key;
       var isDisabled = isCur || isReq;
       var cls = 'pref-btn' + (isSel ? ' selected' : '') + (isReq && !isCur ? ' already-requested' : '') + (isCur ? ' current-slot' : '');
-      var typeLabel = isSel ? '<div class="pref-time" style="font-weight:600;margin-top:4px">' + (PREF_LABELS[selObj.type] || selObj.type) + '</div>' : '';
-      grid += '<button class="' + cls + '" data-prefkey="' + key + '" ' + (isDisabled ? 'disabled style="opacity:0.6;cursor:not-allowed"' : '') + '>' +
+      var typeLabel = isSel ? '<div class="pref-time pref-type-label" style="font-weight:600;margin-top:4px">' + (PREF_LABELS[selObj.type] || selObj.type) + '</div>' : '';
+      grid += '<button class="' + cls + '" data-prefkey="' + key + '" ' + (isDisabled ? 'disabled style="opacity:0.6;cursor:not-allowed"' : 'onclick="togglePref(\'' + key + '\')"') + '>' +
         '<div class="pref-name">' + day + (seg === 'Single' ? '' : ' ' + seg) + '</div>' +
         '<div class="pref-time">' + PTIMES[day][seg] + '</div>' +
         (isCur && currentLabel ? '<div class="pref-time" style="color:var(--info);margin-top:3px">' + currentLabel + '</div>' : '') +
