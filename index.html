@@ -950,15 +950,38 @@ function doSubmitEditGuests() {
 }
 
 // ── Preferences ────────────────────────────────────────────────
+function attachPrefGrid() {
+  var grid = document.querySelector('.pref-grid');
+  if (!grid) return;
+  grid.addEventListener('click', function(e) {
+    var btn = e.target.closest('button[data-prefkey]');
+    if (!btn || btn.disabled) return;
+    togglePref(btn.getAttribute('data-prefkey'));
+  });
+}
+
 function doStartPreferences() {
   prefSelected = [];
   state = "preferences"; errMsg = ''; render();
 }
 
 function togglePref(key) {
-  var i = prefSelected.indexOf(key);
-  if (i > -1) prefSelected.splice(i, 1);
-  else prefSelected.push(key);
+  var CYCLE = ['preferred', 'available', 'last-resort', 'sibling'];
+  var idx = -1;
+  for (var i = 0; i < prefSelected.length; i++) { if (prefSelected[i].key === key) { idx = i; break; } }
+  if (idx === -1) {
+    // Not selected — add with first type
+    prefSelected.push({key: key, type: CYCLE[0]});
+  } else {
+    var nextTypeIdx = CYCLE.indexOf(prefSelected[idx].type) + 1;
+    if (nextTypeIdx >= CYCLE.length) {
+      // End of cycle — remove
+      prefSelected.splice(idx, 1);
+    } else {
+      // Advance to next type
+      prefSelected[idx].type = CYCLE[nextTypeIdx];
+    }
+  }
   render();
 }
 
@@ -969,7 +992,7 @@ function doSubmitPreferences() {
   var btn = document.getElementById("pref-btn");
   if (btn) { btn.disabled = true; btn.textContent = "Submitting\u2026"; }
   var segments = prefSelected.map(function(k) {
-    var p = k.split('_'); return p[0] + ' ' + p[1];
+    var p = k.key.split('_'); return p[0] + ' ' + p[1];
   });
   api({action:"submitPreferences", studentId:student.id, password:lookupPw, segments:segments, note:note.trim(), email:lookupEmail}, function(e, r) {
     if (e || !r || !r.ok) {
@@ -977,7 +1000,7 @@ function doSubmitPreferences() {
       showErr((r && r.error) || "Could not submit. Please try again.");
       return;
     }
-    state = "pref-sent"; render();
+    refreshStudent(function() { state = "found"; render(); });
   });
 }
 
@@ -1150,7 +1173,7 @@ function render() {
     "auth":             function() { root.innerHTML = rAuth();            renderInfo("lookup"); },
     "found":            function() { root.innerHTML = rFound();           renderInfo("found"); },
     "guest-select":     function() { root.innerHTML = rGuestSelect(); renderInfo("found"); updateGuestNameFields(); },
-    "preferences":      function() { root.innerHTML = rPreferences();     renderInfo("found"); },
+    "preferences":      function() { root.innerHTML = rPreferences();     renderInfo("found"); attachPrefGrid(); },
     "pref-sent":        function() { root.innerHTML = rPrefSent();        renderInfo("found"); },
     "cancel":           function() { root.innerHTML = rCancel();          renderInfo("found"); },
     "cancel-confirmed": function() { root.innerHTML = rCancelConfirmed(); renderInfo("found"); },
@@ -1421,7 +1444,7 @@ function rFound() {
   var schedSegs = s.schedRequest || getLatestSchedRequest(s.notes);
 
   if (schedRequestCancelled) {
-    html += '<div class="notice notice-info" style="margin-bottom:4px"><span class="ni">&#10003;</span><span>Your scheduling request has been cancelled. You can submit a new one at any time.</span></div>';
+    html += '<div class="notice notice-info" style="margin-bottom:4px"><span class="ni">&#10003;</span><span>Your scheduling request has been withdrawn. You can submit a new one at any time.</span></div>';
     schedRequestCancelled = false;
   } else if (schedSegs && schedSegs.length) {
     var heldSpot = (s.day && s.seg)
@@ -2030,6 +2053,8 @@ function rRejoinPick() {
   var SEGS  = {Monday:['Early','Late'],Tuesday:['Early','Late'],Wednesday:['Early','Late'],Thursday:['Early','Late'],Friday:['Single']};
   var PTIMES = {Monday:{Early:'4:00 PM',Late:'5:00 PM'},Tuesday:{Early:'4:00 PM',Late:'5:00 PM'},Wednesday:{Early:'4:00 PM',Late:'5:00 PM'},Thursday:{Early:'4:00 PM',Late:'5:00 PM'},Friday:{Single:'4:00 PM'}};
 
+  var PREF_LABELS = {preferred: '\u2b50 Preferred', available: '\u2713 Available', 'last-resort': '\u2193 Last resort', sibling: '\ud83d\udc6b Sibling'};
+
   var grid = '<div class="pref-grid">';
   DAYS.forEach(function(day) {
     SEGS[day].forEach(function(seg) {
@@ -2201,16 +2226,20 @@ function rPreferences() {
   DAYS.forEach(function(day) {
     SEGS[day].forEach(function(seg) {
       var key = day + '_' + seg;
-      var isSel = prefSelected.indexOf(key) > -1;
+      var selObj = null;
+      for (var si = 0; si < prefSelected.length; si++) { if (prefSelected[si].key === key) { selObj = prefSelected[si]; break; } }
+      var isSel = !!selObj;
       var isReq = prefRequested.indexOf(key) > -1;
       var isCur = curKey === key;
       var isDisabled = isCur || isReq;
       var cls = 'pref-btn' + (isSel ? ' selected' : '') + (isReq && !isCur ? ' already-requested' : '') + (isCur ? ' current-slot' : '');
-      grid += '<button class="' + cls + '" ' + (isDisabled ? 'disabled style="opacity:0.6;cursor:not-allowed"' : 'onclick="togglePref(\'' + key + '\')"') + '>' +
+      var typeLabel = isSel ? '<div class="pref-time" style="font-weight:600;margin-top:4px">' + (PREF_LABELS[selObj.type] || selObj.type) + '</div>' : '';
+      grid += '<button class="' + cls + '" data-prefkey="' + key + '" ' + (isDisabled ? 'disabled style="opacity:0.6;cursor:not-allowed"' : '') + '>' +
         '<div class="pref-name">' + day + (seg === 'Single' ? '' : ' ' + seg) + '</div>' +
         '<div class="pref-time">' + PTIMES[day][seg] + '</div>' +
         (isCur && currentLabel ? '<div class="pref-time" style="color:var(--info);margin-top:3px">' + currentLabel + '</div>' : '') +
         (isReq && !isCur ? '<div class="pref-already-label">already requested</div>' : '') +
+        typeLabel +
         '</button>';
     });
   });
@@ -2583,8 +2612,8 @@ function doModifyRequest() {
   var schedSegs = student.schedRequest || getLatestSchedRequest(student.notes);
   if (schedSegs && schedSegs.length) {
     prefSelected = schedSegs.map(function(s) {
-      // Convert "Monday Early" to "Monday_Early"
-      return s.trim().replace(/ /g, '_');
+      // Convert "Monday Early" to {key:"Monday_Early", type:"preferred"}
+      return {key: s.trim().replace(/ /g, '_'), type: 'preferred'};
     });
   } else {
     prefSelected = [];
@@ -2594,7 +2623,7 @@ function doModifyRequest() {
 
 function doCancelRequest() {
   if (!confirm("Withdraw your scheduling request? You can submit a new one at any time.")) return;
-  api({action:"markRead", password:lookupPw, studentId:student.id, mark:"resolved"}, function(e, r) {
+  api({action:"withdrawSchedRequest", studentId:student.id, password:lookupPw}, function(e, r) {
     if (e || !r || !r.ok) { showErr("Could not withdraw request. Please try again."); return; }
     // Clear schedRequest field and poison notes so getLatestSchedRequest returns null
     student.schedRequest = null;
