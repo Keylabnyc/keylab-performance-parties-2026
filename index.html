@@ -2559,7 +2559,12 @@ function getLatestSchedRequest(notes) {
   if (!notes || !notes.trim()) return null;
   var chunks = notes.trim().split(/\n\n+/);
   for (var i = chunks.length - 1; i >= 0; i--) {
-    var m = chunks[i].trim().match(/^\[([^\]]+)\]\s+SCHEDULING REQUEST\s+\u2014\s+([\s\S]*)$/);
+    var chunk = chunks[i].trim();
+    // Mirror Code.gs: if the most recent relevant entry is a withdrawal, stop
+    if (/^\[([^\]]+)\]\s+RESOLVED\s+—/.test(chunk) && /scheduling request withdrawn/i.test(chunk)) {
+      return null;
+    }
+    var m = chunk.match(/^\[([^\]]+)\]\s+SCHEDULING REQUEST\s+—\s+([\s\S]*)$/);
     if (m) {
       var body = m[2].trim();
       var slotMatch = body.match(/Preferred slots:\s*([^.]+)/);
