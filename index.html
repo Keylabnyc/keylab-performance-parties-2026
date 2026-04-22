@@ -2003,6 +2003,7 @@ function rConfirmSent() {
     '<div class="notice notice-info"><span class="ni">&#128197;</span><span>If you added your email address, a confirmation email will be sent shortly. Click below to add the event to your calendar.</span></div>' +
     calendarLinks(s) +
     '</div>' +
+    (phase !== 'open' && phase !== 'locked' ? '<div style="margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:7px;background:var(--bg3);"><div style="font-size:12px;font-weight:600;color:var(--text3);margin-bottom:8px">CHANGED YOUR MIND?</div><p style="font-size:13px;color:var(--text2);margin:0 0 10px 0;line-height:1.4">No problem! You can revert to unconfirmed status anytime before May 4th. Your spot will still be held for you.</p><button class="btn-secondary" style="width:100%;text-align:center" onclick="doStartUnconfirm()">Revert to unconfirmed</button></div>' : '') +
     '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; My booking</button></div>';
 }
 
