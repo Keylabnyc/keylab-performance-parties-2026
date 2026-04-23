@@ -1465,18 +1465,18 @@ function rFound() {
     var heldSpot = (s.day && s.seg)
       ? esc(s.day) + (s.seg !== 'Single' ? ' ' + esc(s.seg) : '')
       : 'Currently unassigned \u2014 no spot is being held';
-    html += '<div style="margin-bottom:12px;padding:12px 16px;border-left:3px solid var(--text3);border-radius:0 6px 6px 0;background:var(--card-bg)">' +
-      '<div style="font-size:15px;font-weight:600;margin-bottom:8px">Your scheduling request has been received and is being reviewed.</div>' +
-      '<div style="font-size:13px;margin-bottom:4px;line-height:1.5">' +
+    html += '<div class="notice notice-info" style="flex-direction:column;gap:6px;margin-bottom:12px">' +
+      '<div style="font-size:15px;font-weight:600">Your scheduling request has been received and is being reviewed.</div>' +
+      '<div style="font-size:13px;margin-bottom:2px;line-height:1.5">' +
       '<strong>Held spot:</strong> ' + heldSpot +
       '</div>' +
-      '<div style="font-size:13px;margin-bottom:12px;line-height:1.5">' +
+      '<div style="font-size:13px;margin-bottom:10px;line-height:1.5">' +
       '<strong>Requested:</strong> ' + schedSegs.filter(function(x) { return x; }).map(function(x) { return esc(x); }).join(', ') +
       '</div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+      '<button onclick="doModifyRequest()" class="btn-primary" style="width:auto;padding:8px 16px;font-size:13px">Modify request</button>' +
+      '<button onclick="doCancelRequest()" class="btn-cancel" style="width:auto;padding:8px 16px;font-size:13px">Withdraw request</button>' +
       '</div>' +
-      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">' +
-      '<button onclick="doModifyRequest()" style="padding:8px 16px;font-size:13px;font-family:DM Sans,sans-serif;background:#1a4fc4;color:#fff;border:none;border-radius:8px;cursor:pointer">Modify request</button>' +
-      '<button onclick="doCancelRequest()" style="padding:8px 16px;font-size:13px;font-family:DM Sans,sans-serif;background:#8b2e2e;color:#fff;border:none;border-radius:8px;cursor:pointer">Withdraw request</button>' +
       '</div>';
   }
 
@@ -1881,7 +1881,7 @@ function rGuestSelect() {
   }
 
   html += '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; My booking</button></div>';
+    '<div class="back-row"><button class="btn-nav" onclick="refreshStudent(function(){state=\'found\';render();})">&#8592; My booking</button></div>';
   return html;
 }
 
@@ -2657,21 +2657,16 @@ function getLatestSchedRequest(notes) {
 }
 
 function doModifyRequest() {
-  try {
-    // Pre-populate prefSelected with currently requested segments
-    var schedSegs = student.schedRequest || getLatestSchedRequest(student.notes);
-    if (schedSegs && schedSegs.length) {
-      prefSelected = schedSegs.map(function(s) {
-        var clean = s.trim().replace(/^[^A-Za-z]+/, '').trim();
-        return {key: clean.replace(/ /g, '_'), type: 'preferred'};
-      });
-    } else {
-      prefSelected = [];
-    }
-    state = 'preferences'; errMsg = ''; render();
-  } catch(e) {
-    showErr('Error opening modify: ' + String(e));
+  var schedSegs = student.schedRequest || getLatestSchedRequest(student.notes);
+  if (schedSegs && schedSegs.length) {
+    prefSelected = schedSegs.map(function(s) {
+      var clean = s.trim().replace(/^[^A-Za-z]+/, '').trim();
+      return {key: clean.replace(/ /g, '_'), type: 'preferred'};
+    });
+  } else {
+    prefSelected = [];
   }
+  state = 'preferences'; errMsg = ''; render();
 }
 
 function doCancelRequest() {
