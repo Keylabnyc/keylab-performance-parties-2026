@@ -2227,6 +2227,7 @@ function rPreferences() {
   var DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
   var SEGS = {Monday:['Early','Late'],Tuesday:['Early','Late'],Wednesday:['Early','Late'],Thursday:['Early','Late'],Friday:['Single']};
   var PTIMES = {Monday:{Early:'4:00 PM',Late:'5:00 PM'},Tuesday:{Early:'4:00 PM',Late:'5:00 PM'},Wednesday:{Early:'4:00 PM',Late:'5:00 PM'},Thursday:{Early:'4:00 PM',Late:'5:00 PM'},Friday:{Single:'4:00 PM'}};
+  var PREF_LABELS = {preferred: '\u2b50 Preferred', available: '\u2713 Available', 'last-resort': '\u2193 Last resort', sibling: '\ud83d\udc6b Sibling'};
 
   // Already-requested segments (from existing request)
   var schedSegs = student.schedRequest || getLatestSchedRequest(student.notes);
