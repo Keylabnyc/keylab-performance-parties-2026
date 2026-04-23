@@ -1171,6 +1171,23 @@ function doSendMessage() {
 }
 
 // ── Render ─────────────────────────────────────────────────────
+function attachFoundListeners(root) {
+  root.addEventListener('click', function handler(e) {
+    var el = e.target;
+    while (el && el !== root) {
+      var action = el.getAttribute && el.getAttribute('data-action');
+      if (action) {
+        root.removeEventListener('click', handler);
+        if (action === 'modifyRequest') doModifyRequest();
+        else if (action === 'cancelRequest') doCancelRequest();
+        else if (action === 'manageBooking') { managingBooking = true; render(); }
+        return;
+      }
+      el = el.parentNode;
+    }
+  });
+}
+
 function render() {
   var root = document.getElementById("root");
   if (!root) return;
@@ -1186,7 +1203,7 @@ function render() {
     "lookup":           function() { root.innerHTML = rLookup();          renderInfo("lookup"); },
     "pick-student":     function() { root.innerHTML = rPickStudent();     renderInfo("lookup"); },
     "auth":             function() { root.innerHTML = rAuth();            renderInfo("lookup"); },
-    "found":            function() { root.innerHTML = rFound();           renderInfo("found"); },
+    "found":            function() { root.innerHTML = rFound();           renderInfo("found"); attachFoundListeners(root); },
     "guest-select":     function() { root.innerHTML = rGuestSelect(); renderInfo("found"); updateGuestNameFields(); },
     "preferences":      function() { root.innerHTML = rPreferences();     renderInfo("found"); },
     "pref-sent":        function() { root.innerHTML = rPrefSent();        renderInfo("found"); },
@@ -1474,8 +1491,8 @@ function rFound() {
       '<strong>Requested:</strong> ' + schedSegs.filter(function(x) { return x; }).map(function(x) { return esc(x); }).join(', ') +
       '</div>' +
       '</div>' +
-      btnWrap('<button onclick="doModifyRequest()" class="btn-primary">Modify request</button>', 'Change the segments you requested.') +
-      btnWrap('<button onclick="doCancelRequest()" class="btn-cancel">Withdraw request</button>', 'Cancel your scheduling request. You can submit a new one at any time.');
+      btnWrap('<button data-action="modifyRequest" class="btn-primary">Modify request</button>', 'Change the segments you requested.') +
+      btnWrap('<button data-action="cancelRequest" class="btn-cancel">Withdraw request</button>', 'Cancel your scheduling request. You can submit a new one at any time.');
   }
 
   // Email notice — success confirmation or prompt to add
@@ -1500,7 +1517,7 @@ function rFound() {
   var isConfirmedAny = s.status === 'confirmed' || s.status === 'confirmed-guest';
   if (isConfirmedAny && !managingBooking) {
     // Show single "Manage my booking" button — actions hidden until tapped
-    html += btnWrap('<button class="btn-secondary" onclick="managingBooking=true;render()">Manage my booking</button>', 'View and manage your booking options.');
+    html += btnWrap('<button class="btn-secondary" data-action="manageBooking">Manage my booking</button>', 'View and manage your booking options.');
   } else {
     html += rActions(s, isInactive);
   }
