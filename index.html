@@ -2685,6 +2685,7 @@ function doModifyRequest() {
 }
 
 function doCancelRequest() {
+  if (!confirm("Withdraw your scheduling request? You can submit a new one at any time.")) return;
   api({action:"withdrawSchedRequest", studentId:student.id, password:lookupPw}, function(e, r) {
     if (e || !r || !r.ok) { showErr("Could not withdraw request. Please try again."); return; }
     // Clear schedRequest field and poison notes so getLatestSchedRequest returns null
