@@ -1015,7 +1015,7 @@ function doSubmitPreferences() {
       showErr((r && r.error) || "Could not submit. Please try again.");
       return;
     }
-    refreshStudent(function() { state = "found"; render(); });
+    state = "pref-sent"; render();
   });
 }
 
