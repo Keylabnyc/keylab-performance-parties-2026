@@ -1187,6 +1187,19 @@ function attachFoundListeners(root) {
   });
 }
 
+function attachWithdrawListener(root) {
+  root.addEventListener('click', function(e) {
+    var el = e.target;
+    while (el && el !== root) {
+      if (el.getAttribute && el.getAttribute('data-action') === 'confirmWithdraw') {
+        doCancelRequest();
+        return;
+      }
+      el = el.parentNode;
+    }
+  });
+}
+
 function render() {
   var root = document.getElementById("root");
   if (!root) return;
@@ -1220,7 +1233,7 @@ function render() {
     "confirm-sent":     function() { root.innerHTML = rConfirmSent();     renderInfo("found"); },
     "messaging":        function() { root.innerHTML = rMessaging();       renderInfo("found"); },
     "msg-sent":         function() { root.innerHTML = rMsgSent();         renderInfo("found"); },
-    "withdraw-confirm": function() { root.innerHTML = rWithdrawConfirm();  renderInfo("found"); }
+    "withdraw-confirm": function() { root.innerHTML = rWithdrawConfirm();  renderInfo("found"); attachWithdrawListener(root); }
   };
 
   if (screens[state]) screens[state]();
@@ -1895,7 +1908,7 @@ function rGuestSelect() {
   }
 
   html += '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="refreshStudent(function(){state=\'found\';render();})">&#8592; My booking</button></div>';
+    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; My booking</button></div>';
   return html;
 }
 
@@ -2342,7 +2355,7 @@ function rPrefSent() {
     '<div class="confirm-sub">Your scheduling preference has been submitted. We\'ll do our best to accommodate you.</div>' +
     '<div class="notice notice-info"><span class="ni">&#128274;</span><span>' + phaseNote + '</span></div>' +
     '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="refreshStudent(function(){state=\'found\';render();})">&#8592; My booking</button></div>';
+    '<div class="back-row"><button class="btn-nav" onclick="doPrefSentBack()">&#8592; My booking</button></div>';
 }
 
 // ── Screen: Swap ───────────────────────────────────────────────
@@ -2678,9 +2691,13 @@ function rWithdrawConfirm() {
     'This will cancel your current scheduling request. You can submit a new one at any time.' +
     '</span></div>' +
     errFrag() +
-    '<button class="btn-cancel" onclick="doCancelRequest()">Yes, withdraw request</button>' +
+    '<button class="btn-cancel" data-action="confirmWithdraw">Yes, withdraw request</button>' +
     '</div>' +
     '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';errMsg=\'\';render()">&#8592; Keep my request</button></div>';
+}
+
+function doPrefSentBack() {
+  state = 'found'; errMsg = ''; render();
 }
 
 function doModifyRequest() {
