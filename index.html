@@ -683,18 +683,11 @@ var TIMES = {
 };
 var ARRIVE = {Early:"Arrive 3:30\u20133:50 PM", Late:"Arrive 4:45\u20135:00 PM", Single:"Arrive 3:30\u20133:50 PM"};
 
-// ── GITHUB VERSION: calls GAS backend via fetch() instead of google.script.run ──
-var GAS_URL = 'https://script.google.com/a/macros/keylab.nyc/s/AKfycbzenlfK9eu0G17af-fdjrkiRT-qZLcsLByN-QGb_SCIpmev_xoI3PkY6OW92nuiz4L45g/exec';
-
 function api(p, cb) {
-  fetch(GAS_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify(p)
-  })
-  .then(function(res) { return res.json(); })
-  .then(function(data) { cb(null, data); })
-  .catch(function(e) { cb(e); });
+  google.script.run
+    .withSuccessHandler(function(r) { try { cb(null, JSON.parse(r)); } catch(e) { cb(e); } })
+    .withFailureHandler(function(e) { cb(e); })
+    .callApi(JSON.stringify(p));
 }
 
 // Safety guard: ensure esc is always available before any callback fires
@@ -902,53 +895,6 @@ function doSubmitCancel() {
   });
 }
 
-// ── Unconfirm ──────────────────────────────────────────────────
-function doStartUnconfirm() { state = "unconfirm"; errMsg = ''; render(); }
-
-function doSubmitUnconfirm() {
-  errMsg = '';
-  var btn = document.getElementById("unconfirm-btn");
-  if (btn) { btn.disabled = true; btn.textContent = "Reverting\u2026"; }
-  api({action:"unconfirm", studentId:student.id, password:lookupPw, email:lookupEmail}, function(e, r) {
-    if (e || !r || !r.ok) {
-      if (btn) { btn.disabled = false; btn.textContent = "Yes, revert to unconfirmed"; }
-      showErr((r && r.error) || "Could not revert status. Please try again.");
-      return;
-    }
-    refreshStudent(function() { state = "found"; render(); });
-  });
-}
-
-// ── Edit Guests ────────────────────────────────────────────────
-function doStartEditGuests() { state = "edit-guests"; errMsg = ''; render(); }
-
-function doSubmitEditGuests() {
-  errMsg = '';
-  var guestCount = 0;
-  var guestNames = [];
-  
-  // Collect guest names from input fields
-  for (var i = 1; i <= 3; i++) {
-    var nameField = document.getElementById("guest-name-" + i);
-    if (nameField && nameField.value && nameField.value.trim()) {
-      guestNames.push(nameField.value.trim());
-      guestCount++;
-    }
-  }
-  
-  var btn = document.getElementById("edit-guests-btn");
-  if (btn) { btn.disabled = true; btn.textContent = "Saving\u2026"; }
-  
-  api({action:"confirm", studentId:student.id, password:lookupPw, status:student.status, guests:guestCount, guestNames:guestNames, email:lookupEmail}, function(e, r) {
-    if (e || !r || !r.ok) {
-      if (btn) { btn.disabled = false; btn.textContent = "Save changes"; }
-      showErr((r && r.error) || "Could not update guest list. Please try again.");
-      return;
-    }
-    refreshStudent(function() { state = "found"; render(); });
-  });
-}
-
 // ── Preferences ────────────────────────────────────────────────
 function doStartPreferences() {
   prefSelected = [];
@@ -1013,6 +959,53 @@ function doSubmitPreferences() {
     if (e || !r || !r.ok) {
       if (btn) { btn.disabled = false; btn.textContent = "Submit preferences"; }
       showErr((r && r.error) || "Could not submit. Please try again.");
+      return;
+    }
+    refreshStudent(function() { state = "found"; render(); });
+  });
+}
+
+// ── Unconfirm ──────────────────────────────────────────────────
+function doStartUnconfirm() { state = "unconfirm"; errMsg = ''; render(); }
+
+function doSubmitUnconfirm() {
+  errMsg = '';
+  var btn = document.getElementById("unconfirm-btn");
+  if (btn) { btn.disabled = true; btn.textContent = "Reverting\u2026"; }
+  api({action:"unconfirm", studentId:student.id, password:lookupPw, email:lookupEmail}, function(e, r) {
+    if (e || !r || !r.ok) {
+      if (btn) { btn.disabled = false; btn.textContent = "Yes, revert to unconfirmed"; }
+      showErr((r && r.error) || "Could not revert status. Please try again.");
+      return;
+    }
+    refreshStudent(function() { state = "found"; render(); });
+  });
+}
+
+// ── Edit Guests ────────────────────────────────────────────────
+function doStartEditGuests() { state = "edit-guests"; errMsg = ''; render(); }
+
+function doSubmitEditGuests() {
+  errMsg = '';
+  var guestCount = 0;
+  var guestNames = [];
+  
+  // Collect guest names from input fields
+  for (var i = 1; i <= 3; i++) {
+    var nameField = document.getElementById("guest-name-" + i);
+    if (nameField && nameField.value && nameField.value.trim()) {
+      guestNames.push(nameField.value.trim());
+      guestCount++;
+    }
+  }
+  
+  var btn = document.getElementById("edit-guests-btn");
+  if (btn) { btn.disabled = true; btn.textContent = "Saving\u2026"; }
+  
+  api({action:"confirm", studentId:student.id, password:lookupPw, status:student.status, guests:guestCount, guestNames:guestNames, email:lookupEmail}, function(e, r) {
+    if (e || !r || !r.ok) {
+      if (btn) { btn.disabled = false; btn.textContent = "Save changes"; }
+      showErr((r && r.error) || "Could not update guest list. Please try again.");
       return;
     }
     state = "pref-sent"; render();
@@ -1179,7 +1172,7 @@ function attachFoundListeners(root) {
       if (action) {
         root.removeEventListener('click', handler);
         if (action === 'modifyRequest') doModifyRequest();
-        else if (action === 'cancelRequest') doCancelRequest();
+        else if (action === 'cancelRequest') { state = 'withdraw-confirm'; errMsg = ''; render(); }
         else if (action === 'manageBooking') { managingBooking = true; render(); }
         return;
       }
@@ -1220,7 +1213,8 @@ function render() {
     "swap-confirmed":   function() { root.innerHTML = rSwapConfirmed();   renderInfo("found"); },
     "confirm-sent":     function() { root.innerHTML = rConfirmSent();     renderInfo("found"); },
     "messaging":        function() { root.innerHTML = rMessaging();       renderInfo("found"); },
-    "msg-sent":         function() { root.innerHTML = rMsgSent();         renderInfo("found"); }
+    "msg-sent":         function() { root.innerHTML = rMsgSent();         renderInfo("found"); },
+    "withdraw-confirm": function() { root.innerHTML = rWithdrawConfirm();  renderInfo("found"); }
   };
 
   if (screens[state]) screens[state]();
@@ -2671,6 +2665,18 @@ function getLatestSchedRequest(notes) {
   return null;
 }
 
+function rWithdrawConfirm() {
+  return '<div class="card">' +
+    '<div class="card-title">Withdraw scheduling request?</div>' +
+    '<div class="notice notice-warn"><span class="ni">&#9888;</span><span>' +
+    'This will cancel your current scheduling request. You can submit a new one at any time.' +
+    '</span></div>' +
+    errFrag() +
+    '<button class="btn-cancel" onclick="doCancelRequest()">Yes, withdraw request</button>' +
+    '</div>' +
+    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';errMsg=\'\';render()">&#8592; Keep my request</button></div>';
+}
+
 function doModifyRequest() {
   var schedSegs = student.schedRequest || getLatestSchedRequest(student.notes);
   if (schedSegs && schedSegs.length) {
@@ -2685,7 +2691,6 @@ function doModifyRequest() {
 }
 
 function doCancelRequest() {
-  if (!confirm("Withdraw your scheduling request? You can submit a new one at any time.")) return;
   api({action:"withdrawSchedRequest", studentId:student.id, password:lookupPw}, function(e, r) {
     if (e || !r || !r.ok) { showErr("Could not withdraw request. Please try again."); return; }
     // Clear schedRequest field and poison notes so getLatestSchedRequest returns null
