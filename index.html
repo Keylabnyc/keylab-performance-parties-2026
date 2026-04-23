@@ -2327,7 +2327,7 @@ function rPrefSent() {
     '<div class="confirm-sub">Your scheduling preference has been submitted. We\'ll do our best to accommodate you.</div>' +
     '<div class="notice notice-info"><span class="ni">&#128274;</span><span>' + phaseNote + '</span></div>' +
     '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; My booking</button></div>';
+    '<div class="back-row"><button class="btn-nav" onclick="refreshStudent(function(){state=\'found\';render();})">&#8592; My booking</button></div>';
 }
 
 // ── Screen: Swap ───────────────────────────────────────────────
