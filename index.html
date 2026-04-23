@@ -1535,8 +1535,8 @@ function rActions(s, isInactive) {
         );
       }
     }
-    // Unconfirm button (pre/priority phases only, through June 1st)
-    if (phase !== 'locked' && phase !== 'open') {
+    // Unconfirm button — available through June 1st
+    if (phase !== 'locked') {
       html += btnWrap(
         '<button class="btn-secondary" onclick="doStartUnconfirm()">Change my mind — revert to unconfirmed</button>',
         'If you\'re not ready to commit, you can revert to unconfirmed status. Your spot will be held for you.'
@@ -1573,14 +1573,19 @@ function rActions(s, isInactive) {
       '<button class="btn-primary" onclick="doStartConfirm(\'confirmed\')">Confirm as performer &rarr;</button>',
       'Switch to confirmed performer. You\'ll select your guest count.'
     );
-    if (phase !== 'locked' && !hasPendingRequest) {
+    if (phase === 'open') {
+      html += btnWrap(
+        '<button class="btn-secondary" onclick="doStartSwap()">Reschedule &rarr;</button>',
+        'Instantly reschedule into any open spot, per availability. Your current spot will be released.'
+      );
+    } else if (phase !== 'locked' && !hasPendingRequest) {
       html += btnWrap(
         '<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>',
         'Need a different day or segment? Submit a request and we\'ll do our best to accommodate you.'
       );
     }
-    // Unconfirm button (pre/priority phases only, through June 1st)
-    if (phase !== 'locked' && phase !== 'open') {
+    // Unconfirm button — available through June 1st
+    if (phase !== 'locked') {
       html += btnWrap(
         '<button class="btn-secondary" onclick="doStartUnconfirm()">Change my mind — revert to unconfirmed</button>',
         'If you\'re not ready to commit, you can revert to unconfirmed status. Your spot will be held for you.'
@@ -2041,7 +2046,7 @@ function rConfirmSent() {
     '<div class="notice notice-info"><span class="ni">&#128197;</span><span>If you added your email address, a confirmation email will be sent shortly. Click below to add the event to your calendar.</span></div>' +
     calendarLinks(s) +
     '</div>' +
-    (phase !== 'open' && phase !== 'locked' ? '<div style="margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:7px;background:var(--bg3);"><div style="font-size:12px;font-weight:600;color:var(--text3);margin-bottom:8px">CHANGED YOUR MIND?</div><p style="font-size:13px;color:var(--text2);margin:0 0 10px 0;line-height:1.4">No problem! You can revert to unconfirmed status anytime before May 4th. Your spot will still be held for you.</p><button class="btn-secondary" style="width:100%;text-align:center" onclick="doStartUnconfirm()">Revert to unconfirmed</button></div>' : '') +
+    (phase !== 'locked' ? '<div style="margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:7px;background:var(--bg3);"><div style="font-size:12px;font-weight:600;color:var(--text3);margin-bottom:8px">CHANGED YOUR MIND?</div><p style="font-size:13px;color:var(--text2);margin:0 0 10px 0;line-height:1.4">No problem! You can revert to unconfirmed status anytime before June 1st. Your spot will still be held for you.</p><button class="btn-secondary" style="width:100%;text-align:center" onclick="doStartUnconfirm()">Revert to unconfirmed</button></div>' : '') +
     '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; My booking</button></div>';
 }
 
@@ -2175,7 +2180,10 @@ function rUnconfirm() {
   return '<div class="card">' +
     '<div class="card-title">Change my mind</div>' +
     '<div class="notice notice-info"><span class="ni">&#9432;</span><span>' +
-    'Are you sure you want to revert to unconfirmed? Your spot will still be held for you, but will become available to others starting May 4th. You can re-confirm or reschedule anytime.' +
+    (phase === 'open' || phase === 'locked'
+      ? 'Are you sure you want to revert to unconfirmed? Your spot will be released immediately. You can re-confirm or reschedule into any open spot up until June 1st.'
+      : 'Are you sure you want to revert to unconfirmed? Your spot will still be held for you, but will become available to others starting May 4th. You can re-confirm or reschedule anytime.'
+    ) +
     '</span></div>' +
     errFrag() +
     '<button class="btn-primary" id="unconfirm-btn" onclick="doSubmitUnconfirm()">Yes, revert to unconfirmed</button>' +
