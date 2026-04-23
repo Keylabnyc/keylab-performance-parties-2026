@@ -1007,7 +1007,7 @@ function doSubmitPreferences() {
   var btn = document.getElementById("pref-btn");
   if (btn) { btn.disabled = true; btn.textContent = "Submitting\u2026"; }
   var segments = prefSelected.map(function(k) {
-    var p = k.key.split('_'); return p[0] + ' ' + p[1];
+    var p = k.key.split('_'); return p[0] + ' ' + p[1] + ' [' + k.type + ']';
   });
   api({action:"submitPreferences", studentId:student.id, password:lookupPw, segments:segments, note:note.trim(), email:lookupEmail}, function(e, r) {
     if (e || !r || !r.ok) {
@@ -2220,7 +2220,7 @@ function rPreferences() {
 
   // Already-requested segments (from existing request)
   var schedSegs = student.schedRequest || getLatestSchedRequest(student.notes);
-  var prefRequested = schedSegs ? schedSegs.map(function(s) { return s.trim().replace(/ /g, '_'); }) : [];
+  var prefRequested = schedSegs ? schedSegs.map(function(s) { return s.trim().replace(/^[\u2b50\u2713\u2193\ud83d\udc6b\ud83d\udccc]\s*/, '').replace(/ /g, '_'); }) : [];
 
   // Current spot label logic
   var curKey = (student.day && student.seg) ? student.day + '_' + student.seg : null;
@@ -2611,6 +2611,15 @@ function toggleInfo(id) {
   if (btn) btn.classList.toggle("open", !open);
 }
 
+function fmtSchedSegment(s) {
+  var TYPE_ICONS = {preferred: '\u2b50', available: '\u2713', 'last-resort': '\u2193', sibling: '\ud83d\udc6b', 'admin-hold': '\ud83d\udccc', requested: ''};
+  var typeMatch = s.trim().match(/\[([^\]]+)\]$/);
+  var type = typeMatch ? typeMatch[1] : '';
+  var seg = s.trim().replace(/\s*\[[^\]]+\]$/, '').trim().replace(/_/g, ' ');
+  var icon = TYPE_ICONS[type] || '';
+  return icon ? icon + ' ' + seg : seg;
+}
+
 function getLatestSchedRequest(notes) {
   if (!notes || !notes.trim()) return null;
   var chunks = notes.trim().split(/\n\n+/);
@@ -2626,7 +2635,7 @@ function getLatestSchedRequest(notes) {
       var slotMatch = body.match(/Preferred slots:\s*([^.]+)/);
       if (slotMatch) {
         return slotMatch[1].trim().split(',').map(function(s) {
-          return s.trim().replace('_', ' ');
+          return fmtSchedSegment(s);
         });
       }
     }
@@ -2639,8 +2648,9 @@ function doModifyRequest() {
   var schedSegs = student.schedRequest || getLatestSchedRequest(student.notes);
   if (schedSegs && schedSegs.length) {
     prefSelected = schedSegs.map(function(s) {
-      // Convert "Monday Early" to {key:"Monday_Early", type:"preferred"}
-      return {key: s.trim().replace(/ /g, '_'), type: 'preferred'};
+      // Strip any leading icon and convert "Monday Early" to {key:"Monday_Early", type:"preferred"}
+      var clean = s.trim().replace(/^[\u2b50\u2713\u2193\ud83d\udc6b\ud83d\udccc]\s*/, '');
+      return {key: clean.replace(/ /g, '_'), type: 'preferred'};
     });
   } else {
     prefSelected = [];
