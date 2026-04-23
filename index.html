@@ -2194,15 +2194,16 @@ function rUnconfirm() {
 // ── Screen: Edit Guests ────────────────────────────────────────
 function rEditGuests() {
   var s = student;
+  var confirmedCount = parseInt(s.guests) || 0;
   var html = '<div class="card">' +
     '<div class="card-title">Edit guest list</div>' +
     '<div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5">' +
-    'You can add, change, or remove guest names. You have up to 3 guest seats available.' +
+    'You can edit or remove guests from your booking. You have ' + confirmedCount + ' guest seat' + (confirmedCount !== 1 ? 's' : '') + ' confirmed.' +
     '</div>' +
     errFrag();
   
-  // Build input fields for up to 3 guests
-  for (var i = 1; i <= 3; i++) {
+  // Only show fields for already-confirmed guests — cannot add beyond confirmed count
+  for (var i = 1; i <= confirmedCount; i++) {
     var existingName = (s.guestNames && s.guestNames[i-1]) ? s.guestNames[i-1] : '';
     html += '<div style="margin-bottom:12px">' +
       '<label style="display:block;font-size:12px;font-weight:600;color:var(--text3);margin-bottom:4px">Guest ' + i + '</label>' +
@@ -2210,9 +2211,13 @@ function rEditGuests() {
       'style="width:100%;padding:8px 10px;font-family:\'DM Sans\',sans-serif;font-size:14px;border:1px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text);box-sizing:border-box">' +
       '</div>';
   }
+
+  if (confirmedCount === 0) {
+    html += '<div style="font-size:13px;color:var(--text3);margin-bottom:16px;padding:12px;background:var(--bg3);border-radius:7px">No guests are currently on your booking.</div>';
+  }
   
   html += '<div style="font-size:12px;color:var(--text3);margin-bottom:16px;margin-top:8px">' +
-    'Clear a field to remove that guest.' +
+    'Clear a field to remove that guest. To add guests, please contact us at info@keylab.nyc.' +
     '</div>' +
     '<button class="btn-primary" id="edit-guests-btn" onclick="doSubmitEditGuests()">Save changes</button>' +
     '</div>' +
