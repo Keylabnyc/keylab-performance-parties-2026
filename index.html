@@ -468,6 +468,7 @@
     font-family: 'DM Sans', sans-serif;
     transition: border-color .15s, background .15s;
   }
+  .pref-btn * { pointer-events: none; }
   .pref-btn.selected { border-color: var(--acc); background: var(--acc-lt); }
   .pref-btn.already-requested { border-color: var(--info); background: var(--info-lt); }
   .pref-btn.already-requested.selected { border-color: var(--acc); background: var(--acc-lt); }
@@ -2239,7 +2240,7 @@ function rPreferences() {
       var isDisabled = isCur;
       var cls = 'pref-btn' + (isSel ? ' selected' : '') + (isReq && !isCur ? ' already-requested' : '') + (isCur ? ' current-slot' : '');
       var typeLabel = isSel ? '<div class="pref-time pref-type-label" style="font-weight:600;margin-top:4px">' + (PREF_LABELS[selObj.type] || selObj.type) + '</div>' : '';
-      grid += '<button class="' + cls + '" data-prefkey="' + key + '" ' + (isDisabled ? 'disabled style="opacity:0.6;cursor:not-allowed"' : '') + '>' +
+      grid += '<button class="' + cls + '" data-prefkey="' + key + '" ' + (isDisabled ? 'disabled style="opacity:0.6;cursor:not-allowed"' : 'onclick="togglePref(\'' + key + '\')"') + '>' +
         '<div class="pref-name">' + day + (seg === 'Single' ? '' : ' ' + seg) + '</div>' +
         '<div class="pref-time">' + PTIMES[day][seg] + '</div>' +
         (isCur && currentLabel ? '<div class="pref-time" style="color:var(--info);margin-top:3px">' + currentLabel + '</div>' : '') +
