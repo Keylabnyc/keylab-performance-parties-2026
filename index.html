@@ -2719,7 +2719,8 @@ function doPrefSentBack() {
 
 function doModifyRequest() {
   prefSelected = [];
-  state = 'preferences'; errMsg = ''; render();
+  state = 'preferences'; errMsg = '';
+  setTimeout(function() { render(); }, 0);
 }
 
 function doFpwEnter() {
