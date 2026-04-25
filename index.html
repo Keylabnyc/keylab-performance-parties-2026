@@ -1130,17 +1130,6 @@ function attachWithdrawListener(root) {
   // withdraw-confirm flow removed — listener retained as no-op for safety
 }
 
-function attachPrefListeners() {
-  var btns = document.querySelectorAll('.pref-grid button');
-  for (var i = 0; i < btns.length; i++) {
-    (function(btn) {
-      btn.addEventListener('click', function() {
-        var key = btn.getAttribute('data-prefkey');
-        if (key && !btn.disabled) { togglePref(key); }
-      });
-    })(btns[i]);
-  }
-}
 
 function render() {
   var root = document.getElementById("root");
@@ -1159,7 +1148,7 @@ function render() {
     "auth":             function() { root.innerHTML = rAuth();            renderInfo("lookup"); },
     "found":            function() { root.innerHTML = rFound();           renderInfo("found"); attachFoundListeners(root); },
     "guest-select":     function() { root.innerHTML = rGuestSelect(); renderInfo("found"); updateGuestNameFields(); },
-    "preferences":      function() { root.innerHTML = rPreferences();     renderInfo("found"); attachPrefListeners(); },
+    "preferences":      function() { root.innerHTML = rPreferences();     renderInfo("found"); },
     "pref-sent":        function() { root.innerHTML = rPrefSent();        renderInfo("found"); },
     "cancel":           function() { root.innerHTML = rCancel();          renderInfo("found"); },
     "cancel-confirmed": function() { root.innerHTML = rCancelConfirmed(); renderInfo("found"); },
@@ -1448,7 +1437,7 @@ function rFound() {
       '<strong>Requested:</strong> ' + schedSegs.filter(function(x) { return x; }).map(function(x) { return esc(x); }).join(', ') +
       '</div>' +
       '</div>' +
-      btnWrap('<button data-action="modifyRequest" class="btn-primary">Modify request</button>', 'Change the segments you requested.');
+      btnWrap('<button onclick="doModifyRequest()" class="btn-primary">Modify request</button>', 'Change the segments you requested.');
   }
 
   if (unconfirmReverted) {
@@ -2248,7 +2237,7 @@ function rPreferences() {
       var isDisabled = isCur;
       var cls = 'pref-btn' + (isSel ? ' selected' : '') + (isReq && !isCur ? ' already-requested' : '') + (isCur ? ' current-slot' : '');
       var typeLabel = isSel ? '<div class="pref-time pref-type-label" style="font-weight:600;margin-top:4px">' + (PREF_LABELS[selObj.type] || selObj.type) + '</div>' : '';
-      grid += '<button class="' + cls + '" data-prefkey="' + key + '" ' + (isDisabled ? 'disabled style="opacity:0.6;cursor:not-allowed"' : '') + '>' +
+      grid += '<button class="' + cls + '" data-prefkey="' + key + '" ' + (isDisabled ? 'disabled style="opacity:0.6;cursor:not-allowed"' : 'onclick="togglePref(\'' + key + '\')"') + '>' +
         '<div class="pref-name">' + day + (seg === 'Single' ? '' : ' ' + seg) + '</div>' +
         '<div class="pref-time">' + PTIMES[day][seg] + '</div>' +
         (isCur && currentLabel ? '<div class="pref-time" style="color:var(--info);margin-top:3px">' + currentLabel + '</div>' : '') +
