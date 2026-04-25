@@ -2234,7 +2234,7 @@ function rPreferences() {
       var isSel = !!selObj;
       var isReq = prefRequested.indexOf(key) > -1;
       var isCur = curKey === key;
-      var isDisabled = isCur;
+      var isDisabled = isCur || isReq;
       var cls = 'pref-btn' + (isSel ? ' selected' : '') + (isReq && !isCur ? ' already-requested' : '') + (isCur ? ' current-slot' : '');
       var typeLabel = isSel ? '<div class="pref-time pref-type-label" style="font-weight:600;margin-top:4px">' + (PREF_LABELS[selObj.type] || selObj.type) + '</div>' : '';
       grid += '<button class="' + cls + '" data-prefkey="' + key + '" ' + (isDisabled ? 'disabled style="opacity:0.6;cursor:not-allowed"' : 'onclick="togglePref(\'' + key + '\')"') + '>' +
@@ -2252,18 +2252,10 @@ function rPreferences() {
   var hasPendingPref = !!(student && (student.schedRequest && student.schedRequest.length) || getLatestSchedRequest(student && student.notes));
   var holdNotice = '';
   if (!isInactivePref && hasPendingPref) {
-    // holdNotice suppressed in modify mode — heading already contextualizes the situation
-  } else if (!isInactivePref && !hasPendingPref) {
-    holdNotice = '';
+    holdNotice = '<div class="notice notice-info" style="margin-bottom:14px"><span class="ni">&#128274;</span><span>' +
+      '<strong>Your request is under review.</strong> Visit keylab.nyc/performance-parties for details.' +
+      '</span></div>';
   }
-
-  var cardTitle = hasPendingPref
-    ? 'Update your scheduling request'
-    : 'Select one or more segments';
-
-  var cardInstructions = hasPendingPref
-    ? '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Your previously requested segments are highlighted below. Tap any segment to select it, then tap again to change its priority. When you\'re done, tap Submit \u2014 your previous selections will be permanently overwritten. To cancel your request entirely, leave all segments unselected and tap Submit.</p>'
-    : '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Choose every segment that could work for you. Add any notes below before submitting \u2014 we\'ll do our best to place you in a preferred segment.</p>';
 
   var priorityNote = (phase === 'pre')
     ? '<div class="notice notice-warn" style="margin-bottom:14px"><span class="ni">&#128197;</span><span>' +
@@ -2283,8 +2275,8 @@ function rPreferences() {
     '</div>';
 
   return '<div class="card">' +
-    '<div class="card-title">' + cardTitle + '</div>' +
-    cardInstructions +
+    '<div class="card-title">Select one or more segments</div>' +
+    '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Choose every segment that could work for you. Add any notes below before submitting \u2014 we\'ll do our best to place you in a preferred segment.</p>' +
     errFrag() +
     priorityNote +
     holdNotice +
