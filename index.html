@@ -1113,6 +1113,10 @@ function attachFoundListeners(root) {
   root.addEventListener('click', function(e) {
     var el = e.target;
     while (el && el !== root) {
+      // Handle pref-grid segment button clicks via delegation
+      var prefKey = el.getAttribute && el.getAttribute('data-prefkey');
+      if (prefKey && !el.disabled) { togglePref(prefKey); return; }
+      // Handle data-action buttons
       var action = el.getAttribute && el.getAttribute('data-action');
       if (action) {
         if (action === 'modifyRequest') doModifyRequest();
@@ -2235,7 +2239,7 @@ function rPreferences() {
       var isDisabled = isCur;
       var cls = 'pref-btn' + (isSel ? ' selected' : '') + (isReq && !isCur ? ' already-requested' : '') + (isCur ? ' current-slot' : '');
       var typeLabel = isSel ? '<div class="pref-time pref-type-label" style="font-weight:600;margin-top:4px">' + (PREF_LABELS[selObj.type] || selObj.type) + '</div>' : '';
-      grid += '<button class="' + cls + '" data-prefkey="' + key + '" ' + (isDisabled ? 'disabled style="opacity:0.6;cursor:not-allowed"' : 'onclick="togglePref(\'' + key + '\')"') + '>' +
+      grid += '<button class="' + cls + '" data-prefkey="' + key + '" ' + (isDisabled ? 'disabled style="opacity:0.6;cursor:not-allowed"' : '') + '>' +
         '<div class="pref-name">' + day + (seg === 'Single' ? '' : ' ' + seg) + '</div>' +
         '<div class="pref-time">' + PTIMES[day][seg] + '</div>' +
         (isCur && currentLabel ? '<div class="pref-time" style="color:var(--info);margin-top:3px">' + currentLabel + '</div>' : '') +
