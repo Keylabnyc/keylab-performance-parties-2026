@@ -2260,7 +2260,7 @@ function rPreferences() {
     : 'Select one or more segments';
 
   var cardInstructions = hasPendingPref
-    ? '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Your currently requested segments are shown below. Tap any segment to remove it or change its priority. Tap an unselected segment to add it. Tap again to change its priority. When you\'re done, tap Submit to update your existing request \u2014 your previous selections will be permanently overwritten. To cancel your request entirely, deselect all segments and tap Submit.</p>'
+    ? '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Your previously requested segments are highlighted below. Tap any segment to select it, then tap again to change its priority. When you\'re done, tap Submit \u2014 your previous selections will be permanently overwritten. To cancel your request entirely, leave all segments unselected and tap Submit.</p>'
     : '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Choose every segment that could work for you. Add any notes below before submitting \u2014 we\'ll do our best to place you in a preferred segment.</p>';
 
   var priorityNote = (phase === 'pre')
@@ -2713,15 +2713,7 @@ function doPrefSentBack() {
 }
 
 function doModifyRequest() {
-  var schedSegs = student.schedRequest || getLatestSchedRequest(student.notes);
-  if (schedSegs && schedSegs.length) {
-    prefSelected = schedSegs.map(function(s) {
-      var clean = s.trim().replace(/^[^A-Za-z]+/, '').trim();
-      return {key: clean.replace(/ /g, '_'), type: 'preferred'};
-    });
-  } else {
-    prefSelected = [];
-  }
+  prefSelected = [];
   state = 'preferences'; errMsg = ''; render();
 }
 
