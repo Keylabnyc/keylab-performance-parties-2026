@@ -662,6 +662,10 @@ var slots   = null;
 var phase   = "pre";
 var errMsg  = "";
 var schedRequestCancelled = false;
+var unconfirmReverted = false;
+window._rejoinPickContext = null;
+window._rejoinOrigConfirmDay = null;
+window._rejoinOrigConfirmSeg = null;
 var lookupName = "", lookupPw = "", lookupEmail = "";
 var lookupMatches = []; // for multi-match picker
 var selectedMatch = null; // {id, name, day, seg} chosen from picker
@@ -915,6 +919,7 @@ function doSubmitUnconfirm() {
       showErr((r && r.error) || "Could not revert status. Please try again.");
       return;
     }
+    unconfirmReverted = true;
     refreshStudent(function() { state = "found"; render(); });
   });
 }
@@ -945,77 +950,8 @@ function doSubmitEditGuests() {
       showErr((r && r.error) || "Could not update guest list. Please try again.");
       return;
     }
-    refreshStudent(function() { state = "found"; render(); });
-  });
-}
-
-// ── Preferences ────────────────────────────────────────────────
-function doStartPreferences() {
-  prefSelected = [];
-  state = "preferences"; errMsg = ''; render();
-}
-
-function togglePref(key) {
-  var CYCLE = ['preferred', 'available', 'last-resort', 'sibling'];
-  var PREF_LABELS = {preferred: '\u2b50 Preferred', available: '\u2713 Available', 'last-resort': '\u2193 Last resort', sibling: '\ud83d\udc6b Sibling'};
-  var idx = -1;
-  for (var i = 0; i < prefSelected.length; i++) { if (prefSelected[i].key === key) { idx = i; break; } }
-  if (idx === -1) {
-    prefSelected.push({key: key, type: CYCLE[0]});
-  } else {
-    var nextTypeIdx = CYCLE.indexOf(prefSelected[idx].type) + 1;
-    if (nextTypeIdx >= CYCLE.length) {
-      prefSelected.splice(idx, 1);
-    } else {
-      prefSelected[idx].type = CYCLE[nextTypeIdx];
-    }
-  }
-  // Update buttons in-place — do NOT call render() which replaces innerHTML
-  // and breaks inline onclick handlers in the GAS sandbox
-  var btns = document.querySelectorAll('.pref-grid button');
-  for (var bi = 0; bi < btns.length; bi++) {
-    var btn = btns[bi];
-    var bkey = btn.getAttribute('data-prefkey');
-    if (!bkey) continue;
-    var selObj = null;
-    for (var si = 0; si < prefSelected.length; si++) { if (prefSelected[si].key === bkey) { selObj = prefSelected[si]; break; } }
-    var isSel = !!selObj;
-    // Update selected class
-    if (isSel) { btn.classList.add('selected'); } else { btn.classList.remove('selected'); }
-    // Update or remove type label div
-    var labelDiv = btn.querySelector('.pref-type-label');
-    if (isSel) {
-      var labelText = PREF_LABELS[selObj.type] || selObj.type;
-      if (!labelDiv) {
-        labelDiv = document.createElement('div');
-        labelDiv.className = 'pref-time pref-type-label';
-        labelDiv.style.fontWeight = '600';
-        labelDiv.style.marginTop = '4px';
-        btn.appendChild(labelDiv);
-      }
-      labelDiv.textContent = labelText;
-    } else {
-      if (labelDiv) labelDiv.parentNode.removeChild(labelDiv);
-    }
-  }
-}
-
-function doSubmitPreferences() {
-  errMsg = '';
-  if (!prefSelected.length) { showErr("Please select at least one segment."); return; }
-  var note = (document.getElementById("pref-note") || {}).value || "";
-  var btn = document.getElementById("pref-btn");
-  if (btn) { btn.disabled = true; btn.textContent = "Submitting\u2026"; }
-  var segments = prefSelected.map(function(k) {
-    var p = k.key.split('_'); return p[0] + ' ' + p[1] + ' [' + k.type + ']';
-  });
-  api({action:"submitPreferences", studentId:student.id, password:lookupPw, segments:segments, note:note.trim(), email:lookupEmail}, function(e, r) {
-    if (e || !r || !r.ok) {
-      if (btn) { btn.disabled = false; btn.textContent = "Submit preferences"; }
-      showErr((r && r.error) || "Could not submit. Please try again.");
-      return;
-    }
-    state = "pref-sent"; render();
+    student.guests = guestCount; student.guestNames = guestNames;
+    state = "confirm-sent"; render();
   });
 }
 
@@ -1082,6 +1018,7 @@ function doRejoinWithFreshSlots() {
           window._rejoinOrigDay = (slotData && !slotData.isFull) ? origDay : null;
           window._rejoinOrigSeg = (slotData && !slotData.isFull) ? origSeg : null;
         }
+        window._rejoinPickContext = 'open';
         state = "swap"; errMsg = ''; render();
       });
     } else {
@@ -1101,6 +1038,7 @@ function doRejoinDirect(toDay, toSeg) {
             state = "swap"; window._rejoinOrigDay = null; window._rejoinOrigSeg = null;
             errMsg = "This segment is now full. Choose another spot below. The schedule locks June 1st.";
           } else {
+            window._rejoinPickContext = 'full';
             state = "rejoin-pick";
             errMsg = "This segment is now full. Choose another spot below. The schedule locks June 1st.";
           }
@@ -1188,16 +1126,7 @@ function attachFoundListeners(root) {
 }
 
 function attachWithdrawListener(root) {
-  root.addEventListener('click', function(e) {
-    var el = e.target;
-    while (el && el !== root) {
-      if (el.getAttribute && el.getAttribute('data-action') === 'confirmWithdraw') {
-        doCancelRequest();
-        return;
-      }
-      el = el.parentNode;
-    }
-  });
+  // withdraw-confirm flow removed — listener retained as no-op for safety
 }
 
 function render() {
@@ -1233,7 +1162,9 @@ function render() {
     "confirm-sent":     function() { root.innerHTML = rConfirmSent();     renderInfo("found"); },
     "messaging":        function() { root.innerHTML = rMessaging();       renderInfo("found"); },
     "msg-sent":         function() { root.innerHTML = rMsgSent();         renderInfo("found"); },
-    "withdraw-confirm": function() { root.innerHTML = rWithdrawConfirm();  renderInfo("found"); attachWithdrawListener(root); }
+    "withdraw-confirm": function() { root.innerHTML = rWithdrawConfirm();  renderInfo("found"); attachWithdrawListener(root); },
+    "pref-confirm":     function() { root.innerHTML = rPrefConfirm();      renderInfo("found"); },
+    "rejoin-orig-confirm": function() { root.innerHTML = rRejoinOrigConfirm(); renderInfo("found"); }
   };
 
   if (screens[state]) screens[state]();
@@ -1489,7 +1420,7 @@ function rFound() {
   var schedSegs = s.schedRequest || getLatestSchedRequest(s.notes);
 
   if (schedRequestCancelled) {
-    html += '<div class="notice notice-info" style="margin-bottom:4px"><span class="ni">&#10003;</span><span>Your scheduling request has been withdrawn. You can submit a new one at any time.</span></div>';
+    html += '<div class="notice notice-info" style="margin-bottom:4px"><span class="ni">&#10003;</span><span>Your scheduling request has been updated. All previously requested segments have been cancelled. You can submit a new request at any time. Spots are available on a first come first served basis and are not guaranteed.</span></div>';
     schedRequestCancelled = false;
   } else if (schedSegs && schedSegs.length) {
     var heldSpot = (s.day && s.seg)
@@ -1504,8 +1435,12 @@ function rFound() {
       '<strong>Requested:</strong> ' + schedSegs.filter(function(x) { return x; }).map(function(x) { return esc(x); }).join(', ') +
       '</div>' +
       '</div>' +
-      btnWrap('<button data-action="modifyRequest" class="btn-primary">Modify request</button>', 'Change the segments you requested.') +
-      btnWrap('<button data-action="cancelRequest" class="btn-cancel">Withdraw request</button>', 'Cancel your scheduling request. You can submit a new one at any time.');
+      btnWrap('<button data-action="modifyRequest" class="btn-primary">Modify request</button>', 'Change the segments you requested.');
+  }
+
+  if (unconfirmReverted) {
+    html += '<div class="notice notice-info" style="margin-bottom:4px"><span class="ni">&#10003;</span><span>Your status has been reverted to unconfirmed status. A backup spot is still being held for you, but is not guaranteed after May 4th. Click manage booking to see details. You can rejoin any segment until June 1st if there are spots available.</span></div>';
+    unconfirmReverted = false;
   }
 
   // Email notice — success confirmation or prompt to add
@@ -1704,7 +1639,7 @@ function rActions(s, isInactive) {
         var slotData = slots && slots[origDay + '_' + origSeg];
         if (slotData && !slotData.isFull) {
           html += btnWrap(
-            '<button class="btn-primary" onclick="doRejoin()">Return to ' + origDay + ' ' + origSeg + ' spot &rarr;</button>',
+            '<button class="btn-primary" onclick="window._rejoinOrigConfirmDay=\'' + origDay + '\';window._rejoinOrigConfirmSeg=\'' + origSeg + '\';state=\'rejoin-orig-confirm\';render()">Return to ' + origDay + ' ' + origSeg + ' spot &rarr;</button>',
             'Restores you to your previously scheduled ' + origDay + ' ' + origSeg + ' spot instantly.'
           );
         } else {
@@ -1745,7 +1680,7 @@ function rActions(s, isInactive) {
         var slotDataPri = slots && slots[origDayPri + '_' + origSegPri];
         if (slotDataPri && !slotDataPri.isFull) {
           html += btnWrap(
-            '<button class="btn-primary" onclick="doRejoin()">Return to ' + origDayPri + ' ' + origSegPri + ' spot &rarr;</button>',
+            '<button class="btn-primary" onclick="window._rejoinOrigConfirmDay=\'' + origDayPri + '\';window._rejoinOrigConfirmSeg=\'' + origSegPri + '\';state=\'rejoin-orig-confirm\';render()">Return to ' + origDayPri + ' ' + origSegPri + ' spot &rarr;</button>',
             'Restores you to your previously scheduled spot instantly.'
           );
         } else {
@@ -1779,7 +1714,7 @@ function rActions(s, isInactive) {
         if (slotData2 && !slotData2.isFull) {
           // Fix 9: specific rejoin button copy
           html += btnWrap(
-            '<button class="btn-primary" onclick="doRejoinDirect(\'' + origDay2 + '\',\'' + origSeg2 + '\')">Return to ' + origDay2 + ' ' + origSeg2 + ' spot &rarr;</button>',
+            '<button class="btn-primary" onclick="window._rejoinOrigConfirmDay=\'' + origDay2 + '\';window._rejoinOrigConfirmSeg=\'' + origSeg2 + '\';state=\'rejoin-orig-confirm\';render()">Return to ' + origDay2 + ' ' + origSeg2 + ' spot &rarr;</button>',
             'Restores you to your previously scheduled ' + origDay2 + ' ' + origSeg2 + ' spot instantly, if it\'s still available.'
           );
         } else if (slotData2 && slotData2.isFull) {
@@ -2120,10 +2055,15 @@ function rRejoinPick() {
   });
   grid += '</div>';
 
+  var pickTitle = (window._rejoinPickContext === 'cancelled') ? 'Choose a spot' : 'Choose a spot';
+  var pickInstructions = (window._rejoinPickContext === 'cancelled')
+    ? 'Pick any available spot below. You\'ll be confirmed immediately. The schedule locks June 1st.'
+    : 'Select one available spot. You\'ll be confirmed immediately. The schedule locks June 1st.';
+
   return '<div class="card">' +
-    '<div class="card-title">Choose a slot to rejoin</div>' +
+    '<div class="card-title">' + pickTitle + '</div>' +
     '<p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.45">' +
-    'Select one available spot. You\'ll be confirmed immediately. The schedule locks June 1st.' +
+    pickInstructions +
     '</p>' +
     errFrag() +
     grid +
@@ -2133,7 +2073,12 @@ function rRejoinPick() {
 }
 
 function doGoToRejoinPick() {
-  state = 'rejoin-pick'; errMsg = ''; render();
+  window._rejoinPickContext = 'cancelled';
+  state = 'loading'; render();
+  api({action:"getSlots"}, function(e, r) {
+    if (!e && r && r.ok) { slots = r.slots; phase = r.phase; }
+    state = 'rejoin-pick'; errMsg = ''; render();
+  });
 }
 
 function doRejoinFromPick(toDay, toSeg) {
@@ -2176,8 +2121,8 @@ function rCancelConfirmed() {
   var rejoinBlock = '';
   if (origAvailable) {
     rejoinBlock =
-      '<div class="notice notice-info" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#128260;</span><span>Your original slot is still available if you changed your mind.</span></div>' +
-      btnWrap('<button class="btn-primary" onclick="doRejoin()">Return to ' + origDay + ' ' + origSeg + ' \u2192</button>', 'Restores your original spot instantly.');
+      '<div class="notice notice-info" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#128260;</span><span>Your original spot is still available if you changed your mind.</span></div>' +
+      btnWrap('<button class="btn-primary" onclick="window._rejoinOrigConfirmDay=\'' + origDay + '\';window._rejoinOrigConfirmSeg=\'' + origSeg + '\';state=\'rejoin-orig-confirm\';render()">Return to ' + origDay + ' ' + origSeg + ' \u2192</button>', 'Restores your original spot instantly.');
   } else if (origFull && !canPickAny) {
     rejoinBlock =
       '<div class="notice notice-warn" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#9888;</span><span>Your original segment is now full. Check back on May 4th when self-service scheduling opens, or submit a scheduling request and we\'ll be in touch with an update asap.</span></div>' +
@@ -2185,7 +2130,7 @@ function rCancelConfirmed() {
   } else if (canPickAny) {
     rejoinBlock =
       '<div class="notice notice-info" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#128260;</span><span>You can rejoin into any available spot. The schedule locks June 1st.</span></div>' +
-      btnWrap('<button class="btn-secondary" onclick="doGoToRejoinPick()">Choose an available slot</button>', 'Pick any open slot during the week.');
+      btnWrap('<button class="btn-secondary" onclick="doGoToRejoinPick()">Choose an available spot</button>', 'Pick any open spot during the week.');
   } else {
     // pre/priority, no orig tag or orig unavailable — offer scheduling request
     rejoinBlock =
@@ -2287,7 +2232,7 @@ function rPreferences() {
       var isSel = !!selObj;
       var isReq = prefRequested.indexOf(key) > -1;
       var isCur = curKey === key;
-      var isDisabled = isCur || isReq;
+      var isDisabled = isCur;
       var cls = 'pref-btn' + (isSel ? ' selected' : '') + (isReq && !isCur ? ' already-requested' : '') + (isCur ? ' current-slot' : '');
       var typeLabel = isSel ? '<div class="pref-time pref-type-label" style="font-weight:600;margin-top:4px">' + (PREF_LABELS[selObj.type] || selObj.type) + '</div>' : '';
       grid += '<button class="' + cls + '" data-prefkey="' + key + '" ' + (isDisabled ? 'disabled style="opacity:0.6;cursor:not-allowed"' : 'onclick="togglePref(\'' + key + '\')"') + '>' +
@@ -2305,10 +2250,18 @@ function rPreferences() {
   var hasPendingPref = !!(student && (student.schedRequest && student.schedRequest.length) || getLatestSchedRequest(student && student.notes));
   var holdNotice = '';
   if (!isInactivePref && hasPendingPref) {
-    holdNotice = '<div class="notice notice-info" style="margin-bottom:14px"><span class="ni">&#128274;</span><span>' +
-      '<strong>Your request is under review.</strong> Visit keylab.nyc/performance-parties for details.' +
-      '</span></div>';
+    // holdNotice suppressed in modify mode — heading already contextualizes the situation
+  } else if (!isInactivePref && !hasPendingPref) {
+    holdNotice = '';
   }
+
+  var cardTitle = hasPendingPref
+    ? 'Update your scheduling request'
+    : 'Select one or more segments';
+
+  var cardInstructions = hasPendingPref
+    ? '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Your currently requested segments are shown below. Tap any segment to remove it or change its priority. Tap an unselected segment to add it. Tap again to change its priority. When you\'re done, tap Submit to update your existing request \u2014 your previous selections will be permanently overwritten. To cancel your request entirely, deselect all segments and tap Submit.</p>'
+    : '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Choose every segment that could work for you. Add any notes below before submitting \u2014 we\'ll do our best to place you in a preferred segment.</p>';
 
   var priorityNote = (phase === 'pre')
     ? '<div class="notice notice-warn" style="margin-bottom:14px"><span class="ni">&#128197;</span><span>' +
@@ -2328,8 +2281,8 @@ function rPreferences() {
     '</div>';
 
   return '<div class="card">' +
-    '<div class="card-title">Select one or more segments</div>' +
-    '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Choose every segment that could work for you. Add any notes below before submitting \u2014 we\'ll do our best to place you in a preferred segment.</p>' +
+    '<div class="card-title">' + cardTitle + '</div>' +
+    cardInstructions +
     errFrag() +
     priorityNote +
     holdNotice +
@@ -2356,6 +2309,65 @@ function rPrefSent() {
     '<div class="notice notice-info"><span class="ni">&#128274;</span><span>' + phaseNote + '</span></div>' +
     '</div>' +
     '<div class="back-row"><button class="btn-nav" onclick="doPrefSentBack()">&#8592; My booking</button></div>';
+}
+
+// ── Screen: Pref confirm (modify mode review) ──────────────────
+function rPrefConfirm() {
+  var PREF_LABELS = {preferred: '\u2b50 Preferred', available: '\u2713 Available', 'last-resort': '\u2193 Last resort', sibling: '\ud83d\udc6b Sibling'};
+  var prevSegs = student.schedRequest || getLatestSchedRequest(student.notes) || [];
+  var prevList = prevSegs.length
+    ? prevSegs.map(function(s) { return '<li>' + esc(fmtSchedSegment(s)) + '</li>'; }).join('')
+    : '<li>None</li>';
+
+  var updList;
+  if (!prefSelected.length) {
+    updList = '<li>No segments selected \u2014 any previously selected segments will be deleted.</li>';
+  } else {
+    updList = prefSelected.map(function(k) {
+      var p = k.key.split('_');
+      var seg = p[0] + (p[1] === 'Single' ? '' : ' ' + p[1]);
+      var label = PREF_LABELS[k.type] || k.type;
+      return '<li>' + esc(seg) + ' \u2014 ' + label + '</li>';
+    }).join('');
+  }
+
+  var heading = 'Review your updated request';
+  var confirmCopy = prefSelected.length
+    ? '<p style="font-size:13px;color:var(--text2);margin-top:12px;line-height:1.45"><em>Submitting will permanently replace your previously requested segments.</em></p>'
+    : '<p style="font-size:13px;color:var(--text2);margin-top:12px;line-height:1.45"><em>Submitting will permanently replace your previously requested segments. If you change your mind, you can submit a new scheduling request. Spots are not guaranteed and are assigned on a first come first served basis.</em></p>';
+  var confirmBtn = prefSelected.length
+    ? '<button class="btn-primary" id="pref-btn" onclick="doSubmitPreferences()">Submit request \u2192</button>'
+    : '<button class="btn-cancel" id="pref-btn" onclick="doSubmitPreferences()">Yes, cancel my request \u2192</button>';
+
+  return '<div class="card">' +
+    '<div class="card-title">' + heading + '</div>' +
+    errFrag() +
+    '<div style="margin-bottom:10px"><div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Your previous request</div>' +
+    '<ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text2);line-height:1.6">' + prevList + '</ul></div>' +
+    '<div style="margin-bottom:4px"><div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Your updated request</div>' +
+    '<ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text2);line-height:1.6">' + updList + '</ul></div>' +
+    confirmCopy +
+    '<div style="display:flex;gap:10px;margin-top:16px">' +
+    '<button class="btn-secondary" onclick="state=\'preferences\';render()">Go back</button>' +
+    confirmBtn +
+    '</div>' +
+    '</div>' +
+    '<div class="back-row"><button class="btn-nav" onclick="goBack()">&#8592; Back</button></div>';
+}
+
+// ── Screen: Rejoin original confirm ────────────────────────────
+function rRejoinOrigConfirm() {
+  var day = window._rejoinOrigConfirmDay || '';
+  var seg = window._rejoinOrigConfirmSeg || '';
+  var segLabel = seg === 'Single' ? day : day + ' ' + seg;
+  return '<div class="card">' +
+    '<div class="card-title">Return to your original spot?</div>' +
+    '<div style="font-size:16px;font-weight:600;margin-bottom:12px">' + esc(segLabel) + '</div>' +
+    '<div class="notice notice-info"><span class="ni">&#10003;</span><span>You\'ll be confirmed immediately. Your spot will be restored as it was.</span></div>' +
+    errFrag() +
+    '<button class="btn-primary" onclick="doRejoinDirect(window._rejoinOrigConfirmDay, window._rejoinOrigConfirmSeg)">Confirm return \u2192</button>' +
+    '</div>' +
+    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; Back</button></div>';
 }
 
 // ── Screen: Swap ───────────────────────────────────────────────
@@ -2390,10 +2402,10 @@ function rSwap() {
   grid += '</div>';
 
   return '<div class="card">' +
-    '<div class="card-title">Reschedule your slot</div>' +
+    '<div class="card-title">Reschedule</div>' +
     (origFull
-      ? '<div class="notice notice-warn"><span class="ni">&#9888;</span><span>Your original slot <strong>' + origDay + ' ' + origSeg + '</strong> is full. Choose another available slot below.</span></div>'
-      : (origDay ? '<div class="notice notice-info"><span class="ni">&#128260;</span><span>Your original slot <strong>' + origDay + ' ' + origSeg + '</strong> has space \u2014 it\'s highlighted below.</span></div>' : '')) +
+      ? '<div class="notice notice-warn"><span class="ni">&#9888;</span><span>Your original segment <strong>' + origDay + ' ' + origSeg + '</strong> is full. Choose another available slot below.</span></div>'
+      : (origDay ? '<div class="notice notice-info"><span class="ni">&#128260;</span><span>Your original segment <strong>' + origDay + ' ' + origSeg + '</strong> has space \u2014 it\'s highlighted below.</span></div>' : '')) +
     errFrag() +
     grid +
     '<p style="font-size:12px;color:var(--text3);margin-top:4px;line-height:1.4">Spots are first come, first served.</p>' +
@@ -2457,7 +2469,7 @@ function rSwapConfirmed() {
     '<div class="confirm-row"><span class="confirm-key">Teacher</span><span class="confirm-val">' + esc(s.teacher || 'TBD') + '</span></div>' +
     '<div class="confirm-row"><span class="confirm-key">Guests</span><span class="confirm-val">' + (parseInt(s.guests) || 0) + '</span></div>' +
     '</div>' +
-    '<div class="notice notice-info"><span class="ni">&#128197;</span><span>If you added your email address, a confirmation email will be sent shortly. Add your new slot to your calendar below \u2014 if you had a previous calendar event, you can delete it.</span></div>' +
+    '<div class="notice notice-info"><span class="ni">&#128197;</span><span>If you added your email address, a confirmation email will be sent shortly. Add your new segment to your calendar below \u2014 if you had a previous calendar event, you can delete it.</span></div>' +
     calendarLinks(s) +
     '</div>' +
     '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; My booking</button></div>';
@@ -2711,21 +2723,6 @@ function doModifyRequest() {
     prefSelected = [];
   }
   state = 'preferences'; errMsg = ''; render();
-}
-
-function doCancelRequest() {
-  api({action:"withdrawSchedRequest", studentId:student.id, password:lookupPw}, function(e, r) {
-    if (e || !r || !r.ok) { showErr("Could not withdraw request. Please try again."); return; }
-    // Clear schedRequest field and poison notes so getLatestSchedRequest returns null
-    student.schedRequest = null;
-    var now = new Date();
-    var pad = function(n) { return n < 10 ? '0'+n : String(n); };
-    var ts = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
-    var resolvedStamp = '[' + ts + '] RESOLVED \u2014 Scheduling request withdrawn by family.';
-    student.notes = (student.notes ? student.notes + '\n\n' : '') + resolvedStamp;
-    schedRequestCancelled = true;
-    errMsg = ''; render();
-  });
 }
 
 function doFpwEnter() {
