@@ -2399,7 +2399,7 @@ function rPreferences() {
     : 'Select one or more segments';
 
   var cardInstructions = hasPendingPref
-    ? '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Any currently requested segments are highlighted below. Tap any segment to select it, then tap again to change its priority. When you\'re done, tap Submit \u2014 your previous selections will be permanently overwritten. To cancel all requested segments entirely, leave all segments unselected and tap Submit.</p>'
+    ? '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Any currently requested segments are highlighted below. Tap any segment to select it, then tap again to change its priority. When you\'re done, tap Submit \u2014 your previous selections will be permanently overwritten.</p>'
     : '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Choose every segment that could work for you. Add any notes below before submitting \u2014 we\'ll do our best to place you in a preferred segment.</p>';
 
   var priorityNote = '';
@@ -2412,6 +2412,7 @@ function rPreferences() {
     '<div>\u2713 <strong>Available</strong> \u2014 works</div>' +
     '<div>\u2193 <strong>Last resort</strong> \u2014 if nothing else</div>' +
     '<div>\ud83d\udc6b <strong>Sibling</strong> \u2014 coordinating</div>' +
+    (hasPendingPref ? '<div>\u2716 <strong>Cancel request</strong> \u2014 remove this segment</div>' : '') +
     '</div>' +
     '</div>';
 
