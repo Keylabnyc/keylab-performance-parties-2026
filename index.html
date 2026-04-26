@@ -1579,7 +1579,7 @@ function rFound() {
       '<strong>Requested:</strong> ' + schedSegs.filter(function(x) { return x; }).map(function(x) { return esc(x); }).join(', ') +
       '</div>' +
       '</div>' +
-      btnWrap('<button onclick="doModifyRequest()" class="btn-primary">Modify request</button>', 'Change the segments you requested.');
+      btnWrap('<button onclick="doModifyRequest()" class="btn-primary">Modify request</button>', 'Your request is under review. Click here to update your request.');
   }
 
   if (unconfirmReverted) {
@@ -1789,10 +1789,9 @@ function rActions(s, isInactive) {
       }
     }
     // Fix 7: status-aware scheduling request copy
-    var isInactivePre = isInactive;
-    var schedReqDesc2 = isInactivePre
-      ? 'Submit a scheduling request and we\'ll do our best to place your child before May 4th. From May 4th you can instantly self-service reschedule into any open spot.'
-      : 'Tell us your preferred days. Your request is under review. Visit keylab.nyc/performance-parties for details.';
+    var schedReqDesc2 = hasPendingRequest
+      ? 'Your request is under review. Click here to review or make changes.'
+      : 'Tell us your preferred days and we\'ll do our best to place you in a segment that works.';
     if (!hasPendingRequest) {
       html += btnWrap(
         '<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>',
@@ -2391,7 +2390,7 @@ function rPreferences() {
   var holdNotice = '';
   if (!isInactivePref && hasPendingPref) {
     holdNotice = '<div class="notice notice-info" style="margin-bottom:14px"><span class="ni">&#128274;</span><span>' +
-      '<strong>Your request is under review.</strong> Visit keylab.nyc/performance-parties for details.' +
+      '<strong>Your request is under review.</strong> Click here to review or make changes.' +
       '</span></div>';
   }
 
@@ -2434,9 +2433,9 @@ function rPreferences() {
 // ── Screen: Pref sent ──────────────────────────────────────────
 function rPrefSent() {
   var phaseNote = phase === 'pre'
-    ? 'Your request is under review. Visit keylab.nyc/performance-parties for details.'
+    ? 'Your request is under review. Click here to review or make changes.'
     : phase === 'open'
-    ? 'Your request is under review. Visit keylab.nyc/performance-parties for details.'
+    ? 'Your request is under review. Click here to review or make changes.'
     : 'Your request has been received. We\'ll be in touch as soon as possible.';
   return '<div class="card">' +
     '<div class="confirm-icon">&#128197;</div>' +
