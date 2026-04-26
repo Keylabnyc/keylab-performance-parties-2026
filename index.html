@@ -2302,7 +2302,7 @@ function rPreferences() {
       var isSel = !!selObj;
       var isReq = prefRequested.indexOf(key) > -1;
       var isCur = curKey === key;
-      var isDisabled = isCur || isReq;
+      var isDisabled = isCur;
       var cls = 'pref-btn' + (isSel ? ' selected' : '') + (isReq && !isCur ? ' already-requested' : '') + (isCur ? ' current-slot' : '');
       var typeLabel = isSel ? '<div class="pref-time pref-type-label" style="font-weight:600;margin-top:4px">' + (PREF_LABELS[selObj.type] || selObj.type) + '</div>' : '';
       grid += '<button class="' + cls + '" data-prefkey="' + key + '" ' + (isDisabled ? 'disabled style="opacity:0.6;cursor:not-allowed"' : 'onclick="togglePref(\'' + key + '\')"') + '>' +
