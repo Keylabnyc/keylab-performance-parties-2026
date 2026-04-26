@@ -1024,9 +1024,10 @@ function togglePref(key) {
 function doSubmitPreferences() {
   errMsg = '';
   var activeSelected = prefSelected.filter(function(k) { return k.type !== 'cancel-request'; });
+  var hasPendingPref = !!(student && (student.schedRequest && student.schedRequest.length) || getLatestSchedRequest(student && student.notes));
 
-  // Modify mode — student had a pending request when they entered this flow
-  if (_inModifyMode) {
+  // Modify mode — entered via doModifyRequest OR student has a pending request
+  if (_inModifyMode || hasPendingPref) {
 
     // Step 1: show review screen
     if (state !== 'pref-confirm') {
@@ -2484,7 +2485,7 @@ function rPrefConfirm() {
     '<ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text2);line-height:1.6">' + updList + '</ul></div>' +
     confirmCopy +
     '<div style="display:flex;gap:10px;margin-top:16px">' +
-    '<button class="btn-secondary" onclick="state=\'preferences\';render()">Go back</button>' +
+    '<button class="btn-secondary" onclick="state=\'preferences\';errMsg=\'\';render()">Go back</button>' +
     confirmBtn +
     '</div>' +
     '</div>' +
