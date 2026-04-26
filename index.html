@@ -471,6 +471,7 @@
   .pref-btn.selected { border-color: var(--acc); background: var(--acc-lt); }
   .pref-btn.already-requested { border-color: var(--info); background: var(--info-lt); }
   .pref-btn.already-requested.selected { border-color: var(--acc); background: var(--acc-lt); }
+  .pref-btn.cancel-request { border-color: var(--err); background: var(--err-lt); }
   .pref-btn.current-slot { border-color: var(--text3); }
   .pref-name { font-size: 13px; font-weight: 600; color: var(--text); }
   .pref-time { font-size: 11px; color: var(--text3); margin-top: 2px; }
@@ -666,6 +667,7 @@ var unconfirmReverted = false;
 window._rejoinPickContext = null;
 window._rejoinOrigConfirmDay = null;
 window._rejoinOrigConfirmSeg = null;
+var _requestedSegs = [];
 var lookupName = "", lookupPw = "", lookupEmail = "";
 var lookupMatches = []; // for multi-match picker
 var selectedMatch = null; // {id, name, day, seg} chosen from picker
@@ -963,17 +965,26 @@ function doStartPreferences() {
 
 function togglePref(key) {
   var CYCLE = ['preferred', 'available', 'last-resort', 'sibling'];
-  var PREF_LABELS = {preferred: '\u2b50 Preferred', available: '\u2713 Available', 'last-resort': '\u2193 Last resort', sibling: '\ud83d\udc6b Sibling'};
+  var CYCLE_REQ = ['preferred', 'available', 'last-resort', 'sibling', 'cancel-request'];
+  var PREF_LABELS = {preferred: '\u2b50 Preferred', available: '\u2713 Available', 'last-resort': '\u2193 Last resort', sibling: '\ud83d\udc6b Sibling', 'cancel-request': '\u2716 Cancel request'};
+  var isRequested = false;
+  for (var ri = 0; ri < _requestedSegs.length; ri++) { if (_requestedSegs[ri].key === key) { isRequested = true; break; } }
+  var cycle = isRequested ? CYCLE_REQ : CYCLE;
   var idx = -1;
   for (var i = 0; i < prefSelected.length; i++) { if (prefSelected[i].key === key) { idx = i; break; } }
   if (idx === -1) {
-    prefSelected.push({key: key, type: CYCLE[0]});
+    prefSelected.push({key: key, type: cycle[0]});
   } else {
-    var nextTypeIdx = CYCLE.indexOf(prefSelected[idx].type) + 1;
-    if (nextTypeIdx >= CYCLE.length) {
-      prefSelected.splice(idx, 1);
+    var nextTypeIdx = cycle.indexOf(prefSelected[idx].type) + 1;
+    if (isRequested) {
+      // Always cycle — never fully deselect a previously-requested segment
+      prefSelected[idx].type = cycle[nextTypeIdx >= cycle.length ? 0 : nextTypeIdx];
     } else {
-      prefSelected[idx].type = CYCLE[nextTypeIdx];
+      if (nextTypeIdx >= cycle.length) {
+        prefSelected.splice(idx, 1);
+      } else {
+        prefSelected[idx].type = cycle[nextTypeIdx];
+      }
     }
   }
   // Update buttons in-place — do NOT call render() which replaces innerHTML
@@ -986,8 +997,11 @@ function togglePref(key) {
     var selObj = null;
     for (var si = 0; si < prefSelected.length; si++) { if (prefSelected[si].key === bkey) { selObj = prefSelected[si]; break; } }
     var isSel = !!selObj;
+    var isCancelReq = isSel && selObj.type === 'cancel-request';
     // Update selected class
     if (isSel) { btn.classList.add('selected'); } else { btn.classList.remove('selected'); }
+    // Update cancel-request class
+    if (isCancelReq) { btn.classList.add('cancel-request'); } else { btn.classList.remove('cancel-request'); }
     // Update or remove type label div
     var labelDiv = btn.querySelector('.pref-type-label');
     if (isSel) {
@@ -1008,20 +1022,75 @@ function togglePref(key) {
 
 function doSubmitPreferences() {
   errMsg = '';
-  if (!prefSelected.length) { showErr("Please select at least one segment."); return; }
-  var note = (document.getElementById("pref-note") || {}).value || "";
-  var btn = document.getElementById("pref-btn");
-  if (btn) { btn.disabled = true; btn.textContent = "Submitting\u2026"; }
-  var segments = prefSelected.map(function(k) {
+  var hasPendingPref = !!(student && (student.schedRequest && student.schedRequest.length) || getLatestSchedRequest(student && student.notes));
+  // Filter out cancel-request entries — those segments are being dropped
+  var activeSelected = prefSelected.filter(function(k) { return k.type !== 'cancel-request'; });
+
+  // Case 1: modify mode, not yet on confirm screen — show review screen
+  if (hasPendingPref && state !== 'pref-confirm') {
+    state = 'pref-confirm'; errMsg = ''; render(); return;
+  }
+
+  // Case 2: modify mode, confirmed with zero active segments — withdraw entire request
+  if (hasPendingPref && state === 'pref-confirm' && !activeSelected.length) {
+    var btn = document.getElementById('pref-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Submitting\u2026'; }
+    api({action: 'withdrawSchedRequest', studentId: student.id, password: lookupPw}, function(e, r) {
+      if (e || !r || !r.ok) {
+        if (btn) { btn.disabled = false; btn.textContent = 'Yes, cancel my request \u2192'; }
+        showErr((r && r.error) || 'Could not cancel request. Please try again.');
+        return;
+      }
+      student.schedRequest = null;
+      var now = new Date();
+      var pad = function(n) { return n < 10 ? '0'+n : String(n); };
+      var ts = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+      student.notes = (student.notes ? student.notes + '\n\n' : '') + '[' + ts + '] RESOLVED \u2014 Scheduling request withdrawn by family.';
+      schedRequestCancelled = true;
+      _requestedSegs = [];
+      prefSelected = [];
+      errMsg = ''; render();
+    });
+    return;
+  }
+
+  // Case 3: modify mode, confirmed with active segments — submit updated request
+  if (hasPendingPref && state === 'pref-confirm' && activeSelected.length) {
+    var note = (document.getElementById('pref-note') || {}).value || '';
+    var btn2 = document.getElementById('pref-btn');
+    if (btn2) { btn2.disabled = true; btn2.textContent = 'Submitting\u2026'; }
+    var segments = activeSelected.map(function(k) {
+      var p = k.key.split('_'); return p[0] + ' ' + p[1] + ' [' + k.type + ']';
+    });
+    api({action: 'submitPreferences', studentId: student.id, password: lookupPw, segments: segments, note: note.trim(), email: lookupEmail}, function(e, r) {
+      if (e || !r || !r.ok) {
+        if (btn2) { btn2.disabled = false; btn2.textContent = 'Submit request \u2192'; }
+        showErr((r && r.error) || 'Could not submit. Please try again.');
+        return;
+      }
+      student.schedRequest = segments;
+      _requestedSegs = [];
+      prefSelected = [];
+      refreshStudent(function() { state = 'pref-sent'; render(); });
+    });
+    return;
+  }
+
+  // Case 4: fresh request (no pending) — block zero segments, submit directly
+  if (!activeSelected.length) { showErr('Please select at least one segment.'); return; }
+  var note2 = (document.getElementById('pref-note') || {}).value || '';
+  var btn3 = document.getElementById('pref-btn');
+  if (btn3) { btn3.disabled = true; btn3.textContent = 'Submitting\u2026'; }
+  var segments2 = activeSelected.map(function(k) {
     var p = k.key.split('_'); return p[0] + ' ' + p[1] + ' [' + k.type + ']';
   });
-  api({action:"submitPreferences", studentId:student.id, password:lookupPw, segments:segments, note:note.trim(), email:lookupEmail}, function(e, r) {
+  api({action: 'submitPreferences', studentId: student.id, password: lookupPw, segments: segments2, note: note2.trim(), email: lookupEmail}, function(e, r) {
     if (e || !r || !r.ok) {
-      if (btn) { btn.disabled = false; btn.textContent = "Submit preferences"; }
-      showErr((r && r.error) || "Could not submit. Please try again.");
+      if (btn3) { btn3.disabled = false; btn3.textContent = 'Submit preferences'; }
+      showErr((r && r.error) || 'Could not submit. Please try again.');
       return;
     }
-    state = "pref-sent"; render();
+    refreshStudent(function() { state = 'pref-sent'; render(); });
   });
 }
 
@@ -2272,7 +2341,7 @@ function rPreferences() {
   var DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
   var SEGS = {Monday:['Early','Late'],Tuesday:['Early','Late'],Wednesday:['Early','Late'],Thursday:['Early','Late'],Friday:['Single']};
   var PTIMES = {Monday:{Early:'4:00 PM',Late:'5:00 PM'},Tuesday:{Early:'4:00 PM',Late:'5:00 PM'},Wednesday:{Early:'4:00 PM',Late:'5:00 PM'},Thursday:{Early:'4:00 PM',Late:'5:00 PM'},Friday:{Single:'4:00 PM'}};
-  var PREF_LABELS = {preferred: '\u2b50 Preferred', available: '\u2713 Available', 'last-resort': '\u2193 Last resort', sibling: '\ud83d\udc6b Sibling'};
+  var PREF_LABELS = {preferred: '\u2b50 Preferred', available: '\u2713 Available', 'last-resort': '\u2193 Last resort', sibling: '\ud83d\udc6b Sibling', 'cancel-request': '\u2716 Cancel request'};
 
   // Already-requested segments (from existing request)
   var schedSegs = student.schedRequest || getLatestSchedRequest(student.notes);
@@ -2302,8 +2371,9 @@ function rPreferences() {
       var isSel = !!selObj;
       var isReq = prefRequested.indexOf(key) > -1;
       var isCur = curKey === key;
+      var isCancelReq = isSel && selObj.type === 'cancel-request';
       var isDisabled = isCur;
-      var cls = 'pref-btn' + (isSel ? ' selected' : '') + (isReq && !isCur ? ' already-requested' : '') + (isCur ? ' current-slot' : '');
+      var cls = 'pref-btn' + (isSel ? ' selected' : '') + (isReq && !isCur ? ' already-requested' : '') + (isCur ? ' current-slot' : '') + (isCancelReq ? ' cancel-request' : '');
       var typeLabel = isSel ? '<div class="pref-time pref-type-label" style="font-weight:600;margin-top:4px">' + (PREF_LABELS[selObj.type] || selObj.type) + '</div>' : '';
       grid += '<button class="' + cls + '" data-prefkey="' + key + '" ' + (isDisabled ? 'disabled style="opacity:0.6;cursor:not-allowed"' : 'onclick="togglePref(\'' + key + '\')"') + '>' +
         '<div class="pref-name">' + day + (seg === 'Single' ? '' : ' ' + seg) + '</div>' +
@@ -2330,7 +2400,7 @@ function rPreferences() {
     : 'Select one or more segments';
 
   var cardInstructions = hasPendingPref
-    ? '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Your currently requested segments are highlighted below. Tap any segment to select it, then tap again to change its priority. When you\'re done, tap Submit \u2014 your previous selections will be permanently overwritten. To cancel your request entirely, leave all segments unselected and tap Submit.</p>'
+    ? '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Any currently requested segments are highlighted below. Tap any segment to select it, then tap again to change its priority. When you\'re done, tap Submit \u2014 your previous selections will be permanently overwritten. To cancel all requested segments entirely, leave all segments unselected and tap Submit.</p>'
     : '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Choose every segment that could work for you. Add any notes below before submitting \u2014 we\'ll do our best to place you in a preferred segment.</p>';
 
   var priorityNote = (phase === 'pre')
@@ -2389,11 +2459,14 @@ function rPrefConfirm() {
     ? prevSegs.map(function(s) { return '<li>' + esc(fmtSchedSegment(s)) + '</li>'; }).join('')
     : '<li>None</li>';
 
+  // Filter out cancel-request entries — those are being dropped
+  var activeSelected = prefSelected.filter(function(k) { return k.type !== 'cancel-request'; });
+
   var updList;
-  if (!prefSelected.length) {
-    updList = '<li>No segments selected \u2014 any previously selected segments will be deleted.</li>';
+  if (!activeSelected.length) {
+    updList = '<li>No segments selected \u2014 your scheduling request will be cancelled entirely.</li>';
   } else {
-    updList = prefSelected.map(function(k) {
+    updList = activeSelected.map(function(k) {
       var p = k.key.split('_');
       var seg = p[0] + (p[1] === 'Single' ? '' : ' ' + p[1]);
       var label = PREF_LABELS[k.type] || k.type;
@@ -2401,10 +2474,10 @@ function rPrefConfirm() {
     }).join('');
   }
 
-  var confirmCopy = prefSelected.length
+  var confirmCopy = activeSelected.length
     ? '<p style="font-size:13px;color:var(--text2);margin-top:12px;line-height:1.45"><em>Submitting will permanently replace your previously requested segments.</em></p>'
-    : '<p style="font-size:13px;color:var(--text2);margin-top:12px;line-height:1.45"><em>Submitting will permanently replace your previously requested segments. If you change your mind, you can submit a new scheduling request. Spots are not guaranteed and are assigned on a first come first served basis.</em></p>';
-  var confirmBtn = prefSelected.length
+    : '<p style="font-size:13px;color:var(--text2);margin-top:12px;line-height:1.45"><em>Submitting will cancel your scheduling request entirely. You can submit a new one at any time.</em></p>';
+  var confirmBtn = activeSelected.length
     ? '<button class="btn-primary" id="pref-btn" onclick="doSubmitPreferences()">Submit request \u2192</button>'
     : '<button class="btn-cancel" id="pref-btn" onclick="doSubmitPreferences()">Yes, cancel my request \u2192</button>';
 
@@ -2742,6 +2815,34 @@ function fmtSchedSegment(s) {
   return icon ? icon + ' ' + seg : seg;
 }
 
+function getLatestSchedRequestRaw(notes) {
+  if (!notes || !notes.trim()) return [];
+  var chunks = notes.trim().split(/\n\n+/);
+  for (var i = chunks.length - 1; i >= 0; i--) {
+    var chunk = chunks[i].trim();
+    if (/^\[([^\]]+)\]\s+RESOLVED\s+—/.test(chunk) && /scheduling request withdrawn/i.test(chunk)) {
+      return [];
+    }
+    var m = chunk.match(/^\[([^\]]+)\]\s+SCHEDULING REQUEST\s+—\s+([\s\S]*)$/);
+    if (m) {
+      var body = m[2].trim();
+      var slotMatch = body.match(/Preferred slots:\s*([^.]+)/);
+      if (slotMatch) {
+        return slotMatch[1].trim().split(',').map(function(s) {
+          s = s.trim();
+          var typeMatch = s.match(/\[([^\]]+)\]$/);
+          var type = (typeMatch && typeMatch[1]) ? typeMatch[1] : 'preferred';
+          var seg = s.replace(/\s*\[[^\]]+\]$/, '').trim();
+          // Normalize "Monday Late" -> "Monday_Late"
+          var key = seg.replace(/ /g, '_');
+          return {key: key, type: type};
+        });
+      }
+    }
+  }
+  return [];
+}
+
 function getLatestSchedRequest(notes) {
   if (!notes || !notes.trim()) return null;
   var chunks = notes.trim().split(/\n\n+/);
@@ -2782,7 +2883,15 @@ function doPrefSentBack() {
 }
 
 function doModifyRequest() {
-  prefSelected = [];
+  _requestedSegs = getLatestSchedRequestRaw(student && student.notes);
+  if (!_requestedSegs.length && student && student.schedRequest && student.schedRequest.length) {
+    // Fallback: schedRequest field present but no raw notes — default to preferred
+    _requestedSegs = student.schedRequest.map(function(s) {
+      var seg = s.trim().replace(/^[^\u0041-\u005A]*/, '').trim().replace(/ /g, '_');
+      return {key: seg, type: 'preferred'};
+    });
+  }
+  prefSelected = _requestedSegs.map(function(r) { return {key: r.key, type: r.type}; });
   state = 'preferences'; errMsg = ''; render();
 }
 
