@@ -668,6 +668,7 @@ window._rejoinPickContext = null;
 window._rejoinOrigConfirmDay = null;
 window._rejoinOrigConfirmSeg = null;
 var _requestedSegs = [];
+var _inModifyMode = false;
 var lookupName = "", lookupPw = "", lookupEmail = "";
 var lookupMatches = []; // for multi-match picker
 var selectedMatch = null; // {id, name, day, seg} chosen from picker
@@ -1022,45 +1023,41 @@ function togglePref(key) {
 
 function doSubmitPreferences() {
   errMsg = '';
-  var hasPendingPref = !!(student && (student.schedRequest && student.schedRequest.length) || getLatestSchedRequest(student && student.notes));
-  // Filter out cancel-request entries — those segments are being dropped
   var activeSelected = prefSelected.filter(function(k) { return k.type !== 'cancel-request'; });
 
-  // Case 1: modify mode, not yet on confirm screen
-  // If all segments are cancelled, skip review and go straight to withdraw
-  if (hasPendingPref && state !== 'pref-confirm') {
-    if (!activeSelected.length) {
-      // Fall through to Case 2 by setting state and re-entering
-      state = 'pref-confirm'; return doSubmitPreferences();
+  // Modify mode — student had a pending request when they entered this flow
+  if (_inModifyMode) {
+
+    // Step 1: show review screen
+    if (state !== 'pref-confirm') {
+      state = 'pref-confirm'; errMsg = ''; render(); return;
     }
-    state = 'pref-confirm'; errMsg = ''; render(); return;
-  }
 
-  // Case 2: modify mode, confirmed with zero active segments — withdraw entire request
-  if (hasPendingPref && state === 'pref-confirm' && !activeSelected.length) {
-    var btn = document.getElementById('pref-btn');
-    if (btn) { btn.disabled = true; btn.textContent = 'Submitting\u2026'; }
-    api({action: 'withdrawSchedRequest', studentId: student.id, password: lookupPw}, function(e, r) {
-      if (e || !r || !r.ok) {
-        if (btn) { btn.disabled = false; btn.textContent = 'Yes, cancel my request \u2192'; }
-        showErr((r && r.error) || 'Could not cancel request. Please try again.');
-        return;
-      }
-      student.schedRequest = null;
-      var now = new Date();
-      var pad = function(n) { return n < 10 ? '0'+n : String(n); };
-      var ts = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
-      student.notes = (student.notes ? student.notes + '\n\n' : '') + '[' + ts + '] RESOLVED \u2014 Scheduling request withdrawn by family.';
-      schedRequestCancelled = true;
-      _requestedSegs = [];
-      prefSelected = [];
-      errMsg = ''; render();
-    });
-    return;
-  }
+    // Step 2: on confirm screen — withdraw if no active segments
+    if (!activeSelected.length) {
+      var btn = document.getElementById('pref-btn');
+      if (btn) { btn.disabled = true; btn.textContent = 'Submitting\u2026'; }
+      api({action: 'withdrawSchedRequest', studentId: student.id, password: lookupPw}, function(e, r) {
+        if (e || !r || !r.ok) {
+          if (btn) { btn.disabled = false; btn.textContent = 'Yes, cancel my request \u2192'; }
+          showErr((r && r.error) || 'Could not cancel request. Please try again.');
+          return;
+        }
+        student.schedRequest = null;
+        var now = new Date();
+        var pad = function(n) { return n < 10 ? '0'+n : String(n); };
+        var ts = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+        student.notes = (student.notes ? student.notes + '\n\n' : '') + '[' + ts + '] RESOLVED \u2014 Scheduling request withdrawn by family.';
+        schedRequestCancelled = true;
+        _inModifyMode = false;
+        _requestedSegs = [];
+        prefSelected = [];
+        errMsg = ''; render();
+      });
+      return;
+    }
 
-  // Case 3: modify mode, confirmed with active segments — submit updated request
-  if (hasPendingPref && state === 'pref-confirm' && activeSelected.length) {
+    // Step 2: on confirm screen — submit updated request
     var note = (document.getElementById('pref-note') || {}).value || '';
     var btn2 = document.getElementById('pref-btn');
     if (btn2) { btn2.disabled = true; btn2.textContent = 'Submitting\u2026'; }
@@ -1074,6 +1071,7 @@ function doSubmitPreferences() {
         return;
       }
       student.schedRequest = segments;
+      _inModifyMode = false;
       _requestedSegs = [];
       prefSelected = [];
       refreshStudent(function() { state = 'pref-sent'; render(); });
@@ -1081,7 +1079,7 @@ function doSubmitPreferences() {
     return;
   }
 
-  // Case 4: fresh request (no pending) — block zero segments, submit directly
+  // Fresh request — no pending request when flow started
   if (!activeSelected.length) { showErr('Please select at least one segment.'); return; }
   var note2 = (document.getElementById('pref-note') || {}).value || '';
   var btn3 = document.getElementById('pref-btn');
@@ -2881,13 +2879,13 @@ function doPrefSentBack() {
 function doModifyRequest() {
   _requestedSegs = getLatestSchedRequestRaw(student && student.notes);
   if (!_requestedSegs.length && student && student.schedRequest && student.schedRequest.length) {
-    // Fallback: schedRequest field present but no raw notes — default to preferred
     _requestedSegs = student.schedRequest.map(function(s) {
       var seg = s.trim().replace(/^[^\u0041-\u005A]*/, '').trim().replace(/ /g, '_');
       return {key: seg, type: 'preferred'};
     });
   }
   prefSelected = _requestedSegs.map(function(r) { return {key: r.key, type: r.type}; });
+  _inModifyMode = true;
   state = 'preferences'; errMsg = ''; render();
 }
 
