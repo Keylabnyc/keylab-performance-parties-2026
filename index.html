@@ -2325,6 +2325,14 @@ function rPreferences() {
       '</span></div>';
   }
 
+  var cardTitle = hasPendingPref
+    ? 'Update your scheduling request'
+    : 'Select one or more segments';
+
+  var cardInstructions = hasPendingPref
+    ? '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Your currently requested segments are highlighted below. Tap any segment to select it, then tap again to change its priority. When you\'re done, tap Submit \u2014 your previous selections will be permanently overwritten. To cancel your request entirely, leave all segments unselected and tap Submit.</p>'
+    : '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Choose every segment that could work for you. Add any notes below before submitting \u2014 we\'ll do our best to place you in a preferred segment.</p>';
+
   var priorityNote = (phase === 'pre')
     ? '<div class="notice notice-warn" style="margin-bottom:14px"><span class="ni">&#128197;</span><span>' +
       '<strong>Priority deadline April 30th:</strong> Families who request by April 30th receive priority placement into available spots. Rescheduling is not guaranteed and based on availability.' +
@@ -2343,11 +2351,11 @@ function rPreferences() {
     '</div>';
 
   return '<div class="card">' +
-    '<div class="card-title">Select one or more segments</div>' +
-    '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Choose every segment that could work for you. Add any notes below before submitting \u2014 we\'ll do our best to place you in a preferred segment.</p>' +
+    '<div class="card-title">' + cardTitle + '</div>' +
+    cardInstructions +
     errFrag() +
     priorityNote +
-    holdNotice +
+    (hasPendingPref ? '' : holdNotice) +
     legend +
     grid +
     '<div class="field"><label>Additional notes <span style="font-weight:400;color:var(--text3)">(optional)</span></label>' +
