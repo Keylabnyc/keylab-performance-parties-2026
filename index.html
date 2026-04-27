@@ -1563,7 +1563,7 @@ function rFound() {
   var schedSegs = s.schedRequest || getLatestSchedRequest(s.notes);
 
   if (schedRequestCancelled) {
-    html += '<div class="notice notice-info" style="margin-bottom:4px"><span class="ni">&#10003;</span><span>Your scheduling request has been updated. All previously requested segments have been cancelled. You can submit a new request at any time. Spots are available on a first come first served basis and are not guaranteed.</span></div>';
+    html += '<div class="notice notice-info" style="margin-bottom:4px"><span class="ni">&#10003;</span><span>All segments have been cancelled. If you change your mind you can book into any available spot before June 1st!</span></div>';
     schedRequestCancelled = false;
   } else if (schedSegs && schedSegs.length) {
     var heldSpot = (s.day && s.seg)
@@ -1578,11 +1578,11 @@ function rFound() {
       '<strong>Requested:</strong> ' + schedSegs.filter(function(x) { return x; }).map(function(x) { return esc(x); }).join(', ') +
       '</div>' +
       '</div>' +
-      btnWrap('<button onclick="doModifyRequest()" class="btn-primary">Modify request</button>', 'Your request is under review. Click here to update your request.');
+      btnWrap('<button onclick="doModifyRequest()" class="btn-primary">Modify request</button>', 'Click here to update your request.');
   }
 
   if (unconfirmReverted) {
-    html += '<div class="notice notice-info" style="margin-bottom:4px"><span class="ni">&#10003;</span><span>Your status has been reverted to unconfirmed status. A backup spot is still being held for you, but is not guaranteed after May 4th. Click manage booking to see details. You can rejoin any segment until June 1st if there are spots available.</span></div>';
+    html += '<div class="notice notice-info" style="margin-bottom:4px"><span class="ni">&#10003;</span><span>Your status has been reverted to unconfirmed status. Reschedule as a performer or non-performing attendee into any segment before June 1st.</span></div>';
     unconfirmReverted = false;
   }
 
@@ -1644,7 +1644,7 @@ function rActions(s, isInactive) {
     if (phase !== 'locked') {
       html += btnWrap(
         '<button class="btn-secondary" onclick="doStartUnconfirm()">Change my mind — revert to unconfirmed</button>',
-        'If you\'re not ready to commit, you can revert to unconfirmed status. Your spot will be held for you.'
+        'If you change your mind, you can revert to unconfirmed status. Reschedule as a performer or non-performing attendee into any segment before June 1st.'
       );
     }
     // Edit guest list button
@@ -1658,7 +1658,7 @@ function rActions(s, isInactive) {
     if (phase !== 'locked') {
       html += btnWrap(
         '<button class="btn-secondary" onclick="doStartConfirm(\'confirmed-guest\')">Change to attending, not performing</button>',
-        'Update your status to attending non-performer. You can switch back to confirmed performer at any time.'
+        'Update your status to attending non-performer. You can switch back to confirmed performer if there are open spots anytime before June 1st.'
       );
     }
     html += btnWrap(
@@ -1693,7 +1693,7 @@ function rActions(s, isInactive) {
     if (phase !== 'locked') {
       html += btnWrap(
         '<button class="btn-secondary" onclick="doStartUnconfirm()">Change my mind — revert to unconfirmed</button>',
-        'If you\'re not ready to commit, you can revert to unconfirmed status. Your spot will be held for you.'
+        'If you change your mind, you can revert to unconfirmed status. Reschedule as a performer or non-performing attendee into any segment before June 1st.'
       );
     }
     // Edit guest list button
@@ -1765,7 +1765,7 @@ function rActions(s, isInactive) {
       if (s.status !== 'confirmed-guest') {
         html += btnWrap(
           '<button class="btn-secondary" onclick="doStartConfirm(\'confirmed-guest\')">Confirm as attending, not performing</button>',
-          'Attending but not performing. Includes up to 3 guest seats.'
+          'For kids who aren\'t performing but want to come. Bring up to 3 guests.'
         );
       }
     } else {
@@ -1878,7 +1878,7 @@ function rActions(s, isInactive) {
       );
       html += btnWrap(
         '<button class="btn-primary" onclick="doStartConfirm(\'confirmed-guest\')">Attending, not performing</button>',
-        'Your child will attend and cheer on the performers but will not perform.'
+        'For kids who aren\'t performing but want to come. Bring up to 3 guests.'
       );
       html += btnWrap(
         '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
@@ -1941,7 +1941,6 @@ function rGuestSelect() {
   // Re-confirmation flow: student already has guest names on file
   if (s.guestNames && s.guestNames.length > 0) {
     html += '<p style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Your guests on file:</p>';
-    html += '<p style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.4">Edit a name or remove a guest seat below.</p>';
 
     if (pendingGuestList.length === 0) {
       html += '<div class="notice notice-warn" style="margin-bottom:12px"><span class="ni">&#9888;</span><span>All guest seats removed. Submitting will set your guest count to 0.</span></div>';
@@ -1966,7 +1965,7 @@ function rGuestSelect() {
     for (var i = 0; i <= 3; i++) {
       opts += '<option value="' + i + '"' + (i === parseInt(s.guests) ? ' selected' : '') + '>' + i + (i === 1 ? ' guest' : ' guests') + '</option>';
     }
-    html += '<p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.5">You may bring up to 3 guests. Four people total including your child.</p>' +
+    html += '<p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.5">You may bring up to 3 guests (4 people total including your child).</p>' +
       '<p style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px">How many guests will be attending?</p>' +
       '<div class="guest-select-wrap">' +
       '<label>Number of guests</label>' +
@@ -2145,7 +2144,7 @@ function rConfirmSent() {
     '<div class="notice notice-info"><span class="ni">&#128197;</span><span>If you added your email address, a confirmation email will be sent shortly. Click below to add the event to your calendar.</span></div>' +
     calendarLinks(s) +
     '</div>' +
-    (phase !== 'locked' ? '<div style="margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:7px;background:var(--bg3);"><div style="font-size:12px;font-weight:600;color:var(--text3);margin-bottom:8px">CHANGED YOUR MIND?</div><p style="font-size:13px;color:var(--text2);margin:0 0 10px 0;line-height:1.4">No problem! You can revert to unconfirmed status anytime before June 1st. Your spot will still be held for you.</p><button class="btn-secondary" style="width:100%;text-align:center" onclick="doStartUnconfirm()">Revert to unconfirmed</button></div>' : '') +
+    (phase !== 'locked' ? '<div style="margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:7px;background:var(--bg3);"><div style="font-size:12px;font-weight:600;color:var(--text3);margin-bottom:8px">CHANGED YOUR MIND?</div><p style="font-size:13px;color:var(--text2);margin:0 0 10px 0;line-height:1.4">No problem! You can revert to unconfirmed status anytime before June 1st. Reschedule as a performer or non-performing attendee into any segment before June 1st.</p><button class="btn-secondary" style="width:100%;text-align:center" onclick="doStartUnconfirm()">Revert</button></div>' : '') +
     '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; My booking</button></div>';
 }
 
@@ -2193,9 +2192,7 @@ function rRejoinPick() {
   grid += '</div>';
 
   var pickTitle = 'Choose a spot';
-  var pickInstructions = (window._rejoinPickContext === 'cancelled')
-    ? 'Pick any available spot below. You\'ll be confirmed immediately. The schedule locks June 1st.'
-    : 'Select one available spot. You\'ll be confirmed immediately. The schedule locks June 1st.';
+  var pickInstructions = 'Book into any open spot. Spots are first come, first served — schedule locks June 1st.';
 
   return '<div class="card">' +
     '<div class="card-title">' + pickTitle + '</div>' +
@@ -2204,7 +2201,6 @@ function rRejoinPick() {
     '</p>' +
     errFrag() +
     grid +
-    '<p style="font-size:12px;color:var(--text3);margin-top:4px;line-height:1.4">Spots are first come, first served.</p>' +
     '</div>' +
     '<div class="back-row"><button class="btn-nav" onclick="goBack()">&#8592; Back</button></div>';
 }
@@ -2246,6 +2242,7 @@ function doRejoinFromPick(toDay, toSeg) {
 }
 
 function rCancelConfirmed() {
+  var hasPendingRequest = !!(student.schedRequest && student.schedRequest.length) || !!(getLatestSchedRequest(student.notes));
   var tags = student.tags || '';
   var origMatch = tags.match(/orig:([A-Za-z]+)_([A-Za-z]+)/);
   var origDay = origMatch ? origMatch[1] : null;
@@ -2278,7 +2275,6 @@ function rCancelConfirmed() {
   return '<div class="card">' +
     '<div class="confirm-icon">&#128218;</div>' +
     '<div class="confirm-title">Your spot has been released</div>' +
-    '<div class="confirm-sub">We\'re sorry to see you go. You\'re welcome back any time before June 1st.</div>' +
     rejoinBlock +
     '</div>' +
     '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; My booking</button></div>';
@@ -2290,8 +2286,8 @@ function rUnconfirm() {
     '<div class="card-title">Change my mind</div>' +
     '<div class="notice notice-info"><span class="ni">&#9432;</span><span>' +
     (phase === 'open' || phase === 'locked'
-      ? 'Are you sure you want to revert to unconfirmed? Your spot will be released immediately. You can re-confirm or reschedule into any open spot up until June 1st.'
-      : 'Are you sure you want to revert to unconfirmed? Your spot will still be held for you, but will become available to others starting May 4th. You can re-confirm or reschedule anytime.'
+      ? 'You can reschedule as a performer or non-performing attendee into any segment before June 1st.'
+      : 'You can reschedule as a performer or non-performing attendee into any segment before June 1st.'
     ) +
     '</span></div>' +
     errFrag() +
@@ -2398,7 +2394,7 @@ function rPreferences() {
     : 'Select one or more segments';
 
   var cardInstructions = hasPendingPref
-    ? '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Any currently requested segments are highlighted below. Tap any segment to select it, then tap again to change its priority. When you\'re done, tap Submit \u2014 your previous selections will be permanently overwritten.</p>'
+    ? '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Any currently requested segments are highlighted below. When you\'re done, tap Submit \u2014 your previous selections will be permanently overwritten.</p>'
     : '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Choose every segment that could work for you. Add any notes below before submitting \u2014 we\'ll do our best to place you in a preferred segment.</p>';
 
   var priorityNote = '';
@@ -2406,12 +2402,12 @@ function rPreferences() {
   var legend = '<div style="margin-bottom:14px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg3)">' +
     '<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">How to use</div>' +
     '<div style="font-size:12px;color:var(--text2);margin-bottom:4px">Tap a segment to select it. Tap again to change its priority status.</div>' +
-    '<div style="font-size:12px;color:var(--text2);display:grid;grid-template-columns:1fr 1fr;gap:3px 10px;margin-top:6px">' +
-    '<div>\u2b50 <strong>Preferred</strong> \u2014 works great</div>' +
-    '<div>\u2713 <strong>Available</strong> \u2014 works</div>' +
-    '<div>\u2193 <strong>Last resort</strong> \u2014 if nothing else</div>' +
-    '<div>\ud83d\udc6b <strong>Sibling</strong> \u2014 coordinating</div>' +
-    (hasPendingPref ? '<div>\u2716 <strong>Cancel request</strong> \u2014 remove this segment</div>' : '') +
+    '<div style="font-size:12px;color:var(--text2);margin-top:6px">' +
+    '<div style="margin-bottom:3px">\u2b50 <strong>Preferred</strong> \u2014 works great</div>' +
+    '<div style="margin-bottom:3px">\u2713 <strong>Available</strong> \u2014 works</div>' +
+    '<div style="margin-bottom:3px">\u2193 <strong>Last resort</strong> \u2014 if nothing else</div>' +
+    '<div style="margin-bottom:3px">\ud83d\udc6b <strong>Sibling</strong> \u2014 coordinating</div>' +
+    (hasPendingPref ? '<div style="margin-bottom:3px">\u2716 <strong>Cancel request</strong> \u2014 remove this segment</div>' : '') +
     '</div>' +
     '</div>';
 
@@ -2432,11 +2428,9 @@ function rPreferences() {
 
 // ── Screen: Pref sent ──────────────────────────────────────────
 function rPrefSent() {
-  var phaseNote = phase === 'pre'
-    ? 'Your request is under review. Click here to review or make changes.'
-    : phase === 'open'
-    ? 'Your request is under review. Click here to review or make changes.'
-    : 'Your request has been received. We\'ll be in touch as soon as possible.';
+  var phaseNote = phase === 'locked'
+    ? 'Your request has been received. We\'ll be in touch as soon as possible.'
+    : 'Click here to review or make changes to your booking.';
   return '<div class="card">' +
     '<div class="confirm-icon">&#128197;</div>' +
     '<div class="confirm-title">Request received!</div>' +
