@@ -1441,7 +1441,7 @@ function rAuth() {
   if (m.schedRequest && m.schedRequest.length) {
     html += '<div class="notice notice-info" style="margin-bottom:16px;flex-direction:column;gap:4px">' +
       '<div style="font-weight:600;margin-bottom:4px">&#128197; Scheduling request under review</div>' +
-      '<div><strong>Held spot:</strong> ' + (m.day && m.seg ? esc(m.day) + (m.seg !== 'Single' ? ' ' + esc(m.seg) : '') : 'Currently unassigned \u2014 no spot is being held') + '</div>' +
+      '<div><strong>Current spot:</strong> ' + (m.day && m.seg ? esc(m.day) + (m.seg !== 'Single' ? ' ' + esc(m.seg) : '') : 'Currently unassigned') + '</div>' +
       '<div><strong>Requested:</strong> ' + m.schedRequest.filter(function(x){return x;}).map(function(x) { return esc(x); }).join(', ') + '</div>' +
       '<div style="margin-top:4px;font-size:12px">Your request is under review — we\'ll update you as soon as possible.</div>' +
       '</div>';
@@ -1449,9 +1449,14 @@ function rAuth() {
 
   // Unconfirmed: prominent amber callout — suppress for students with no day/seg (saturday/unassigned)
   if (st === 'unconfirmed' && m.day && m.seg && !(m.tags && m.tags.indexOf('saturday') > -1)) {
+    var unconfBannerMsg = (phase === 'open')
+      ? 'Log in to confirm your spot. Spots are first come, first served — the schedule locks June 1st.'
+      : (phase === 'locked')
+      ? 'The schedule is now locked. Log in to manage your booking or contact us at info@keylab.nyc.'
+      : 'Please confirm your participation before May 4th. After May 4th, performance segments are open to all families on a first come first served basis with a maximum of 10 performers per segment.';
     html += '<div class="notice notice-warn" style="border-width:2px;border-radius:10px;padding:16px 16px 14px;margin-bottom:16px">' +
       '<span class="ni">&#9888;&#65039;</span><span><strong>Action required — your spot is not yet confirmed</strong><br>' +
-      'Please confirm your participation before May 4th. After May 4th, performance segments are open to all families on a first come first served basis with a maximum of 10 performers per segment.' +
+      unconfBannerMsg +
       '</span></div>';
   }
 
@@ -1568,11 +1573,11 @@ function rFound() {
   } else if (schedSegs && schedSegs.length) {
     var heldSpot = (s.day && s.seg)
       ? esc(s.day) + (s.seg !== 'Single' ? ' ' + esc(s.seg) : '')
-      : 'Currently unassigned \u2014 no spot is being held';
+      : 'Currently unassigned';
     html += '<div class="notice notice-info" style="flex-direction:column;gap:6px;margin-bottom:12px">' +
       '<div style="font-size:15px;font-weight:600">Your scheduling request has been received and is being reviewed.</div>' +
       '<div style="font-size:13px;margin-bottom:2px;line-height:1.5">' +
-      '<strong>Held spot:</strong> ' + heldSpot +
+      '<strong>Current spot:</strong> ' + heldSpot +
       '</div>' +
       '<div style="font-size:13px;margin-bottom:10px;line-height:1.5">' +
       '<strong>Requested:</strong> ' + schedSegs.filter(function(x) { return x; }).map(function(x) { return esc(x); }).join(', ') +
@@ -1833,6 +1838,18 @@ function rActions(s, isInactive) {
         );
       }
     } else {
+      if (s.status !== 'confirmed') {
+        html += btnWrap(
+          '<button class="btn-primary" onclick="doStartConfirm(\'confirmed\')">Confirm as performer &rarr;</button>',
+          'Reserve your child\'s performance spot and up to 3 guest seats.'
+        );
+      }
+      if (s.status !== 'confirmed-guest') {
+        html += btnWrap(
+          '<button class="btn-secondary" onclick="doStartConfirm(\'confirmed-guest\')">Confirm as attending, not performing</button>',
+          'For kids who aren\'t performing but want to come. Bring up to 3 guests.'
+        );
+      }
       html += btnWrap(
         '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
         'Your spot will be released immediately. You can rejoin into any open spot using this tool.'
