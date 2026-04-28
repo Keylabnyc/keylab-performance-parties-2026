@@ -1850,6 +1850,12 @@ function rActions(s, isInactive) {
           'For kids who aren\'t performing but want to come. Bring up to 3 guests.'
         );
       }
+      if (!hasPendingRequest) {
+        html += btnWrap(
+          '<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>',
+          'Tell us your preferred days and we\'ll do our best to place you in a segment that works.'
+        );
+      }
       html += btnWrap(
         '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
         'Your spot will be released immediately. You can rejoin into any open spot using this tool.'
