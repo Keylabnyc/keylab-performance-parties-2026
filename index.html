@@ -661,6 +661,7 @@ var state   = "lookup";
 var student = null;
 var slots   = null;
 var phase   = "pre";
+var canSwap = false;
 var errMsg  = "";
 var schedRequestCancelled = false;
 var unconfirmReverted = false;
@@ -1103,7 +1104,7 @@ function doRejoin() {
   // Always fetch fresh slot data before attempting any rejoin
   state = "loading"; render();
   api({action:"getSlots"}, function(e, r) {
-    if (!e && r && r.ok) { slots = r.slots; phase = r.phase; }
+    if (!e && r && r.ok) { slots = r.slots; phase = r.phase; canSwap = !!r.canSwap; }
     doRejoinWithFreshSlots();
   });
 }
@@ -1206,7 +1207,7 @@ function doRejoinDirect(toDay, toSeg) {
 function doStartSwap() {
   state = "loading"; render();
   api({action:"getSlots"}, function(e, r) {
-    if (!e && r && r.ok) { slots = r.slots; phase = r.phase; }
+    if (!e && r && r.ok) { slots = r.slots; phase = r.phase; canSwap = !!r.canSwap; }
     state = "swap"; errMsg = ''; render();
   });
 }
@@ -1296,7 +1297,7 @@ function render() {
     "unconfirm":        function() { root.innerHTML = rUnconfirm();       renderInfo("found"); },
     "edit-guests":      function() { root.innerHTML = rEditGuests();      renderInfo("found"); },
     "rejoin-pick":      function() {
-      if (!slots) { state = "loading"; render(); api({action:"getSlots"}, function(e,r) { if(!e&&r&&r.ok){slots=r.slots;phase=r.phase;} state="rejoin-pick"; render(); }); return; }
+      if (!slots) { state = "loading"; render(); api({action:"getSlots"}, function(e,r) { if(!e&&r&&r.ok){slots=r.slots;phase=r.phase;canSwap=!!r.canSwap;} state="rejoin-pick"; render(); }); return; }
       root.innerHTML = rRejoinPick(); renderInfo("found");
     },
     "swap":             function() { root.innerHTML = rSwap();            renderInfo("found"); },
@@ -1630,12 +1631,12 @@ function rActions(s, isInactive) {
   // ── Confirmed performer: dedicated "Make a Change" section ────
   if (!isInactive && s.status === 'confirmed') {
     html += '<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:10px">Make a change</div>';
-    if (phase === 'open') {
+    if (canSwap) {
       html += btnWrap(
         '<button class="btn-secondary" onclick="doStartSwap()">Reschedule &rarr;</button>',
         'Instantly reschedule into any open spot, per availability. Your current spot will be released.'
       );
-    } else if (phase === 'pre' || phase === 'priority') {
+    } else if (phase === 'pre' || phase === 'priority' || (phase === 'open' && !canSwap)) {
       // Fix 7: status-aware scheduling request copy
       var schedReqDesc = 'Self-service rescheduling opens May 4th, but you can also request to be placed into any segment during performance week. We\'ll put a hold on your current spot so you don\'t lose it, review your request, and contact you asap with an update.';
       if (!hasPendingRequest) {
@@ -1683,7 +1684,7 @@ function rActions(s, isInactive) {
       '<button class="btn-primary" onclick="doStartConfirm(\'confirmed\')">Confirm as performer &rarr;</button>',
       'Switch to confirmed performer. You\'ll select your guest count.'
     );
-    if (phase === 'open') {
+    if (canSwap) {
       html += btnWrap(
         '<button class="btn-secondary" onclick="doStartSwap()">Reschedule &rarr;</button>',
         'Instantly reschedule into any open spot, per availability. Your current spot will be released.'
@@ -1908,11 +1909,13 @@ function rActions(s, isInactive) {
         'Your spot will be released immediately. You can rejoin into any open spot before June 1st.'
       );
     } else {
-      // Confirmed or confirmed-guest in open phase — show reschedule
-      html += btnWrap(
-        '<button class="btn-primary" onclick="doStartSwap()">Reschedule &rarr;</button>',
-        'Move instantly to any available spot. Your current spot will be released.'
-      );
+      // Confirmed or confirmed-guest in open phase — show reschedule only if canSwap
+      if (canSwap) {
+        html += btnWrap(
+          '<button class="btn-primary" onclick="doStartSwap()">Reschedule &rarr;</button>',
+          'Move instantly to any available spot. Your current spot will be released.'
+        );
+      }
       html += btnWrap(
         '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
         'Your spot will be released immediately. You can rejoin into any open spot before June 1st.'
@@ -2232,7 +2235,7 @@ function doGoToRejoinPick() {
   window._rejoinPickContext = 'cancelled';
   state = 'loading'; render();
   api({action:"getSlots"}, function(e, r) {
-    if (!e && r && r.ok) { slots = r.slots; phase = r.phase; }
+    if (!e && r && r.ok) { slots = r.slots; phase = r.phase; canSwap = !!r.canSwap; }
     state = 'rejoin-pick'; errMsg = ''; render();
   });
 }
