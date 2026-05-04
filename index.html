@@ -1895,7 +1895,7 @@ function rActions(s, isInactive) {
           : 'Pick any available spot during the week. Your original ' + (origDay2 ? origDay2 + ' ' + origSeg2 + ' ' : '') + 'spot will not be held \u2014 spots are first come, first served.'
       );
     } else if (s.status === 'unconfirmed') {
-      // Unconfirmed in open phase — show confirm options first
+      // Unconfirmed in open phase — show confirm options first, then reschedule
       html += btnWrap(
         '<button class="btn-primary" onclick="doStartConfirm(\'confirmed\')">Confirm as performer &rarr;</button>',
         'Your child will perform. You\'ll select guest count and names on the next screen.'
@@ -1903,6 +1903,10 @@ function rActions(s, isInactive) {
       html += btnWrap(
         '<button class="btn-primary" onclick="doStartConfirm(\'confirmed-guest\')">Attending, not performing</button>',
         'For kids who aren\'t performing but want to come. Bring up to 3 guests.'
+      );
+      html += btnWrap(
+        '<button class="btn-secondary" onclick="doRejoin()">Reschedule into a different spot &rarr;</button>',
+        'Pick a different segment during performance week. Spots are first come, first served.'
       );
       html += btnWrap(
         '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
