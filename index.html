@@ -796,7 +796,7 @@ function doAuth() {
     student = r.student;
     if (!lookupEmail && student.email) lookupEmail = student.email;
     api({action:"getSlots"}, function(e2, r2) {
-      if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
+      if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; canSwap = !!r2.canSwap; }
       else { phase = phase || 'pre'; }
       pendingAuthIntent = null;
       managingBooking = false;
@@ -859,7 +859,7 @@ function doConfirmWithGuests() {
       if (r && r.slotFull) {
         errMsg = "This segment just filled up. Please choose another spot below.";
         api({action:"getSlots"}, function(e2, r2) {
-          if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
+          if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; canSwap = !!r2.canSwap; }
           state = "rejoin-pick"; render();
         });
         return;
@@ -904,7 +904,7 @@ function doSubmitCancel() {
     }
     // Refresh slots so rejoin buttons appear immediately on the booking screen
     api({action:"getSlots"}, function(e2, r2) {
-      if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
+      if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; canSwap = !!r2.canSwap; }
       state = "cancel-confirmed"; render();
     });
   });
@@ -1895,7 +1895,7 @@ function rActions(s, isInactive) {
           : 'Pick any available spot during the week. Your original ' + (origDay2 ? origDay2 + ' ' + origSeg2 + ' ' : '') + 'spot will not be held \u2014 spots are first come, first served.'
       );
     } else if (s.status === 'unconfirmed') {
-      // Unconfirmed in open phase — show confirm options first, then reschedule
+      // Unconfirmed in open phase — show confirm options first
       html += btnWrap(
         '<button class="btn-primary" onclick="doStartConfirm(\'confirmed\')">Confirm as performer &rarr;</button>',
         'Your child will perform. You\'ll select guest count and names on the next screen.'
@@ -1903,10 +1903,6 @@ function rActions(s, isInactive) {
       html += btnWrap(
         '<button class="btn-primary" onclick="doStartConfirm(\'confirmed-guest\')">Attending, not performing</button>',
         'For kids who aren\'t performing but want to come. Bring up to 3 guests.'
-      );
-      html += btnWrap(
-        '<button class="btn-secondary" onclick="doRejoin()">Reschedule into a different spot &rarr;</button>',
-        'Pick a different segment during performance week. Spots are first come, first served.'
       );
       html += btnWrap(
         '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
@@ -2058,7 +2054,7 @@ function doConfirmWithGuestNames() {
       if (r && r.slotFull) {
         errMsg = "This segment just filled up. Please choose another spot below.";
         api({action:"getSlots"}, function(e2, r2) {
-          if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
+          if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; canSwap = !!r2.canSwap; }
           state = "rejoin-pick"; render();
         });
         return;
