@@ -2318,13 +2318,13 @@ function rRejoinType() {
   var dateLabels = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
   var sessionLabel = student.seg === 'Early' ? 'Early session' : student.seg === 'Late' ? 'Late session' : 'Single session';
   var timeLabel = {Early:'4:00 PM', Late:'5:00 PM', Single:'4:00 PM'}[student.seg] || '';
-  var slotDisplay = esc(student.day) + ', ' + (dateLabels[student.day] || '') + ' — ' + sessionLabel + ', ' + timeLabel;
+  var slotDisplay = esc(student.day) + ', ' + (dateLabels[student.day] || '') + ' \u2014 ' + sessionLabel + ', ' + timeLabel;
   return '<div class="card">' +
     '<div class="card-title">How will ' + esc(student.name.trim().split(/\s+/)[0]) + ' be joining?</div>' +
     '<div class="guest-summary"><strong>' + esc(student.name) + '</strong><br>' + slotDisplay + '</div>' +
     errFrag() +
     btnWrap(
-      '<button class="btn-primary" onclick="doStartConfirm(&apos;confirmed&apos;)">Confirm as performer →</button>',
+      '<button class="btn-primary" onclick="doStartConfirm(&apos;confirmed&apos;)">Confirm as performer \u2192</button>',
       student.name.trim().split(/\s+/)[0] + ' will perform. You\'ll select guests on the next screen.'
     ) +
     btnWrap(
