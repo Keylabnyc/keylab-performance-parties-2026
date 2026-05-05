@@ -674,6 +674,10 @@ var lookupName = "", lookupPw = "", lookupEmail = "";
 var lookupMatches = []; // for multi-match picker
 var selectedMatch = null; // {id, name, day, seg} chosen from picker
 var pendingConfirmStatus = "confirmed";
+var pendingRejoinDay      = null;   // set when guest-select is reached via rejoin flow
+var pendingRejoinSeg      = null;
+var pendingRejoinPrevDay  = null;   // original day/seg to restore if user goes back
+var pendingRejoinPrevSeg  = null;
 var prefSelected = [];
 var pendingGuestList = [];
 var pendingAuthIntent = null;
@@ -749,7 +753,16 @@ function statusClass(st) {
 
 function showErr(m) { errMsg = m; render(); }
 
-function goBack() { state = 'found'; errMsg = ''; render(); }
+function goBack() {
+  // If we entered guest-select via a rejoin flow, restore the original day/seg
+  if (pendingRejoinDay) {
+    student.day = pendingRejoinPrevDay;
+    student.seg = pendingRejoinPrevSeg;
+    pendingRejoinDay = null; pendingRejoinSeg = null;
+    pendingRejoinPrevDay = null; pendingRejoinPrevSeg = null;
+  }
+  state = 'found'; errMsg = ''; render();
+}
 
 // ── Lookup step 1: name search ─────────────────────────────────
 function doLookup() {
@@ -796,7 +809,7 @@ function doAuth() {
     student = r.student;
     if (!lookupEmail && student.email) lookupEmail = student.email;
     api({action:"getSlots"}, function(e2, r2) {
-      if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; canSwap = !!r2.canSwap; }
+      if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
       else { phase = phase || 'pre'; }
       pendingAuthIntent = null;
       managingBooking = false;
@@ -854,12 +867,43 @@ function doConfirmWithGuests() {
   }
   var status = pendingConfirmStatus;
   state = "loading"; render();
+
+  // Rejoin flow: student picked a new segment before reaching guest-select
+  if (pendingRejoinDay) {
+    var toDay = pendingRejoinDay; var toSeg = pendingRejoinSeg;
+    pendingRejoinDay = null; pendingRejoinSeg = null;
+    pendingRejoinPrevDay = null; pendingRejoinPrevSeg = null;
+    api({action:"rejoin", studentId:student.id, password:lookupPw, toDay:toDay, toSeg:toSeg, email:lookupEmail, guests:gCount, guestNames:names}, function(e, r) {
+      if (e || !r || !r.ok) {
+        if (r && r.slotFull) {
+          errMsg = "This segment just filled up. Please choose another spot below.";
+          api({action:"getSlots"}, function(e2, r2) {
+            if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; canSwap = !!r2.canSwap; }
+            state = "rejoin-pick"; render();
+          });
+          return;
+        }
+        state = "guest-select"; showErr((r && r.error) || "Could not save. Please try again."); return;
+      }
+      student.day = toDay; student.seg = toSeg; student.status = 'confirmed';
+      student.guests = gCount; student.guestNames = names;
+      api({action:"getSlots"}, function(e2, r2) {
+        if (!e2 && r2 && r2.ok) { slots = r2.slots; canSwap = !!r2.canSwap; }
+        window._swapResult = r.confirmation;
+        window._rejoinOrigDay = null; window._rejoinOrigSeg = null;
+        state = "swap-confirmed"; render();
+      });
+    });
+    return;
+  }
+
+  // Standard confirm flow
   api({action:"confirm", studentId:student.id, password:lookupPw, status:status, guests:gCount, guestNames:names, email:lookupEmail}, function(e, r) {
     if (e || !r || !r.ok) {
       if (r && r.slotFull) {
         errMsg = "This segment just filled up. Please choose another spot below.";
         api({action:"getSlots"}, function(e2, r2) {
-          if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; canSwap = !!r2.canSwap; }
+          if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
           state = "rejoin-pick"; render();
         });
         return;
@@ -904,58 +948,9 @@ function doSubmitCancel() {
     }
     // Refresh slots so rejoin buttons appear immediately on the booking screen
     api({action:"getSlots"}, function(e2, r2) {
-      if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; canSwap = !!r2.canSwap; }
+      if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
       state = "cancel-confirmed"; render();
     });
-  });
-}
-
-// ── Unconfirm ──────────────────────────────────────────────────
-function doStartUnconfirm() { state = "unconfirm"; errMsg = ''; render(); }
-
-function doSubmitUnconfirm() {
-  errMsg = '';
-  var btn = document.getElementById("unconfirm-btn");
-  if (btn) { btn.disabled = true; btn.textContent = "Reverting\u2026"; }
-  api({action:"unconfirm", studentId:student.id, password:lookupPw, email:lookupEmail}, function(e, r) {
-    if (e || !r || !r.ok) {
-      if (btn) { btn.disabled = false; btn.textContent = "Yes, revert to unconfirmed"; }
-      showErr((r && r.error) || "Could not revert status. Please try again.");
-      return;
-    }
-    unconfirmReverted = true;
-    refreshStudent(function() { state = "found"; render(); });
-  });
-}
-
-// ── Edit Guests ────────────────────────────────────────────────
-function doStartEditGuests() { state = "edit-guests"; errMsg = ''; render(); }
-
-function doSubmitEditGuests() {
-  errMsg = '';
-  var guestCount = 0;
-  var guestNames = [];
-  
-  // Collect guest names from input fields
-  for (var i = 1; i <= 3; i++) {
-    var nameField = document.getElementById("guest-name-" + i);
-    if (nameField && nameField.value && nameField.value.trim()) {
-      guestNames.push(nameField.value.trim());
-      guestCount++;
-    }
-  }
-  
-  var btn = document.getElementById("edit-guests-btn");
-  if (btn) { btn.disabled = true; btn.textContent = "Saving\u2026"; }
-  
-  api({action:"confirm", studentId:student.id, password:lookupPw, status:student.status, guests:guestCount, guestNames:guestNames, email:lookupEmail}, function(e, r) {
-    if (e || !r || !r.ok) {
-      if (btn) { btn.disabled = false; btn.textContent = "Save changes"; }
-      showErr((r && r.error) || "Could not update guest list. Please try again.");
-      return;
-    }
-    student.guests = guestCount; student.guestNames = guestNames;
-    state = "confirm-sent"; render();
   });
 }
 
@@ -1099,6 +1094,55 @@ function doSubmitPreferences() {
   });
 }
 
+// ── Unconfirm ──────────────────────────────────────────────────
+function doStartUnconfirm() { state = "unconfirm"; errMsg = ''; render(); }
+
+function doSubmitUnconfirm() {
+  errMsg = '';
+  var btn = document.getElementById("unconfirm-btn");
+  if (btn) { btn.disabled = true; btn.textContent = "Reverting\u2026"; }
+  api({action:"unconfirm", studentId:student.id, password:lookupPw, email:lookupEmail}, function(e, r) {
+    if (e || !r || !r.ok) {
+      if (btn) { btn.disabled = false; btn.textContent = "Yes, revert to unconfirmed"; }
+      showErr((r && r.error) || "Could not revert status. Please try again.");
+      return;
+    }
+    unconfirmReverted = true;
+    refreshStudent(function() { state = "found"; render(); });
+  });
+}
+
+// ── Edit Guests ────────────────────────────────────────────────
+function doStartEditGuests() { state = "edit-guests"; errMsg = ''; render(); }
+
+function doSubmitEditGuests() {
+  errMsg = '';
+  var guestCount = 0;
+  var guestNames = [];
+  
+  // Collect guest names from input fields
+  for (var i = 1; i <= 3; i++) {
+    var nameField = document.getElementById("guest-name-" + i);
+    if (nameField && nameField.value && nameField.value.trim()) {
+      guestNames.push(nameField.value.trim());
+      guestCount++;
+    }
+  }
+  
+  var btn = document.getElementById("edit-guests-btn");
+  if (btn) { btn.disabled = true; btn.textContent = "Saving\u2026"; }
+  
+  api({action:"confirm", studentId:student.id, password:lookupPw, status:student.status, guests:guestCount, guestNames:guestNames, email:lookupEmail}, function(e, r) {
+    if (e || !r || !r.ok) {
+      if (btn) { btn.disabled = false; btn.textContent = "Save changes"; }
+      showErr((r && r.error) || "Could not update guest list. Please try again.");
+      return;
+    }
+    student.guests = guestCount; student.guestNames = guestNames;
+    state = "confirm-sent"; render();
+  });
+}
+
 // ── Rejoin ─────────────────────────────────────────────────────
 function doRejoin() {
   // Always fetch fresh slot data before attempting any rejoin
@@ -1172,35 +1216,15 @@ function doRejoinWithFreshSlots() {
 }
 
 function doRejoinDirect(toDay, toSeg) {
-  state = "loading"; render();
-  api({action:"rejoin", studentId:student.id, password:lookupPw, toDay:toDay, toSeg:toSeg, email:lookupEmail}, function(e, r) {
-    if (e || !r || !r.ok) {
-      if (r && r.slotFull) {
-        api({action:"getSlots"}, function(e2, r2) {
-          if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
-          if (phase === 'open') {
-            state = "swap"; window._rejoinOrigDay = null; window._rejoinOrigSeg = null;
-            errMsg = "This segment is now full. Choose another spot below. The schedule locks June 1st.";
-          } else {
-            window._rejoinPickContext = 'full';
-            state = "rejoin-pick";
-            errMsg = "This segment is now full. Choose another spot below. The schedule locks June 1st.";
-          }
-          render();
-        });
-      } else {
-        state = "found"; showErr((r && r.error) || "Could not restore. Please try again.");
-      }
-      return;
-    }
-    student.day = toDay; student.seg = toSeg; student.status = 'confirmed';
-    api({action:"getSlots"}, function(e2, r2) {
-      if (!e2 && r2 && r2.ok) { slots = r2.slots; }
-      window._swapResult = r.confirmation;
-      window._rejoinOrigDay = null; window._rejoinOrigSeg = null;
-      state = "swap-confirmed"; render();
-    });
-  });
+  errMsg = '';
+  // Store destination and temporarily update student day/seg so guest-select shows correct slot
+  pendingRejoinDay     = toDay;
+  pendingRejoinSeg     = toSeg;
+  pendingRejoinPrevDay = student.day;
+  pendingRejoinPrevSeg = student.seg;
+  student.day = toDay;
+  student.seg = toSeg;
+  doStartConfirm('confirmed');
 }
 
 // ── Swap ───────────────────────────────────────────────────────
@@ -2049,12 +2073,43 @@ function doConfirmWithGuestNames() {
   var status = pendingConfirmStatus;
   var count = names.length;
   state = "loading"; render();
+
+  // Rejoin flow: student picked a new segment before reaching guest-select
+  if (pendingRejoinDay) {
+    var toDay = pendingRejoinDay; var toSeg = pendingRejoinSeg;
+    pendingRejoinDay = null; pendingRejoinSeg = null;
+    pendingRejoinPrevDay = null; pendingRejoinPrevSeg = null;
+    api({action:"rejoin", studentId:student.id, password:lookupPw, toDay:toDay, toSeg:toSeg, email:lookupEmail, guests:count, guestNames:names}, function(e, r) {
+      if (e || !r || !r.ok) {
+        if (r && r.slotFull) {
+          errMsg = "This segment just filled up. Please choose another spot below.";
+          api({action:"getSlots"}, function(e2, r2) {
+            if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; canSwap = !!r2.canSwap; }
+            state = "rejoin-pick"; render();
+          });
+          return;
+        }
+        state = "guest-select"; showErr((r && r.error) || "Could not save. Please try again."); return;
+      }
+      student.day = toDay; student.seg = toSeg; student.status = 'confirmed';
+      student.guests = count; student.guestNames = names;
+      api({action:"getSlots"}, function(e2, r2) {
+        if (!e2 && r2 && r2.ok) { slots = r2.slots; canSwap = !!r2.canSwap; }
+        window._swapResult = r.confirmation;
+        window._rejoinOrigDay = null; window._rejoinOrigSeg = null;
+        state = "swap-confirmed"; render();
+      });
+    });
+    return;
+  }
+
+  // Standard confirm flow
   api({action:"confirm", studentId:student.id, password:lookupPw, status:status, guests:count, guestNames:names, email:lookupEmail}, function(e, r) {
     if (e || !r || !r.ok) {
       if (r && r.slotFull) {
         errMsg = "This segment just filled up. Please choose another spot below.";
         api({action:"getSlots"}, function(e2, r2) {
-          if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; canSwap = !!r2.canSwap; }
+          if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
           state = "rejoin-pick"; render();
         });
         return;
@@ -2242,29 +2297,14 @@ function doGoToRejoinPick() {
 
 function doRejoinFromPick(toDay, toSeg) {
   errMsg = '';
-  state = "loading"; render();
-  api({action:"rejoin", studentId:student.id, password:lookupPw, toDay:toDay, toSeg:toSeg, email:lookupEmail}, function(e, r) {
-    if (e || !r || !r.ok) {
-      if (r && r.slotFull) {
-        // Slot just filled — refresh and stay on picker
-        api({action:"getSlots"}, function(e2, r2) {
-          if (!e2 && r2 && r2.ok) { slots = r2.slots; }
-          state = "rejoin-pick";
-          errMsg = "That spot just filled up. Please choose another.";
-          render();
-        });
-      } else {
-        state = "rejoin-pick"; showErr((r && r.error) || "Could not book. Please try again.");
-      }
-      return;
-    }
-    student.day = toDay; student.seg = toSeg; student.status = 'confirmed';
-    api({action:"getSlots"}, function(e2, r2) {
-      if (!e2 && r2 && r2.ok) { slots = r2.slots; }
-      window._swapResult = r.confirmation;
-      state = "swap-confirmed"; render();
-    });
-  });
+  // Store destination and temporarily update student day/seg so guest-select shows correct slot
+  pendingRejoinDay     = toDay;
+  pendingRejoinSeg     = toSeg;
+  pendingRejoinPrevDay = student.day;
+  pendingRejoinPrevSeg = student.seg;
+  student.day = toDay;
+  student.seg = toSeg;
+  doStartConfirm('confirmed');
 }
 
 function rCancelConfirmed() {
