@@ -2704,9 +2704,9 @@ function rSwapConfirmed() {
   var arriveLabel = {Early:'3:30\u20133:50 PM', Late:'4:45\u20135:00 PM', Single:'3:30\u20133:50 PM'}[s.seg] || '';
   return '<div class="card">' +
     '<div class="confirm-icon">&#9989;</div>' +
-    '<div class="confirm-title">' + (isRejoin ? 'Welcome back!' : 'You\'re rescheduled!') + '</div>' +
+    '<div class="confirm-title">' + (isRejoin ? 'You\'re confirmed!' : 'You\'re rescheduled!') + '</div>' +
     '<div class="confirm-sub">' + (isRejoin
-      ? 'Great to have ' + esc(c.studentName || s.name) + ' back \u2014 spot confirmed!'
+      ? esc(c.studentName || s.name) + ' is confirmed for the spot below.'
       : esc(c.studentName || s.name) + '\'s booking has been updated. Here are the new details.') + '</div>' +
     '<div class="confirm-detail">' +
     '<div class="confirm-row"><span class="confirm-key">Date</span><span class="confirm-val">' + esc(s.day) + ', ' + esc(dateLabels[s.day] || '') + '</span></div>' +
