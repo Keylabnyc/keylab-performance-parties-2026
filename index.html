@@ -809,7 +809,7 @@ function doAuth() {
     student = r.student;
     if (!lookupEmail && student.email) lookupEmail = student.email;
     api({action:"getSlots"}, function(e2, r2) {
-      if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
+      if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; canSwap = !!r2.canSwap; }
       else { phase = phase || 'pre'; }
       pendingAuthIntent = null;
       managingBooking = false;
@@ -871,11 +871,14 @@ function doConfirmWithGuests() {
   // Rejoin flow: student picked a new segment before reaching guest-select
   if (pendingRejoinDay) {
     var toDay = pendingRejoinDay; var toSeg = pendingRejoinSeg;
+    var prevDay = pendingRejoinPrevDay; var prevSeg = pendingRejoinPrevSeg;
     pendingRejoinDay = null; pendingRejoinSeg = null;
     pendingRejoinPrevDay = null; pendingRejoinPrevSeg = null;
     api({action:"rejoin", studentId:student.id, password:lookupPw, toDay:toDay, toSeg:toSeg, email:lookupEmail, guests:gCount, guestNames:names}, function(e, r) {
       if (e || !r || !r.ok) {
         if (r && r.slotFull) {
+          // Restore original segment so found state shows correct info if family backs out
+          student.day = prevDay || student.day; student.seg = prevSeg || student.seg;
           errMsg = "This segment just filled up. Please choose another spot below.";
           api({action:"getSlots"}, function(e2, r2) {
             if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; canSwap = !!r2.canSwap; }
@@ -883,6 +886,7 @@ function doConfirmWithGuests() {
           });
           return;
         }
+        student.day = prevDay || student.day; student.seg = prevSeg || student.seg;
         state = "guest-select"; showErr((r && r.error) || "Could not save. Please try again."); return;
       }
       student.day = toDay; student.seg = toSeg; student.status = 'confirmed';
@@ -1919,7 +1923,7 @@ function rActions(s, isInactive) {
           : 'Pick any available spot during the week. Your original ' + (origDay2 ? origDay2 + ' ' + origSeg2 + ' ' : '') + 'spot will not be held \u2014 spots are first come, first served.'
       );
     } else if (s.status === 'unconfirmed') {
-      // Unconfirmed in open phase — show confirm options first
+      // Unconfirmed in open phase — show confirm options first, then reschedule
       html += btnWrap(
         '<button class="btn-primary" onclick="doStartConfirm(\'confirmed\')">Confirm as performer &rarr;</button>',
         'Your child will perform. You\'ll select guest count and names on the next screen.'
@@ -1927,6 +1931,10 @@ function rActions(s, isInactive) {
       html += btnWrap(
         '<button class="btn-primary" onclick="doStartConfirm(\'confirmed-guest\')">Attending, not performing</button>',
         'For kids who aren\'t performing but want to come. Bring up to 3 guests.'
+      );
+      html += btnWrap(
+        '<button class="btn-secondary" onclick="doRejoin()">Reschedule into a different spot &rarr;</button>',
+        'Pick a different segment during performance week. Spots are first come, first served.'
       );
       html += btnWrap(
         '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
@@ -2029,7 +2037,7 @@ function rGuestSelect() {
   }
 
   html += '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; My booking</button></div>';
+    '<div class="back-row"><button class="btn-nav" onclick="goBack()">&#8592; My booking</button></div>';
   return html;
 }
 
@@ -2077,11 +2085,13 @@ function doConfirmWithGuestNames() {
   // Rejoin flow: student picked a new segment before reaching guest-select
   if (pendingRejoinDay) {
     var toDay = pendingRejoinDay; var toSeg = pendingRejoinSeg;
+    var prevDay = pendingRejoinPrevDay; var prevSeg = pendingRejoinPrevSeg;
     pendingRejoinDay = null; pendingRejoinSeg = null;
     pendingRejoinPrevDay = null; pendingRejoinPrevSeg = null;
     api({action:"rejoin", studentId:student.id, password:lookupPw, toDay:toDay, toSeg:toSeg, email:lookupEmail, guests:count, guestNames:names}, function(e, r) {
       if (e || !r || !r.ok) {
         if (r && r.slotFull) {
+          student.day = prevDay || student.day; student.seg = prevSeg || student.seg;
           errMsg = "This segment just filled up. Please choose another spot below.";
           api({action:"getSlots"}, function(e2, r2) {
             if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; canSwap = !!r2.canSwap; }
@@ -2089,6 +2099,7 @@ function doConfirmWithGuestNames() {
           });
           return;
         }
+        student.day = prevDay || student.day; student.seg = prevSeg || student.seg;
         state = "guest-select"; showErr((r && r.error) || "Could not save. Please try again."); return;
       }
       student.day = toDay; student.seg = toSeg; student.status = 'confirmed';
