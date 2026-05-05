@@ -1211,7 +1211,7 @@ function doRejoinWithFreshSlots() {
           window._rejoinOrigSeg = (slotData && !slotData.isFull) ? origSeg : null;
         }
         window._rejoinPickContext = 'open';
-        state = "swap"; errMsg = ''; render();
+        state = "rejoin-pick"; errMsg = ''; render();
       });
     } else {
       state = "found"; render();
@@ -1220,15 +1220,22 @@ function doRejoinWithFreshSlots() {
 }
 
 function doRejoinDirect(toDay, toSeg) {
+  // Fast-path: called from "Return to original spot" — confirms immediately, no guest-select.
   errMsg = '';
-  // Store destination and temporarily update student day/seg so guest-select shows correct slot
-  pendingRejoinDay     = toDay;
-  pendingRejoinSeg     = toSeg;
-  pendingRejoinPrevDay = student.day;
-  pendingRejoinPrevSeg = student.seg;
-  student.day = toDay;
-  student.seg = toSeg;
-  doStartConfirm('confirmed');
+  state = "loading"; render();
+  api({action:"rejoin", studentId:student.id, password:lookupPw, toDay:toDay, toSeg:toSeg, email:lookupEmail}, function(e, r) {
+    if (e || !r || !r.ok) {
+      state = "found"; showErr((r && r.error) || "Could not restore your spot. Please try again.");
+      return;
+    }
+    student.day = toDay; student.seg = toSeg; student.status = 'confirmed';
+    api({action:"getSlots"}, function(e2, r2) {
+      if (!e2 && r2 && r2.ok) { slots = r2.slots; canSwap = !!r2.canSwap; }
+      window._swapResult = r.confirmation;
+      window._rejoinOrigDay = null; window._rejoinOrigSeg = null;
+      state = "swap-confirmed"; render();
+    });
+  });
 }
 
 // ── Swap ───────────────────────────────────────────────────────
@@ -1328,6 +1335,7 @@ function render() {
       if (!slots) { state = "loading"; render(); api({action:"getSlots"}, function(e,r) { if(!e&&r&&r.ok){slots=r.slots;phase=r.phase;canSwap=!!r.canSwap;} state="rejoin-pick"; render(); }); return; }
       root.innerHTML = rRejoinPick(); renderInfo("found");
     },
+    "rejoin-type":      function() { root.innerHTML = rRejoinType(); renderInfo("found"); },
     "swap":             function() { root.innerHTML = rSwap();            renderInfo("found"); },
     "swap-confirm":     function() { root.innerHTML = rSwapConfirm();    renderInfo("found"); },
     "swap-confirmed":   function() { root.innerHTML = rSwapConfirmed();   renderInfo("found"); },
@@ -2306,7 +2314,719 @@ function doGoToRejoinPick() {
   });
 }
 
+function rRejoinType() {
+  var dateLabels = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
+  var sessionLabel = student.seg === 'Early' ? 'Early session' : student.seg === 'Late' ? 'Late session' : 'Single session';
+  var timeLabel = {Early:'4:00 PM', Late:'5:00 PM', Single:'4:00 PM'}[student.seg] || '';
+  var slotDisplay = esc(student.day) + ', ' + (dateLabels[student.day] || '') + ' — ' + sessionLabel + ', ' + timeLabel;
+  return '<div class="card">' +
+    '<div class="card-title">How will ' + esc(student.name.trim().split(/\s+/)[0]) + ' be joining?</div>' +
+    '<div class="guest-summary"><strong>' + esc(student.name) + '</strong><br>' + slotDisplay + '</div>' +
+    errFrag() +
+    btnWrap(
+      '<button class="btn-primary" onclick="doStartConfirm(&apos;confirmed&apos;)">Confirm as performer →</button>',
+      student.name.trim().split(/\s+/)[0] + ' will perform. You\'ll select guests on the next screen.'
+    ) +
+    btnWrap(
+      '<button class="btn-secondary" onclick="doStartConfirm(&apos;confirmed-guest&apos;)">Attending, not performing</button>',
+      'Coming to watch and cheer! You can still bring up to 3 guests.'
+    ) +
+    '</div>' +
+    '<div class="back-row"><button class="btn-nav" onclick="doRejoinTypeBack()">&#8592; Choose a different spot</button></div>';
+}
+
+function doRejoinTypeBack() {
+  // Restore original day/seg and return to the segment picker
+  if (pendingRejoinDay) {
+    student.day = pendingRejoinPrevDay;
+    student.seg = pendingRejoinPrevSeg;
+    pendingRejoinDay = null; pendingRejoinSeg = null;
+    pendingRejoinPrevDay = null; pendingRejoinPrevSeg = null;
+  }
+  state = 'rejoin-pick'; errMsg = ''; render();
+}
+
 function doRejoinFromPick(toDay, toSeg) {
+  errMsg = '';
+  // Store destination, update student display, then show performer/CNP choice screen
+  pendingRejoinDay     = toDay;
+  pendingRejoinSeg     = toSeg;
+  pendingRejoinPrevDay = student.day;
+  pendingRejoinPrevSeg = student.seg;
+  student.day = toDay;
+  student.seg = toSeg;
+  state = "rejoin-type"; render();
+}
+
+function rCancelConfirmed() {
+  var hasPendingRequest = !!(student.schedRequest && student.schedRequest.length) || !!(getLatestSchedRequest(student.notes));
+  var tags = student.tags || '';
+  var origMatch = tags.match(/orig:([A-Za-z]+)_([A-Za-z]+)/);
+  var origDay = origMatch ? origMatch[1] : null;
+  var origSeg = origMatch ? origMatch[2] : null;
+  var origKey = origDay && origSeg ? origDay + '_' + origSeg : null;
+  var origAvailable = origKey && slots && slots[origKey] && !slots[origKey].isFull;
+  var origFull = origKey && slots && slots[origKey] && slots[origKey].isFull;
+  var canPickAny = (phase === 'open' || phase === 'locked');
+
+  var rejoinBlock = '';
+  if (origAvailable) {
+    rejoinBlock =
+      '<div class="notice notice-info" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#128260;</span><span>Your original spot is still available if you changed your mind.</span></div>' +
+      btnWrap('<button class="btn-primary" onclick="window._rejoinOrigConfirmDay=\'' + origDay + '\';window._rejoinOrigConfirmSeg=\'' + origSeg + '\';state=\'rejoin-orig-confirm\';render()">Return to ' + origDay + ' ' + origSeg + ' \u2192</button>', 'Restores your original spot instantly.');
+  } else if (origFull && !canPickAny) {
+    rejoinBlock =
+      '<div class="notice notice-warn" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#9888;</span><span>Your original segment is now full. Check back on May 4th when self-service scheduling opens, or submit a scheduling request and we\'ll be in touch with an update asap.</span></div>' +
+      (!hasPendingRequest ? btnWrap('<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>', 'Tell us your preferred days. We\'ll contact you with available options.') : '');
+  } else if (canPickAny) {
+    rejoinBlock =
+      '<div class="notice notice-info" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#128260;</span><span>You can rejoin into any available spot. The schedule locks June 1st.</span></div>' +
+      btnWrap('<button class="btn-secondary" onclick="doGoToRejoinPick()">Choose an available spot</button>', 'Pick any open spot during the week.');
+  } else {
+    // pre/priority, no orig tag or orig unavailable — offer scheduling request
+    rejoinBlock =
+      '<div class="notice notice-info" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#128197;</span><span>Self-service scheduling opens May 4th. Submit a scheduling request and we\'ll be in touch asap.</span></div>' +
+      (!hasPendingRequest ? btnWrap('<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>', 'Tell us your preferred days. We\'ll contact you with available options.') : '');
+  }
+
+  return '<div class="card">' +
+    '<div class="confirm-icon">&#128218;</div>' +
+    '<div class="confirm-title">Your spot has been released</div>' +
+    rejoinBlock +
+    '</div>' +
+    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; My booking</button></div>';
+}
+
+// ── Screen: Unconfirm ──────────────────────────────────────────
+function rUnconfirm() {
+  return '<div class="card">' +
+    '<div class="card-title">Change my mind</div>' +
+    '<div class="notice notice-info"><span class="ni">&#9432;</span><span>' +
+    (phase === 'open' || phase === 'locked'
+      ? 'You can reschedule as a performer or non-performing attendee into any segment before June 1st.'
+      : 'You can reschedule as a performer or non-performing attendee into any segment before June 1st.'
+    ) +
+    '</span></div>' +
+    errFrag() +
+    '<button class="btn-primary" id="unconfirm-btn" onclick="doSubmitUnconfirm()">Yes, revert to unconfirmed</button>' +
+    '</div>' +
+    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; Keep my spot</button></div>';
+}
+
+// ── Screen: Edit Guests ────────────────────────────────────────
+function rEditGuests() {
+  var s = student;
+  var confirmedCount = parseInt(s.guests) || 0;
+  var html = '<div class="card">' +
+    '<div class="card-title">Edit guest list</div>' +
+    '<div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5">' +
+    'You can edit or remove guests from your booking. You have ' + confirmedCount + ' guest seat' + (confirmedCount !== 1 ? 's' : '') + ' confirmed.' +
+    '</div>' +
+    errFrag();
+  
+  // Only show fields for already-confirmed guests — cannot add beyond confirmed count
+  for (var i = 1; i <= confirmedCount; i++) {
+    var existingName = (s.guestNames && s.guestNames[i-1]) ? s.guestNames[i-1] : '';
+    html += '<div style="margin-bottom:12px">' +
+      '<label style="display:block;font-size:12px;font-weight:600;color:var(--text3);margin-bottom:4px">Guest ' + i + '</label>' +
+      '<input id="guest-name-' + i + '" type="text" placeholder="Guest name" value="' + esc(existingName) + '" ' +
+      'style="width:100%;padding:8px 10px;font-family:\'DM Sans\',sans-serif;font-size:14px;border:1px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text);box-sizing:border-box">' +
+      '</div>';
+  }
+
+  if (confirmedCount === 0) {
+    html += '<div style="font-size:13px;color:var(--text3);margin-bottom:16px;padding:12px;background:var(--bg3);border-radius:7px">No guests are currently on your booking.</div>';
+  }
+  
+  html += '<div style="font-size:12px;color:var(--text3);margin-bottom:16px;margin-top:8px">' +
+    'Clear a field to remove that guest. To add guests, please contact us at info@keylab.nyc.' +
+    '</div>' +
+    '<button class="btn-primary" id="edit-guests-btn" onclick="doSubmitEditGuests()">Save changes</button>' +
+    '</div>' +
+    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; My booking</button></div>';
+  return html;
+}
+
+// ── Screen: Preferences ────────────────────────────────────────
+function rPreferences() {
+  var DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+  var SEGS = {Monday:['Early','Late'],Tuesday:['Early','Late'],Wednesday:['Early','Late'],Thursday:['Early','Late'],Friday:['Single']};
+  var PTIMES = {Monday:{Early:'4:00 PM',Late:'5:00 PM'},Tuesday:{Early:'4:00 PM',Late:'5:00 PM'},Wednesday:{Early:'4:00 PM',Late:'5:00 PM'},Thursday:{Early:'4:00 PM',Late:'5:00 PM'},Friday:{Single:'4:00 PM'}};
+  var PREF_LABELS = {preferred: '\u2b50 Preferred', available: '\u2713 Available', 'last-resort': '\u2193 Last resort', sibling: '\ud83d\udc6b Sibling', 'cancel-request': '\u2716 Cancel request'};
+
+  // Already-requested segments (from existing request)
+  var schedSegs = student.schedRequest || getLatestSchedRequest(student.notes);
+  var prefRequested = schedSegs ? schedSegs.map(function(s) { return s.trim().replace(/^[^A-Za-z]+/, '').trim().replace(/ /g, '_'); }) : [];
+
+  // Current spot label logic
+  var curKey = (student.day && student.seg) ? student.day + '_' + student.seg : null;
+  function curLabel() {
+    if (!curKey) return null;
+    var slotData = slots && slots[curKey];
+    var st = student.status;
+    if (st === 'confirmed') return 'confirmed performer spot \u2014 will be released if request is approved';
+    if (st === 'confirmed-guest') return 'confirmed non-performer spot \u2014 will be released if request is approved';
+    // Unconfirmed
+    if (slotData && slotData.isFull) return 'currently full';
+    if (slotData && !slotData.isFull) return 'backup spot being held';
+    return null;
+  }
+  var currentLabel = curLabel();
+
+  var grid = '<div class="pref-grid">';
+  DAYS.forEach(function(day) {
+    SEGS[day].forEach(function(seg) {
+      var key = day + '_' + seg;
+      var selObj = null;
+      for (var si = 0; si < prefSelected.length; si++) { if (prefSelected[si].key === key) { selObj = prefSelected[si]; break; } }
+      var isSel = !!selObj;
+      var isReq = prefRequested.indexOf(key) > -1;
+      var isCur = curKey === key;
+      var isCancelReq = isSel && selObj.type === 'cancel-request';
+      var isDisabled = isCur;
+      var cls = 'pref-btn' + (isSel ? ' selected' : '') + (isReq && !isCur ? ' already-requested' : '') + (isCur ? ' current-slot' : '') + (isCancelReq ? ' cancel-request' : '');
+      var typeLabel = isSel ? '<div class="pref-time pref-type-label" style="font-weight:600;margin-top:4px">' + (PREF_LABELS[selObj.type] || selObj.type) + '</div>' : '';
+      grid += '<button class="' + cls + '" data-prefkey="' + key + '" ' + (isDisabled ? 'disabled style="opacity:0.6;cursor:not-allowed"' : 'onclick="togglePref(\'' + key + '\')"') + '>' +
+        '<div class="pref-name">' + day + (seg === 'Single' ? '' : ' ' + seg) + '</div>' +
+        '<div class="pref-time">' + PTIMES[day][seg] + '</div>' +
+        (isCur && currentLabel ? '<div class="pref-time" style="color:var(--info);margin-top:3px">' + currentLabel + '</div>' : '') +
+        (isReq && !isCur ? '<div class="pref-already-label">already requested</div>' : '') +
+        typeLabel +
+        '</button>';
+    });
+  });
+  grid += '</div>';
+
+  var isInactivePref = student && (student.status === 'cancelled' || student.status === 'not-participating');
+  var hasPendingPref = !!(student && (student.schedRequest && student.schedRequest.length) || getLatestSchedRequest(student && student.notes));
+  var holdNotice = '';
+  if (!isInactivePref && hasPendingPref) {
+    holdNotice = '<div class="notice notice-info" style="margin-bottom:14px"><span class="ni">&#128274;</span><span>' +
+      '<strong>Your request is under review.</strong> Click here to review or make changes.' +
+      '</span></div>';
+  }
+
+  var cardTitle = hasPendingPref
+    ? 'Update your scheduling request'
+    : 'Select one or more segments';
+
+  var cardInstructions = hasPendingPref
+    ? '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Any currently requested segments are highlighted below. When you\'re done, tap Submit \u2014 your previous selections will be permanently overwritten.</p>'
+    : '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Choose every segment that could work for you. Add any notes below before submitting \u2014 we\'ll do our best to place you in a preferred segment.</p>';
+
+  var priorityNote = '';
+
+  var legend = '<div style="margin-bottom:14px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg3)">' +
+    '<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">How to use</div>' +
+    '<div style="font-size:12px;color:var(--text2);margin-bottom:4px">Tap a segment to select it. Tap again to change its priority status.</div>' +
+    '<div style="font-size:12px;color:var(--text2);margin-top:6px">' +
+    '<div style="margin-bottom:3px">\u2b50 <strong>Preferred</strong> \u2014 works great</div>' +
+    '<div style="margin-bottom:3px">\u2713 <strong>Available</strong> \u2014 works</div>' +
+    '<div style="margin-bottom:3px">\u2193 <strong>Last resort</strong> \u2014 if nothing else</div>' +
+    '<div style="margin-bottom:3px">\ud83d\udc6b <strong>Sibling</strong> \u2014 coordinating</div>' +
+    (hasPendingPref ? '<div style="margin-bottom:3px">\u2716 <strong>Cancel request</strong> \u2014 remove this segment</div>' : '') +
+    '</div>' +
+    '</div>';
+
+  return '<div class="card">' +
+    '<div class="card-title">' + cardTitle + '</div>' +
+    cardInstructions +
+    errFrag() +
+    priorityNote +
+    (hasPendingPref ? '' : holdNotice) +
+    legend +
+    grid +
+    '<div class="field"><label>Additional notes <span style="font-weight:400;color:var(--text3)">(optional)</span></label>' +
+    '<textarea id="pref-note" rows="3" placeholder="Any scheduling conflicts, sibling arrangements, or other notes." style="resize:vertical"></textarea></div>' +
+    '<button class="btn-primary" id="pref-btn" onclick="doSubmitPreferences()">Submit preferences</button>' +
+    '</div>' +
+    '<div class="back-row"><button class="btn-nav" onclick="goBack()">&#8592; Back</button></div>';
+}
+
+// ── Screen: Pref sent ──────────────────────────────────────────
+function rPrefSent() {
+  var phaseNote = phase === 'locked'
+    ? 'Your request has been received. We\'ll be in touch as soon as possible.'
+    : 'Click here to review or make changes to your booking.';
+  return '<div class="card">' +
+    '<div class="confirm-icon">&#128197;</div>' +
+    '<div class="confirm-title">Request received!</div>' +
+    '<div class="confirm-sub">Your scheduling preference has been submitted. We\'ll do our best to accommodate you.</div>' +
+    '<div class="notice notice-info"><span class="ni">&#128274;</span><span>' + phaseNote + '</span></div>' +
+    '</div>' +
+    '<div class="back-row"><button class="btn-nav" onclick="doPrefSentBack()">&#8592; My booking</button></div>';
+}
+
+// ── Screen: Pref confirm (modify mode review) ──────────────────
+function rPrefConfirm() {
+  var PREF_LABELS = {preferred: '\u2b50 Preferred', available: '\u2713 Available', 'last-resort': '\u2193 Last resort', sibling: '\ud83d\udc6b Sibling'};
+  var prevSegs = student.schedRequest || getLatestSchedRequest(student.notes) || [];
+  var prevList = prevSegs.length
+    ? prevSegs.map(function(s) { return '<li>' + esc(fmtSchedSegment(s)) + '</li>'; }).join('')
+    : '<li>None</li>';
+
+  // Filter out cancel-request entries — those are being dropped
+  var activeSelected = prefSelected.filter(function(k) { return k.type !== 'cancel-request'; });
+
+  var updList;
+  if (!activeSelected.length) {
+    updList = '<li>No segments selected \u2014 any previously requested segments will be cancelled.</li>';
+  } else {
+    updList = activeSelected.map(function(k) {
+      var p = k.key.split('_');
+      var seg = p[0] + (p[1] === 'Single' ? '' : ' ' + p[1]);
+      var label = PREF_LABELS[k.type] || k.type;
+      return '<li>' + esc(seg) + ' \u2014 ' + label + '</li>';
+    }).join('');
+  }
+
+  var confirmCopy = activeSelected.length
+    ? '<p style="font-size:13px;color:var(--text2);margin-top:12px;line-height:1.45"><em>Submitting will permanently update your previously requested segments to what you have selected here. If you change your mind after submitting, you can submit a new scheduling request. Spots are not guaranteed and are assigned on a first come first served basis.</em></p>'
+    : '<p style="font-size:13px;color:var(--text2);margin-top:12px;line-height:1.45"><em>Submitting will cancel your scheduling request. Any previously requested segments will be cancelled.</em></p>';
+  var confirmBtn = activeSelected.length
+    ? '<button class="btn-primary" id="pref-btn" onclick="doSubmitPreferences()">Submit request \u2192</button>'
+    : '<button class="btn-cancel" id="pref-btn" onclick="doSubmitPreferences()">Yes, cancel my request \u2192</button>';
+
+  return '<div class="card">' +
+    '<div class="card-title">Review your updated request</div>' +
+    errFrag() +
+    '<div style="margin-bottom:10px"><div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Your previous request</div>' +
+    '<ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text2);line-height:1.6">' + prevList + '</ul></div>' +
+    '<div style="margin-bottom:4px"><div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Your updated request</div>' +
+    '<ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text2);line-height:1.6">' + updList + '</ul></div>' +
+    confirmCopy +
+    '<div style="display:flex;gap:10px;margin-top:16px">' +
+    '<button class="btn-secondary" onclick="state=\'preferences\';errMsg=\'\';render()">Go back</button>' +
+    confirmBtn +
+    '</div>' +
+    '</div>' +
+    '<div class="back-row"><button class="btn-nav" onclick="goBack()">&#8592; Back</button></div>';
+}
+
+// ── Screen: Rejoin original confirm ────────────────────────────
+function rRejoinOrigConfirm() {
+  var day = window._rejoinOrigConfirmDay || '';
+  var seg = window._rejoinOrigConfirmSeg || '';
+  var segLabel = seg === 'Single' ? day : day + ' ' + seg;
+  return '<div class="card">' +
+    '<div class="card-title">Return to your original spot?</div>' +
+    '<div style="font-size:16px;font-weight:600;margin-bottom:12px">' + esc(segLabel) + '</div>' +
+    '<div class="notice notice-info"><span class="ni">&#10003;</span><span>You\'ll be confirmed immediately. Your spot will be restored as it was.</span></div>' +
+    errFrag() +
+    '<button class="btn-primary" onclick="doRejoinDirect(window._rejoinOrigConfirmDay, window._rejoinOrigConfirmSeg)">Confirm return \u2192</button>' +
+    '</div>' +
+    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; Back</button></div>';
+}
+
+// ── Screen: Swap ───────────────────────────────────────────────
+function rSwap() {
+  var DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+  var SEGS = {Monday:['Early','Late'],Tuesday:['Early','Late'],Wednesday:['Early','Late'],Thursday:['Early','Late'],Friday:['Single']};
+  var STIMES = {Monday:{Early:'4:00 PM',Late:'5:00 PM'},Tuesday:{Early:'4:00 PM',Late:'5:00 PM'},Wednesday:{Early:'4:00 PM',Late:'5:00 PM'},Thursday:{Early:'4:00 PM',Late:'5:00 PM'},Friday:{Single:'4:00 PM'}};
+
+  var origDay = window._rejoinOrigDay;
+  var origSeg = window._rejoinOrigSeg;
+  var origFull = origDay && origSeg && slots && slots[origDay + '_' + origSeg] && slots[origDay + '_' + origSeg].isFull;
+
+  var grid = '<div class="swap-grid">';
+  DAYS.forEach(function(day) {
+    SEGS[day].forEach(function(seg) {
+      var key = day + '_' + seg;
+      var isCur = student.day === day && student.seg === seg;
+      var isOrig = origDay === day && origSeg === seg;
+      var slotInfo = slots && slots[key];
+      var isFull = slotInfo ? slotInfo.isFull : false;
+      var openCount = slotInfo ? slotInfo.open : 0;
+      var cls = 'slot-btn' + (isCur ? ' current' : '') + (isOrig ? ' is-orig' : '');
+      var availText = isCur ? 'Current segment' : (isFull ? 'Full' : openCount + ' spot' + (openCount === 1 ? '' : 's') + ' available');
+      var availCls = (isFull && !isCur) ? 'full' : 'open';
+      grid += '<button class="' + cls + '" onclick="doPickSwap(\'' + day + '\',\'' + seg + '\')"' + ((isFull && !isCur) ? ' disabled' : '') + '>' +
+        '<div class="slot-name">' + day + (seg === 'Single' ? '' : ' ' + seg) + '</div>' +
+        '<div class="slot-time">' + STIMES[day][seg] + '</div>' +
+        '<div class="slot-avail ' + availCls + '">' + availText + '</div>' +
+        '</button>';
+    });
+  });
+  grid += '</div>';
+
+  return '<div class="card">' +
+    '<div class="card-title">Reschedule</div>' +
+    (origFull
+      ? '<div class="notice notice-warn"><span class="ni">&#9888;</span><span>Your original segment <strong>' + origDay + ' ' + origSeg + '</strong> is full. Choose another available slot below.</span></div>'
+      : (origDay ? '<div class="notice notice-info"><span class="ni">&#128260;</span><span>Your original segment <strong>' + origDay + ' ' + origSeg + '</strong> has space \u2014 it\'s highlighted below.</span></div>' : '')) +
+    errFrag() +
+    grid +
+    '<p style="font-size:12px;color:var(--text3);margin-top:4px;line-height:1.4">Spots are first come, first served.</p>' +
+    '</div>' +
+    '<div class="back-row"><button class="btn-nav" onclick="goBack()">&#8592; Back</button></div>';
+}
+
+// ── Screen: Swap confirm (pre-commit confirmation) ────────────
+function rSwapConfirm() {
+  var DATES = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
+  var STIMES = {Monday:{Early:'4:00 PM',Late:'5:00 PM'},Tuesday:{Early:'4:00 PM',Late:'5:00 PM'},
+                Wednesday:{Early:'4:00 PM',Late:'5:00 PM'},Thursday:{Early:'4:00 PM',Late:'5:00 PM'},
+                Friday:{Single:'4:00 PM'}};
+  var SEGLBL = {Early:'Early session',Late:'Late session',Single:'Single session'};
+  var ARRIVE = {Early:'Arrive 3:30–3:50 PM',Late:'Arrive 4:45–5:00 PM',Single:'Arrive 3:30–3:50 PM'};
+  var day = pendingSwapDay;
+  var seg = pendingSwapSeg;
+  var curLabel = esc(student.day) + (student.seg !== 'Single' ? ' ' + esc(student.seg) : '');
+  var newDate = DATES[day] || '';
+  var newTime = (STIMES[day] && STIMES[day][seg]) || '';
+  var newSeg = SEGLBL[seg] || seg;
+  var newArrive = ARRIVE[seg] || '';
+  var h = '<div class="card">';
+  h += '<div class="card-title">Confirm your move</div>';
+  h += '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5">Your current spot (' + curLabel + ') will be <strong>released immediately</strong>. This cannot be undone.</p>';
+  h += '<div class="assign-card" style="margin-bottom:20px">';
+  h += '<div class="assign-top"><div>';
+  h += '<div class="assign-label">New segment</div>';
+  h += '<div class="assign-day">' + esc(day) + ', ' + newDate + '</div>';
+  h += '<div class="assign-seg">' + newSeg + ' &mdash; ' + newTime + '</div>';
+  h += '</div></div>';
+  h += '<div class="arrive-badge">&#128336; ' + newArrive + '</div>';
+  h += '</div>';
+  h += errFrag();
+  h += '<button class="btn-primary" onclick="doSwap(pendingSwapDay,pendingSwapSeg)">Confirm move &rarr;</button>';
+  h += '</div>';
+  h += '<div class="back-row"><button class="btn-nav" onclick="state=\'swap\';errMsg=\'\';render()">&#8592; Choose a different segment</button></div>';
+  return h;
+}
+
+// ── Screen: Swap confirmed ─────────────────────────────────────
+function rSwapConfirmed() {
+  var s = student;
+  var c = window._swapResult || {};
+  var isRejoin = !c.fromDay;
+  var dateLabels = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
+  var sessionLabel = s.seg === 'Early' ? 'Early session' : s.seg === 'Late' ? 'Late session' : 'Single session';
+  var timeLabel = {Early:'4:00 PM', Late:'5:00 PM', Single:'4:00 PM'}[s.seg] || '';
+  var arriveLabel = {Early:'3:30\u20133:50 PM', Late:'4:45\u20135:00 PM', Single:'3:30\u20133:50 PM'}[s.seg] || '';
+  return '<div class="card">' +
+    '<div class="confirm-icon">&#9989;</div>' +
+    '<div class="confirm-title">' + (isRejoin ? 'Welcome back!' : 'You\'re rescheduled!') + '</div>' +
+    '<div class="confirm-sub">' + (isRejoin
+      ? 'Great to have ' + esc(c.studentName || s.name) + ' back \u2014 spot confirmed!'
+      : esc(c.studentName || s.name) + '\'s booking has been updated. Here are the new details.') + '</div>' +
+    '<div class="confirm-detail">' +
+    '<div class="confirm-row"><span class="confirm-key">Date</span><span class="confirm-val">' + esc(s.day) + ', ' + esc(dateLabels[s.day] || '') + '</span></div>' +
+    '<div class="confirm-row"><span class="confirm-key">Session</span><span class="confirm-val">' + sessionLabel + ' &mdash; ' + timeLabel + '</span></div>' +
+    '<div class="confirm-row"><span class="confirm-key">Duration</span><span class="confirm-val">Approx. 45 min &ndash; 1 hour</span></div>' +
+    '<div class="confirm-row"><span class="confirm-key">Arrive by</span><span class="confirm-val">' + arriveLabel + '</span></div>' +
+    '<div class="confirm-row"><span class="confirm-key">Teacher</span><span class="confirm-val">' + esc(s.teacher || 'TBD') + '</span></div>' +
+    '<div class="confirm-row"><span class="confirm-key">Guests</span><span class="confirm-val">' + (parseInt(s.guests) || 0) + '</span></div>' +
+    '</div>' +
+    '<div class="notice notice-info"><span class="ni">&#128197;</span><span>If you added your email address, a confirmation email will be sent shortly. Add your new segment to your calendar below \u2014 if you had a previous calendar event, you can delete it.</span></div>' +
+    calendarLinks(s) +
+    '</div>' +
+    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; My booking</button></div>';
+}
+
+// ── Screen: Messaging ──────────────────────────────────────────
+function rMessaging() {
+  var phaseNote = '';
+  if (phase === 'locked') {
+    phaseNote = '<div class="notice notice-warn" style="margin-bottom:14px"><span class="ni">&#128274;</span><span>The schedule is locked. We\'ll review your request and respond as soon as possible. Changes are not guaranteed.</span></div>';
+  } else if (phase === 'priority') {
+    phaseNote = '<div class="notice notice-info" style="margin-bottom:14px"><span class="ni">&#8505;</span><span>We\'re processing priority requests. The schedule opens for self-service rescheduling May 4th.</span></div>';
+  } else if (phase === 'pre') {
+    phaseNote = '<div class="notice notice-info" style="margin-bottom:14px"><span class="ni">&#8505;</span><span>Rescheduling opens May 4th. Send us a message if you have an urgent conflict.</span></div>';
+  }
+  return '<div class="card">' +
+    '<div class="card-title">Send a message to Keylab</div>' +
+    phaseNote + errFrag() +
+    '<div class="field"><label>Your message</label>' +
+    '<textarea id="msg-text" rows="5" placeholder="Let us know what you need \u2014 scheduling questions, conflicts, etc." style="resize:vertical"></textarea></div>' +
+    '<p style="font-size:12px;color:var(--text3);margin-bottom:14px">Messages go directly to the Keylab team. We\'ll follow up as soon as possible.</p>' +
+    '<button class="btn-primary" id="send-btn" onclick="doSendMessage()">Send message</button>' +
+    '</div>' +
+    '<div class="back-row"><button class="btn-nav" onclick="goBack()">&#8592; Back</button></div>';
+}
+
+// ── Screen: Message sent ───────────────────────────────────────
+function rMsgSent() {
+  return '<div class="card">' +
+    '<div class="msg-sent">' +
+    '<div class="icon">&#9993;&#65039;</div>' +
+    '<div class="confirm-title" style="font-size:17px">Message received!</div>' +
+    '<p style="color:var(--text2);font-size:13px;margin-top:6px;line-height:1.5">Your message has been received by the Keylab team. We\'ll follow up at your email address as soon as possible. For urgent matters, email us directly at <a href="mailto:info@keylab.nyc" style="color:var(--blue)">info@keylab.nyc</a>.</p>' +
+    '</div></div>' +
+    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; My booking</button></div>';
+}
+
+// ── Info Accordion ─────────────────────────────────────────────
+function renderInfo(ctx) {
+  var el = document.getElementById("info-section");
+  if (!el) return;
+
+  var panels = [];
+
+  panels.push({
+    id: "info-event",
+    title: "&#128197;  Event details & schedule",
+    body: '<h4>Performance Week</h4>' +
+      '<p>Monday, June 15 through Friday, June 19 at Keylab, 94 Luquer St., Brooklyn, NY 11231.</p>' +
+      '<h4>Performance Times</h4>' +
+      '<ul>' +
+      '<li><strong>Early Performance</strong> (Mon\u2013Thu): Begins 4:00 PM &middot; Arrive 3:30\u20133:50 PM</li>' +
+      '<li><strong>Late Performance</strong> (Mon\u2013Thu): Begins 5:00 PM &middot; Arrive 4:45\u20135:00 PM</li>' +
+      '<li><strong>Friday</strong> (single performance): Begins 4:00 PM &middot; Arrive 3:30\u20133:50 PM</li>' +
+      '<li><strong>Saturday students:</strong> Performance Party Week runs Monday\u2013Friday. Saturday lesson students don\u2019t have a pre-assigned spot but are warmly invited \u2014 use the booking tool to find an open spot.</li>' +
+      '</ul>' +
+      '<h4>After the Performance</h4>' +
+      '<p>Join us upstairs for pizza, snacks and beverages after each performance. There will be a jam session every day after the late performance!</p>' +
+      '<h4>Juneteenth Note</h4>' +
+      '<p>Friday, June 19 is Juneteenth. NYC public schools will be closed, but Keylab will be open and hosting our performance party as scheduled.</p>'
+  });
+
+  panels.push({
+    id: "info-multiple",
+    title: "&#128106;  Families with enrolled siblings or a child with more than one enrollment",
+    body: '<h4>Siblings on different lesson days</h4>' +
+      '<p>If you have siblings enrolled on different days, each child has a reserved spot on their regular lesson day. Most families prefer to come on the same day, but this is not required.</p>' +
+      '<p>If you want to keep the current assignments, just confirm here. If you want to schedule them into the same performance segment, you will need to contact us before May 4th for guaranteed placement into either of their currently scheduled spots. Once scheduled, the other spot will be released.</p>' +
+      '<h4>Students with multiple enrollments</h4>' +
+      '<p>If your child takes more than one lesson per week on different days, they have a reserved spot on each day, but will only be performing in one spot.</p>' +
+      '<p>Simply confirm the spot that works best for you and the other will be released automatically.</p>'
+  });
+
+  panels.push({
+    id: "info-guests",
+    title: "&#128101;  Guests & arrival",
+    body: '<h4>Guest Limit</h4>' +
+      '<p>Up to 3 guest seats can be requested per student, four persons max (performer + guests). If your family needs more seats, please send us a message and we\'ll do our best to accommodate you if we have space available.</p>' +
+      '<p>Once you\'ve submitted your guest list, you can edit names or remove a seat through your booking page, but additional guest seats cannot be added through this tool. Email <a href="mailto:info@keylab.nyc">info@keylab.nyc</a> to request more seats — additional guests are not guaranteed.</p>' +
+      '<h4>Arrival</h4>' +
+      '<p>Please arrive during the arrival window listed for your session. Students who arrive late will be admitted between performances and moved to the end of the roster.</p>' +
+      '<h4>Staying for the Full Performance</h4>' +
+      '<p>Please plan to stay for the entire performance to support all student performers.</p>'
+  });
+
+  panels.push({
+    id: "info-dates",
+    title: "&#128467;  Key dates",
+    body: '<ul>' +
+      '<li><strong>April 30:</strong> Priority deadline</li>' +
+      '<li><strong>May 4:</strong> Schedule opens for self-service rescheduling</li>' +
+      '<li><strong>June 1:</strong> Schedule locks \u2014 after this date, contact us at info@keylab.nyc to request changes</li>' +
+      '<li><strong>June 15\u201319:</strong> Performance Party Week!</li>' +
+      '</ul>' +
+      '<p style="margin-top:8px">Spots are first-come, first-served after May 4th. Once you give up your current spot it immediately becomes available to other families.</p>'
+  });
+
+  if (ctx === "found") {
+    if (phase === 'pre' || phase === 'open') {
+      panels.push({
+        id: "info-reschedule",
+        title: "&#128260;  Rescheduling",
+        body: (phase === 'pre'
+          ? '<ul>' +
+            '<li>Spots are locked until May 4th, when the schedule opens for instant self-service rescheduling.</li>' +
+            '<li>Before May 4th, submit a scheduling request using the button on your booking page. We\'ll do our best to accommodate you based on availability.</li>' +
+            '<li>Families who request before April 30th receive priority placement.</li>' +
+            '<li>From May 4th, you can reschedule instantly to any open spot during the week.</li>' +
+            '</ul>'
+          : '<ul>' +
+            '<li>From May 4th\u201331st, you can reschedule instantly to any open spot during the week using the button above.</li>' +
+            '</ul>') +
+          '<ul>' +
+          '<li>From June 1st, the schedule will be locked. Contact <a href="mailto:info@keylab.nyc">info@keylab.nyc</a> to request changes after that date.</li>' +
+          '<li>Changes are not guaranteed but we\'ll do our best subject to availability.</li>' +
+          '<li>If you reschedule to a day other than your regular lesson day, your regular teacher may not be available. We\'ll assign a Keylab teacher to support your child if needed.</li>' +
+          '</ul>'
+      });
+    }
+    if (phase === 'priority') {
+      panels.push({
+        id: "info-priority",
+        title: "&#8987;  Priority scheduling",
+        body: '<p>We\'re currently reviewing all priority scheduling requests submitted before April 30th. The schedule will open for self-service rescheduling on <strong>May 4th</strong>.</p>' +
+          '<p>If you submitted a preference request before April 30th, we\'ll do our best to accommodate you and will be in touch if we can make a change before May 4th.</p>' +
+          '<p>Starting May 4th, you can use this tool to reschedule yourself into any open spot. Spots are first-come, first-served.</p>'
+      });
+    }
+    if (phase === 'locked') {
+      panels.push({
+        id: "info-locked",
+        title: "&#128274;  Schedule is locked",
+        body: '<p>The schedule is now locked as of June 1st. Your confirmed assignment above is final.</p>' +
+          '<p>If you need to make a change, please send us a message using the button above or email <a href="mailto:info@keylab.nyc">info@keylab.nyc</a>. We\'ll do our best to accommodate requests if we have space available, but changes are not guaranteed.</p>'
+      });
+    }
+  }
+
+  panels.push({
+    id: "info-bring",
+    title: "&#127928;  What to bring",
+    body: '<h4>Instruments & Equipment We Provide</h4>' +
+      '<ul>' +
+      '<li>Digital pianos</li>' +
+      '<li>Guitar &amp; bass amps</li>' +
+      '<li>Digital drum set</li>' +
+      '<li>Vocal mics &amp; music stands</li>' +
+      '<li>Sound system</li>' +
+      '</ul>' +
+      '<h4>What Students Should Bring</h4>' +
+      '<ul>' +
+      '<li>Students who bring their own instrument or laptop to lessons should bring it to the performance if possible.</li>' +
+      '<li>Students should bring copies of their own sheet music. We\'ll do our best to have copies available, but last minute requests may not be able to be accommodated.</li>' +
+      '</ul>'
+  });
+
+  panels.push({
+    id: "info-faq",
+    title: "&#10067;  Common questions",
+    body: '<h4>Is participation mandatory?</h4>' +
+      '<p>No \u2014 but all students are invited to perform! If you\'re not sure your child is ready, ask their teacher.</p>' +
+      '<h4>Is there a fee?</h4>' +
+      '<p>No, participation is completely free.</p>' +
+      '<h4>Will there be food?</h4>' +
+      '<p>Yes! Pizza, snacks and beverages will be provided after each performance.</p>' +
+      '<h4>What if my child can\'t attend their scheduled day?</h4>' +
+      '<p>You can self-service reschedule starting May 4th. While we can\'t guarantee availability, we\'ll do our best to help. Email <a href="mailto:info@keylab.nyc">info@keylab.nyc</a> for assistance.</p>' +
+      '<h4>Can I request a specific spot in the order?</h4>' +
+      '<p>We\'re unable to guarantee specific spots on the performance roster, but we\'ll do our best to honor requests if we can.</p>' +
+      '<h4>Can I share my login link with family members or friends?</h4>' +
+      '<p>Your login is unique to your child\'s booking. Any changes made using your password take effect immediately and will affect your booking \u2014 we recommend not sharing your login details with others.</p>'
+  });
+
+  var h = '<div class="info-heading">More information</div>';
+  h += panels.map(function(p) {
+    return '<div class="info-section">' +
+      '<button class="info-toggle" id="btn-' + p.id + '" onclick="toggleInfo(\'' + p.id + '\')">' +
+      '<span>' + p.title + '</span><span class="arrow">&#9660;</span></button>' +
+      '<div class="info-body" id="body-' + p.id + '">' + p.body + '</div>' +
+      '</div>';
+  }).join('');
+
+  el.innerHTML = h;
+}
+
+function toggleInfo(id) {
+  var btn  = document.getElementById("btn-" + id);
+  var body = document.getElementById("body-" + id);
+  if (!body) return;
+  var open = body.classList.contains("open");
+  body.classList.toggle("open", !open);
+  if (btn) btn.classList.toggle("open", !open);
+}
+
+function fmtSchedSegment(s) {
+  var TYPE_ICONS = {preferred: '\u2b50', available: '\u2713', 'last-resort': '\u2193', sibling: '\ud83d\udc6b', 'admin-hold': '\ud83d\udccc', requested: ''};
+  var typeMatch = s.trim().match(/\[([^\]]+)\]$/);
+  var type = typeMatch ? typeMatch[1] : '';
+  var seg = s.trim().replace(/\s*\[[^\]]+\]$/, '').trim().replace(/_/g, ' ');
+  var icon = TYPE_ICONS[type] || '';
+  return icon ? icon + ' ' + seg : seg;
+}
+
+function getLatestSchedRequestRaw(notes) {
+  if (!notes || !notes.trim()) return [];
+  var chunks = notes.trim().split(/\n\n+/);
+  for (var i = chunks.length - 1; i >= 0; i--) {
+    var chunk = chunks[i].trim();
+    if (/^\[([^\]]+)\]\s+RESOLVED\s+—/.test(chunk) && /scheduling request withdrawn/i.test(chunk)) {
+      return [];
+    }
+    var m = chunk.match(/^\[([^\]]+)\]\s+SCHEDULING REQUEST\s+—\s+([\s\S]*)$/);
+    if (m) {
+      var body = m[2].trim();
+      var slotMatch = body.match(/Preferred slots:\s*([^.]+)/);
+      if (slotMatch) {
+        return slotMatch[1].trim().split(',').map(function(s) {
+          s = s.trim();
+          var typeMatch = s.match(/\[([^\]]+)\]$/);
+          var type = (typeMatch && typeMatch[1]) ? typeMatch[1] : 'preferred';
+          var seg = s.replace(/\s*\[[^\]]+\]$/, '').trim();
+          // Normalize "Monday Late" -> "Monday_Late"
+          var key = seg.replace(/ /g, '_');
+          return {key: key, type: type};
+        });
+      }
+    }
+  }
+  return [];
+}
+
+function getLatestSchedRequest(notes) {
+  if (!notes || !notes.trim()) return null;
+  var chunks = notes.trim().split(/\n\n+/);
+  for (var i = chunks.length - 1; i >= 0; i--) {
+    var chunk = chunks[i].trim();
+    // Mirror Code.gs: if the most recent relevant entry is a withdrawal, stop
+    if (/^\[([^\]]+)\]\s+RESOLVED\s+—/.test(chunk) && /scheduling request withdrawn/i.test(chunk)) {
+      return null;
+    }
+    var m = chunk.match(/^\[([^\]]+)\]\s+SCHEDULING REQUEST\s+—\s+([\s\S]*)$/);
+    if (m) {
+      var body = m[2].trim();
+      var slotMatch = body.match(/Preferred slots:\s*([^.]+)/);
+      if (slotMatch) {
+        return slotMatch[1].trim().split(',').map(function(s) {
+          return fmtSchedSegment(s);
+        });
+      }
+    }
+  }
+  return null;
+}
+
+function rWithdrawConfirm() {
+  return '<div class="card">' +
+    '<div class="card-title">Withdraw scheduling request?</div>' +
+    '<div class="notice notice-warn"><span class="ni">&#9888;</span><span>' +
+    'This will cancel your current scheduling request. You can submit a new one at any time.' +
+    '</span></div>' +
+    errFrag() +
+    '<button class="btn-cancel" data-action="confirmWithdraw">Yes, withdraw request</button>' +
+    '</div>' +
+    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';errMsg=\'\';render()">&#8592; Keep my request</button></div>';
+}
+
+function doPrefSentBack() {
+  state = 'found'; errMsg = ''; render();
+}
+
+function doModifyRequest() {
+  _requestedSegs = getLatestSchedRequestRaw(student && student.notes);
+  if (!_requestedSegs.length && student && student.schedRequest && student.schedRequest.length) {
+    _requestedSegs = student.schedRequest.map(function(s) {
+      var seg = s.trim().replace(/^[^\u0041-\u005A]*/, '').trim().replace(/ /g, '_');
+      return {key: seg, type: 'preferred'};
+    });
+  }
+  prefSelected = _requestedSegs.map(function(r) { return {key: r.key, type: r.type}; });
+  _inModifyMode = true;
+  state = 'preferences'; errMsg = ''; render();
+}
+
+function doCancelRequest() {
+  api({action:"withdrawSchedRequest", studentId:student.id, password:lookupPw}, function(e, r) {
+    if (e || !r || !r.ok) { showErr("Could not withdraw request. Please try again."); return; }
+    // Clear schedRequest field and poison notes so getLatestSchedRequest returns null
+    student.schedRequest = null;
+    var now = new Date();
+    var pad = function(n) { return n < 10 ? '0'+n : String(n); };
+    var ts = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+    var resolvedStamp = '[' + ts + '] RESOLVED \u2014 Scheduling request withdrawn by family.';
+    student.notes = (student.notes ? student.notes + '\n\n' : '') + resolvedStamp;
+    schedRequestCancelled = true;
+    errMsg = ''; render();
+  });
+}
+
+function doFpwEnter() {
+  var fe = document.getElementById('femail');
+  if (fe) fe.focus(); else doAuth();
+}
+
+// ── Boot ───────────────────────────────────────────────────────
+render();
+renderInfo("lookup");
+</script>
+</body>
+</htmlfunction doRejoinFromPick(toDay, toSeg) {
   errMsg = '';
   // Store destination and temporarily update student day/seg so guest-select shows correct slot
   pendingRejoinDay     = toDay;
