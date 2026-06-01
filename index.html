@@ -1430,19 +1430,23 @@ function rAuth() {
       '<div class="assign-day">' + esc(m.name || '') + '</div></div>' +
       '<span class="status-pill ' + statusPillClass(st) + '">' + statusLabel(st) + '</span>' +
       '</div>' +
-      (m.tags && m.tags.indexOf('saturday') > -1
-        ? '<div class="notice notice-info" style="margin-top:8px"><span class="ni">&#127926;</span><span>Performance Party Week runs Monday\u2013Friday, June 15\u201319. Since your child\u2019s regular lesson day is Saturday, they don\u2019t have a pre-assigned spot \u2014 but we\u2019d love to have them perform! Log in to request a preferred day before May 4th, or self-service reschedule into any open spot from May 4th.</span></div>'
-        : '<p style="font-size:13px;color:var(--text2);margin-top:8px;line-height:1.4">Your child is not currently scheduled. Log in to manage your booking.</p>');
+      (phase === 'locked'
+        ? '<div class="notice notice-warn" style="margin-top:8px"><span class="ni">&#128274;</span><span>Your child is not currently scheduled. The schedule is now locked \u2014 log in to request a spot. Participation is not guaranteed.</span></div>'
+        : (m.tags && m.tags.indexOf('saturday') > -1
+          ? '<div class="notice notice-info" style="margin-top:8px"><span class="ni">&#127926;</span><span>Performance Party Week runs Monday\u2013Friday, June 15\u201319. Since your child\u2019s regular lesson day is Saturday, they don\u2019t have a pre-assigned spot \u2014 but we\u2019d love to have them perform! Log in to find an open spot.</span></div>'
+          : '<p style="font-size:13px;color:var(--text2);margin-top:8px;line-height:1.4">Your child is not currently scheduled. Log in to manage your booking.</p>'));
   } else if (!m.day || !m.seg) {
-    // No segment assigned — show saturday-style notice regardless of tag
+    // No segment assigned — unassigned student, show phase-aware notice
     html += '<div class="assign-top">' +
       '<div><div class="assign-label">Performance booking</div>' +
       '<div class="assign-day">' + esc(m.name || '') + '</div></div>' +
       '<span class="status-pill pill-unconfirmed">' + statusLabel(st) + '</span>' +
       '</div>' +
-      '<div class="notice notice-info" style="margin-top:8px"><span class="ni">&#127926;</span><span>' +
-      'Performance Party Week runs Monday–Friday, June 15–19. Since your child’s regular lesson day is Saturday, they don’t have a pre-assigned spot — but we’d love to have them perform! ' +
-      'Log in to request a preferred day before May 4th, or self-service reschedule into any open spot from May 4th.</span></div>';
+      (phase === 'locked'
+        ? '<div class="notice notice-warn" style="margin-top:8px"><span class="ni">&#128274;</span><span>' +
+          esc(m.name ? m.name.split(' ')[0] : 'Your child') + '\u2019s spot hasn\u2019t been assigned yet. The schedule is now locked \u2014 log in to request a spot. Participation is not guaranteed.</span></div>'
+        : '<div class="notice notice-info" style="margin-top:8px"><span class="ni">&#127926;</span><span>' +
+          esc(m.name ? m.name.split(' ')[0] : 'Your child') + '\u2019s spot hasn\u2019t been assigned yet. Log in to find an open spot.</span></div>');
   } else {
     html += '<div class="assign-top">' +
       '<div><div class="assign-label">' + esc(m.name || '') + (isGuest ? ' is attending:' : st === 'unconfirmed' ? ' is invited to perform:' : ' is scheduled to perform:') + '</div>' +
