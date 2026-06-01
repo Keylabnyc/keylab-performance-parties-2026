@@ -1763,6 +1763,7 @@ function rActions(s, isInactive) {
 
   // ── Saturday/unassigned families: no segment, skip confirm buttons ──
   var isSaturday = (s.tags || '').indexOf('saturday') > -1 || (!s.day && !s.seg);
+  var hasPendingRequest = !!(s.schedRequest && s.schedRequest.length) || !!(getLatestSchedRequest(s.notes));
   if (isSaturday) {
     if (phase === 'pre' || phase === 'priority') {
       html += '<div class="notice notice-info"><span class="ni">&#127926;</span><span>' +
