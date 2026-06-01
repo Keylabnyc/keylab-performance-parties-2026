@@ -1321,7 +1321,7 @@ function render() {
     "lookup":           function() { root.innerHTML = rLookup();          renderInfo("lookup"); },
     "pick-student":     function() { root.innerHTML = rPickStudent();     renderInfo("lookup"); },
     "auth":             function() { root.innerHTML = rAuth();            renderInfo("lookup"); },
-    "found":            function() { root.innerHTML = rFound();           renderInfo("found"); attachFoundListeners(root); },
+    "found":            function() { try { root.innerHTML = rFound(); } catch(e) { root.innerHTML = '<div class="card"><p style="color:red">Error: ' + e.message + '</p></div>'; } renderInfo("found"); attachFoundListeners(root); },
     "guest-select":     function() { root.innerHTML = rGuestSelect(); renderInfo("found"); updateGuestNameFields(); },
     "preferences":      function() { root.innerHTML = rPreferences();     renderInfo("found"); },
     "pref-sent":        function() { root.innerHTML = rPrefSent();        renderInfo("found"); },
@@ -1794,7 +1794,7 @@ function rActions(s, isInactive) {
     } else {
       // Locked
       html += '<div class="notice notice-warn"><span class="ni">&#128274;</span><span>' +
-        'The schedule is locked. We may be able to add ' + firstName + ', but participation isn\u2019t guaranteed \u2014 spots are subject to availability.' +
+        'The schedule is locked. We may be able to add ' + esc(s.name.trim().split(/\s+/)[0]) + ', but participation isn\u2019t guaranteed \u2014 spots are subject to availability.' +
         '</span></div>';
       if (!hasPendingRequest) {
         html += btnWrap(
