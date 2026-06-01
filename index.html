@@ -660,7 +660,7 @@
 var state   = "lookup";
 var student = null;
 var slots   = null;
-var phase   = "locked"; // default to locked; overwritten by getSlots response
+var phase   = "pre";
 var canSwap = false;
 var errMsg  = "";
 var schedRequestCancelled = false;
@@ -696,6 +696,7 @@ var TIMES = {
 var ARRIVE = {Early:"Arrive 3:30\u20133:50 PM", Late:"Arrive 4:45\u20135:00 PM", Single:"Arrive 3:30\u20133:50 PM"};
 
 var GAS_URL = 'https://script.google.com/a/macros/keylab.nyc/s/AKfycbzenlfK9eu0G17af-fdjrkiRT-qZLcsLByN-QGb_SCIpmev_xoI3PkY6OW92nuiz4L45g/exec';
+
 function api(p, cb) {
   fetch(GAS_URL, {
     method: 'POST',
@@ -1321,7 +1322,7 @@ function render() {
     "lookup":           function() { root.innerHTML = rLookup();          renderInfo("lookup"); },
     "pick-student":     function() { root.innerHTML = rPickStudent();     renderInfo("lookup"); },
     "auth":             function() { root.innerHTML = rAuth();            renderInfo("lookup"); },
-    "found":            function() { try { root.innerHTML = rFound(); } catch(e) { root.innerHTML = '<div class="card"><p style="color:red">Error: ' + e.message + '</p></div>'; } renderInfo("found"); attachFoundListeners(root); },
+    "found":            function() { root.innerHTML = rFound();           renderInfo("found"); attachFoundListeners(root); },
     "guest-select":     function() { root.innerHTML = rGuestSelect(); renderInfo("found"); updateGuestNameFields(); },
     "preferences":      function() { root.innerHTML = rPreferences();     renderInfo("found"); },
     "pref-sent":        function() { root.innerHTML = rPrefSent();        renderInfo("found"); },
@@ -1431,23 +1432,19 @@ function rAuth() {
       '<div class="assign-day">' + esc(m.name || '') + '</div></div>' +
       '<span class="status-pill ' + statusPillClass(st) + '">' + statusLabel(st) + '</span>' +
       '</div>' +
-      (phase === 'locked'
-        ? '<div class="notice notice-warn" style="margin-top:8px"><span class="ni">&#128274;</span><span>Log in to check your booking details.</span></div>'
-        : (m.tags && m.tags.indexOf('saturday') > -1
-          ? '<div class="notice notice-info" style="margin-top:8px"><span class="ni">&#127926;</span><span>Performance Party Week runs Monday\u2013Friday, June 15\u201319. Since your child\u2019s regular lesson day is Saturday, they don\u2019t have a pre-assigned spot \u2014 but we\u2019d love to have them perform! Log in to find an open spot.</span></div>'
-          : '<p style="font-size:13px;color:var(--text2);margin-top:8px;line-height:1.4">Your child is not currently scheduled. Log in to manage your booking.</p>'));
+      (m.tags && m.tags.indexOf('saturday') > -1
+        ? '<div class="notice notice-info" style="margin-top:8px"><span class="ni">&#127926;</span><span>Performance Party Week runs Monday\u2013Friday, June 15\u201319. Since your child\u2019s regular lesson day is Saturday, they don\u2019t have a pre-assigned spot \u2014 but we\u2019d love to have them perform! Log in to request a preferred day before May 4th, or self-service reschedule into any open spot from May 4th.</span></div>'
+        : '<p style="font-size:13px;color:var(--text2);margin-top:8px;line-height:1.4">Your child is not currently scheduled. Log in to manage your booking.</p>');
   } else if (!m.day || !m.seg) {
-    // No segment assigned — unassigned student, show phase-aware notice
+    // No segment assigned — show saturday-style notice regardless of tag
     html += '<div class="assign-top">' +
       '<div><div class="assign-label">Performance booking</div>' +
       '<div class="assign-day">' + esc(m.name || '') + '</div></div>' +
       '<span class="status-pill pill-unconfirmed">' + statusLabel(st) + '</span>' +
       '</div>' +
-      (phase === 'locked'
-        ? '<div class="notice notice-warn" style="margin-top:8px"><span class="ni">&#128274;</span><span>' +
-          'Log in to check your booking details.</span></div>'
-        : '<div class="notice notice-info" style="margin-top:8px"><span class="ni">&#127926;</span><span>' +
-          esc(m.name ? m.name.split(' ')[0] : 'Your child') + '\u2019s spot hasn\u2019t been assigned yet. Log in to find an open spot.</span></div>');
+      '<div class="notice notice-info" style="margin-top:8px"><span class="ni">&#127926;</span><span>' +
+      'Performance Party Week runs Monday–Friday, June 15–19. Since your child’s regular lesson day is Saturday, they don’t have a pre-assigned spot — but we’d love to have them perform! ' +
+      'Log in to request a preferred day before May 4th, or self-service reschedule into any open spot from May 4th.</span></div>';
   } else {
     html += '<div class="assign-top">' +
       '<div><div class="assign-label">' + esc(m.name || '') + (isGuest ? ' is attending:' : st === 'unconfirmed' ? ' is invited to perform:' : ' is scheduled to perform:') + '</div>' +
@@ -1562,17 +1559,14 @@ function rFound() {
         ? '<div class="notice notice-info" style="margin-top:8px"><span class="ni">&#127926;</span><span>' + firstName + '\u2019s regular lesson day is Saturday and Performance Party Week runs Monday\u2013Friday. They don\u2019t have a pre-assigned spot \u2014 but we\u2019d love to have them perform! Use the options below to find an open spot.</span></div>'
         : '<p style="font-size:13px;color:var(--text2);margin-top:8px;line-height:1.4">Your child is not currently scheduled. Use the options below to manage your booking.</p>');
   } else if (!s.day || !s.seg) {
-    // No segment assigned — unassigned student (may or may not be Saturday), show notice
+    // No segment assigned — saturday/unassigned student, show warm notice
     html += '<div class="assign-top">' +
       '<div><div class="assign-label">Performance booking</div>' +
       '<div class="assign-day">' + firstName + '</div></div>' +
       '<span class="status-pill pill-unconfirmed">' + statusLabel(s.status) + '</span>' +
       '</div>' +
-      (phase === 'locked'
-        ? '<div class="notice notice-warn" style="margin-top:8px"><span class="ni">&#128274;</span><span>' +
-          firstName + '\u2019s spot hasn\u2019t been assigned yet. The schedule is now locked \u2014 use the form below to request a spot. Participation is not guaranteed.</span></div>'
-        : '<div class="notice notice-info" style="margin-top:8px"><span class="ni">&#127926;</span><span>' +
-          firstName + '\u2019s spot hasn\u2019t been assigned yet. Use the options below to find an open spot.</span></div>');
+      '<div class="notice notice-info" style="margin-top:8px"><span class="ni">&#127926;</span><span>' +
+      firstName + '’s regular lesson day is Saturday and Performance Party Week runs Monday–Friday. They don’t have a pre-assigned spot — but we’d love to have them perform! Use the options below to find an open spot.</span></div>';
   } else {
     html += '<div class="assign-top">' +
       '<div><div class="assign-label">' +
@@ -1763,7 +1757,6 @@ function rActions(s, isInactive) {
 
   // ── Saturday/unassigned families: no segment, skip confirm buttons ──
   var isSaturday = (s.tags || '').indexOf('saturday') > -1 || (!s.day && !s.seg);
-  var hasPendingRequest = !!(s.schedRequest && s.schedRequest.length) || !!(getLatestSchedRequest(s.notes));
   if (isSaturday) {
     if (phase === 'pre' || phase === 'priority') {
       html += '<div class="notice notice-info"><span class="ni">&#127926;</span><span>' +
@@ -1794,19 +1787,8 @@ function rActions(s, isInactive) {
     } else {
       // Locked
       html += '<div class="notice notice-warn"><span class="ni">&#128274;</span><span>' +
-        'The schedule is locked. We may be able to add ' + esc(s.name.trim().split(/\s+/)[0]) + ', but participation isn\u2019t guaranteed \u2014 spots are subject to availability.' +
+        'The schedule is now locked. To request a spot, email <a href="mailto:info@keylab.nyc">info@keylab.nyc</a>. Changes are not guaranteed.' +
         '</span></div>';
-      if (!hasPendingRequest) {
-        html += btnWrap(
-          '<button class="btn-secondary" onclick="doStartPreferences()">Request a spot \u2192</button>',
-          'Let us know which segments could work. Participation is not guaranteed \u2014 we\u2019ll be in touch as soon as possible.'
-        );
-      } else {
-        html += btnWrap(
-          '<button class="btn-secondary" onclick="doStartPreferences()">Update your request \u2192</button>',
-          'Your request is under review. Tap here to review or make changes.'
-        );
-      }
     }
     return html;
   }
