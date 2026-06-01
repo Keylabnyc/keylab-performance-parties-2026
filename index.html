@@ -695,8 +695,6 @@ var TIMES = {
 };
 var ARRIVE = {Early:"Arrive 3:30\u20133:50 PM", Late:"Arrive 4:45\u20135:00 PM", Single:"Arrive 3:30\u20133:50 PM"};
 
-var GAS_URL = 'https://script.google.com/a/macros/keylab.nyc/s/AKfycbzenlfK9eu0G17af-fdjrkiRT-qZLcsLByN-QGb_SCIpmev_xoI3PkY6OW92nuiz4L45g/exec';
-
 function api(p, cb) {
   fetch(GAS_URL, {
     method: 'POST',
@@ -1559,14 +1557,17 @@ function rFound() {
         ? '<div class="notice notice-info" style="margin-top:8px"><span class="ni">&#127926;</span><span>' + firstName + '\u2019s regular lesson day is Saturday and Performance Party Week runs Monday\u2013Friday. They don\u2019t have a pre-assigned spot \u2014 but we\u2019d love to have them perform! Use the options below to find an open spot.</span></div>'
         : '<p style="font-size:13px;color:var(--text2);margin-top:8px;line-height:1.4">Your child is not currently scheduled. Use the options below to manage your booking.</p>');
   } else if (!s.day || !s.seg) {
-    // No segment assigned — saturday/unassigned student, show warm notice
+    // No segment assigned — unassigned student (may or may not be Saturday), show notice
     html += '<div class="assign-top">' +
       '<div><div class="assign-label">Performance booking</div>' +
       '<div class="assign-day">' + firstName + '</div></div>' +
       '<span class="status-pill pill-unconfirmed">' + statusLabel(s.status) + '</span>' +
       '</div>' +
-      '<div class="notice notice-info" style="margin-top:8px"><span class="ni">&#127926;</span><span>' +
-      firstName + '’s regular lesson day is Saturday and Performance Party Week runs Monday–Friday. They don’t have a pre-assigned spot — but we’d love to have them perform! Use the options below to find an open spot.</span></div>';
+      (phase === 'locked'
+        ? '<div class="notice notice-warn" style="margin-top:8px"><span class="ni">&#128274;</span><span>' +
+          firstName + '\u2019s spot hasn\u2019t been assigned yet. The schedule is now locked \u2014 use the form below to request a spot. Participation is not guaranteed.</span></div>'
+        : '<div class="notice notice-info" style="margin-top:8px"><span class="ni">&#127926;</span><span>' +
+          firstName + '\u2019s spot hasn\u2019t been assigned yet. Use the options below to find an open spot.</span></div>');
   } else {
     html += '<div class="assign-top">' +
       '<div><div class="assign-label">' +
@@ -1787,8 +1788,19 @@ function rActions(s, isInactive) {
     } else {
       // Locked
       html += '<div class="notice notice-warn"><span class="ni">&#128274;</span><span>' +
-        'The schedule is now locked. To request a spot, email <a href="mailto:info@keylab.nyc">info@keylab.nyc</a>. Changes are not guaranteed.' +
+        'The schedule is locked. We may be able to add ' + firstName + ', but participation isn\u2019t guaranteed \u2014 spots are subject to availability.' +
         '</span></div>';
+      if (!hasPendingRequest) {
+        html += btnWrap(
+          '<button class="btn-secondary" onclick="doStartPreferences()">Request a spot \u2192</button>',
+          'Let us know which segments could work. Participation is not guaranteed \u2014 we\u2019ll be in touch as soon as possible.'
+        );
+      } else {
+        html += btnWrap(
+          '<button class="btn-secondary" onclick="doStartPreferences()">Update your request \u2192</button>',
+          'Your request is under review. Tap here to review or make changes.'
+        );
+      }
     }
     return html;
   }
