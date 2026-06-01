@@ -1548,19 +1548,16 @@ function rFound() {
       '<div><div class="assign-label">Performance booking</div>' +
       '<div class="assign-day">' + firstName + '</div></div>' +
       '<span class="status-pill ' + statusPillClass(s.status) + '">' + statusLabel(s.status) + '</span>' +
-      '</div>' +
-      (s.tags && s.tags.indexOf('saturday') > -1
-        ? '<div class="notice notice-warn" style="margin-top:8px"><span class="ni">&#128274;</span><span>The schedule is locked. To request a spot, email <a href="mailto:info@keylab.nyc">info@keylab.nyc</a>. Participation is not guaranteed.</span></div>'
-        : '<p style="font-size:13px;color:var(--text2);margin-top:8px;line-height:1.4">Your child is not currently scheduled. Use the options below to manage your booking.</p>');
+      '</div>';
+
   } else if (!s.day || !s.seg) {
     // No segment assigned — saturday/unassigned student, show warm notice
     html += '<div class="assign-top">' +
       '<div><div class="assign-label">Performance booking</div>' +
       '<div class="assign-day">' + firstName + '</div></div>' +
       '<span class="status-pill pill-unconfirmed">' + statusLabel(s.status) + '</span>' +
-      '</div>' +
-      '<div class="notice notice-info" style="margin-top:8px"><span class="ni">&#127926;</span><span>' +
-      'The schedule is locked. To request a spot, email <a href="mailto:info@keylab.nyc">info@keylab.nyc</a>. Participation is not guaranteed.</span></div>';
+      '</div>';
+
   } else {
     html += '<div class="assign-top">' +
       '<div><div class="assign-label">' +
