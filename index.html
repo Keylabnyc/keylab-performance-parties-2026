@@ -660,7 +660,7 @@
 var state   = "lookup";
 var student = null;
 var slots   = null;
-var phase   = "pre";
+var phase   = "locked"; // default to locked; overwritten by getSlots response
 var canSwap = false;
 var errMsg  = "";
 var schedRequestCancelled = false;
@@ -1432,7 +1432,7 @@ function rAuth() {
       '<span class="status-pill ' + statusPillClass(st) + '">' + statusLabel(st) + '</span>' +
       '</div>' +
       (phase === 'locked'
-        ? '<div class="notice notice-warn" style="margin-top:8px"><span class="ni">&#128274;</span><span>Your child is not currently scheduled. The schedule is now locked \u2014 log in to request a spot. Participation is not guaranteed.</span></div>'
+        ? '<div class="notice notice-warn" style="margin-top:8px"><span class="ni">&#128274;</span><span>Log in to check your booking details.</span></div>'
         : (m.tags && m.tags.indexOf('saturday') > -1
           ? '<div class="notice notice-info" style="margin-top:8px"><span class="ni">&#127926;</span><span>Performance Party Week runs Monday\u2013Friday, June 15\u201319. Since your child\u2019s regular lesson day is Saturday, they don\u2019t have a pre-assigned spot \u2014 but we\u2019d love to have them perform! Log in to find an open spot.</span></div>'
           : '<p style="font-size:13px;color:var(--text2);margin-top:8px;line-height:1.4">Your child is not currently scheduled. Log in to manage your booking.</p>'));
@@ -1445,7 +1445,7 @@ function rAuth() {
       '</div>' +
       (phase === 'locked'
         ? '<div class="notice notice-warn" style="margin-top:8px"><span class="ni">&#128274;</span><span>' +
-          esc(m.name ? m.name.split(' ')[0] : 'Your child') + '\u2019s spot hasn\u2019t been assigned yet. The schedule is now locked \u2014 log in to request a spot. Participation is not guaranteed.</span></div>'
+          'Log in to check your booking details.</span></div>'
         : '<div class="notice notice-info" style="margin-top:8px"><span class="ni">&#127926;</span><span>' +
           esc(m.name ? m.name.split(' ')[0] : 'Your child') + '\u2019s spot hasn\u2019t been assigned yet. Log in to find an open spot.</span></div>');
   } else {
