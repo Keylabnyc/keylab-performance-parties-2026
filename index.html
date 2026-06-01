@@ -1482,7 +1482,7 @@ function rAuth() {
     var unconfBannerMsg = (phase === 'open')
       ? 'Log in to confirm your spot. Spots are first come, first served — the schedule locks June 1st.'
       : (phase === 'locked')
-      ? 'The schedule is now locked. Log in to manage your booking or contact us at info@keylab.nyc.'
+      ? 'The schedule is now locked. Adding performers, guests, or making scheduling changes are not guaranteed. Log in to manage your booking.'
       : 'Please confirm your participation before May 4th. After May 4th, performance segments are open to all families on a first come first served basis with a maximum of 10 performers per segment.';
     html += '<div class="notice notice-warn" style="border-width:2px;border-radius:10px;padding:16px 16px 14px;margin-bottom:16px">' +
       '<span class="ni">&#9888;&#65039;</span><span><strong>Action required — your spot is not yet confirmed</strong><br>' +
@@ -1778,8 +1778,10 @@ function rActions(s, isInactive) {
     } else {
       // Locked
       html += '<div class="notice notice-warn"><span class="ni">&#128274;</span><span>' +
-        'The schedule is now locked. To request a spot, email <a href="mailto:info@keylab.nyc">info@keylab.nyc</a>. Changes are not guaranteed.' +
+        'The schedule is now locked. Adding performers, guests, or making scheduling changes are not guaranteed.' +
         '</span></div>';
+      html += btnWrap('<button class="btn-secondary" onclick="doStartMessage()">Send us a message</button>',
+        'Contact us for assistance. We\'ll do our best to help.');
     }
     return html;
   }
@@ -1955,10 +1957,10 @@ function rActions(s, isInactive) {
   } else {
     // Locked
     html += '<div class="notice notice-warn"><span class="ni">&#128274;</span><span>' +
-      'The schedule is now locked. To request a change, email <a href="mailto:info@keylab.nyc">info@keylab.nyc</a>. Changes are not guaranteed.' +
+      'The schedule is now locked. Adding performers, guests, or making scheduling changes are not guaranteed.' +
       '</span></div>';
-    html += btnWrap('<button class="btn-secondary" onclick="doStartMessage()">Send a message</button>',
-      'Contact us for assistance.');
+    html += btnWrap('<button class="btn-secondary" onclick="doStartMessage()">Send us a message</button>',
+      'Contact us for assistance. We\'ll do our best to help.');
     if (!isInactive) {
       html += btnWrap(
         '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
@@ -2717,7 +2719,7 @@ function rSwapConfirmed() {
 function rMessaging() {
   var phaseNote = '';
   if (phase === 'locked') {
-    phaseNote = '<div class="notice notice-warn" style="margin-bottom:14px"><span class="ni">&#128274;</span><span>The schedule is locked. We\'ll review your request and respond as soon as possible. Changes are not guaranteed.</span></div>';
+    phaseNote = '<div class="notice notice-warn" style="margin-bottom:14px"><span class="ni">&#128274;</span><span>The schedule is now locked. Adding performers, guests, or making scheduling changes are not guaranteed. We\'ll do our best to help.</span></div>';
   } else if (phase === 'priority') {
     phaseNote = '<div class="notice notice-info" style="margin-bottom:14px"><span class="ni">&#8505;</span><span>We\'re processing priority requests. The schedule opens for self-service rescheduling May 4th.</span></div>';
   } else if (phase === 'pre') {
