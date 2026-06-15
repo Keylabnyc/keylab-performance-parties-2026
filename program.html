@@ -5,63 +5,60 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Keylab Performance Parties 2026 — Program</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --cream: #faf8f4;
-  --paper: #f4f1eb;
-  --ink:   #1a1a16;
-  --ink2:  #3a3a34;
-  --ink3:  #6e6e64;
-  --rule:  #c8c4b8;
-  --rule2: #e0dcd4;
-  --acc:   #8b1a1a;
-  --cvp:   #5a3e8a;
-  --sans:  "DM Sans", sans-serif;
-  --serif: "EB Garamond", Georgia, serif;
+  --bg:     #d8d8d8;
+  --card:   #f5f5f5;
+  --text1:  #111111;
+  --text2:  #444444;
+  --text3:  #888888;
+  --border: #e0e0e0;
+  --acc:    #1a56db;
+  --cvp:    #6d28d9;
+  --nav-bg: #ffffff;
+  --f:      "Inter", system-ui, -apple-system, sans-serif;
 }
 
 body {
-  background: var(--cream);
-  color: var(--ink);
-  font-family: var(--serif);
-  font-size: 17px;
-  line-height: 1.6;
+  background: var(--bg);
+  color: var(--text1);
+  font-family: var(--f);
+  font-size: 16px;
+  line-height: 1.5;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* ── Header ── */
 .masthead {
-  border-bottom: 3px double var(--ink);
-  padding: 2rem 1.5rem 1.25rem;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 1.5rem 1.25rem 1.25rem;
   text-align: center;
-  background: var(--cream);
 }
 .masthead-eyebrow {
-  font-family: var(--sans);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--ink3);
-  margin-bottom: .6rem;
-}
-.masthead-title {
-  font-family: var(--serif);
-  font-size: clamp(28px, 6vw, 46px);
+  font-size: 11px;
   font-weight: 500;
-  line-height: 1.1;
-  letter-spacing: -.01em;
-  color: var(--ink);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text3);
   margin-bottom: .4rem;
 }
+.masthead-title {
+  font-size: clamp(22px, 5vw, 30px);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: var(--text1);
+  line-height: 1.1;
+  margin-bottom: .3rem;
+}
 .masthead-sub {
-  font-family: var(--sans);
-  font-size: 12px;
-  color: var(--ink3);
-  letter-spacing: .06em;
+  font-size: 13px;
+  color: var(--text3);
+  font-weight: 400;
 }
 
 /* ── Day tabs ── */
@@ -69,44 +66,43 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: var(--paper);
-  border-bottom: 1.5px solid var(--rule);
-  padding: 0 1rem;
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
   display: flex;
-  gap: 0;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
 }
 .day-nav::-webkit-scrollbar { display: none; }
 .day-tab {
   flex-shrink: 0;
-  font-family: var(--sans);
-  font-size: 12px;
+  font-family: var(--f);
+  font-size: 13px;
   font-weight: 500;
-  letter-spacing: .05em;
-  text-transform: uppercase;
-  color: var(--ink3);
-  padding: .75rem 1.1rem;
+  color: var(--text3);
+  padding: .85rem 1.25rem;
   border: none;
-  border-bottom: 2.5px solid transparent;
+  border-bottom: 3px solid transparent;
   background: transparent;
   cursor: pointer;
-  transition: color .15s, border-color .15s;
+  transition: color .12s, border-color .12s;
   white-space: nowrap;
+  line-height: 1.2;
+  text-align: center;
 }
-.day-tab:hover { color: var(--ink); }
+.day-tab:hover { color: var(--text1); }
 .day-tab.active {
   color: var(--acc);
   border-bottom-color: var(--acc);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 /* ── Content ── */
 .content {
-  max-width: 680px;
+  max-width: 640px;
   margin: 0 auto;
-  padding: 2rem 1.5rem 4rem;
+  padding: 1.25rem 1rem 5rem;
 }
 
 /* ── Day section ── */
@@ -114,157 +110,135 @@ body {
 .day-section.visible { display: block; }
 
 .day-header {
-  text-align: center;
-  padding: 2rem 0 1.5rem;
-  border-bottom: 1px solid var(--rule);
-  margin-bottom: 2rem;
+  padding: 1rem 0 .75rem;
+  margin-bottom: 1rem;
 }
 .day-header-name {
-  font-family: var(--serif);
-  font-size: clamp(22px, 4vw, 32px);
-  font-weight: 500;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text1);
   letter-spacing: -.01em;
-  color: var(--ink);
 }
 .day-header-date {
-  font-family: var(--sans);
-  font-size: 12px;
-  color: var(--ink3);
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  margin-top: .3rem;
+  font-size: 13px;
+  color: var(--text3);
+  font-weight: 400;
+  margin-top: .15rem;
 }
 
 /* ── Segment group ── */
-.segment-group { margin-bottom: 2.5rem; }
+.segment-group { margin-bottom: 1.5rem; }
 .segment-label {
-  font-family: var(--sans);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: .15em;
+  letter-spacing: .1em;
   text-transform: uppercase;
-  color: var(--ink3);
-  padding-bottom: .5rem;
-  border-bottom: 1px solid var(--rule2);
-  margin-bottom: 1.5rem;
+  color: var(--text3);
+  padding: .5rem 0;
+  margin-bottom: .75rem;
+  border-bottom: 1px solid var(--border);
 }
 
-/* ── Performer entry ── */
+/* ── Performer card ── */
 .performer {
-  margin-bottom: 2.25rem;
-  padding-bottom: 2.25rem;
-  border-bottom: 1px solid var(--rule2);
-}
-.performer:last-child {
-  border-bottom: none;
-  margin-bottom: 0;
-  padding-bottom: 0;
+  background: var(--card);
+  border-radius: 12px;
+  padding: 1.1rem 1.15rem;
+  margin-bottom: .75rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,.07);
 }
 
 .performer-name {
-  font-family: var(--serif);
-  font-size: clamp(18px, 3.5vw, 22px);
-  font-weight: 600;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text1);
   line-height: 1.2;
-  color: var(--ink);
-  margin-bottom: .2rem;
+  margin-bottom: .25rem;
+  letter-spacing: -.01em;
 }
 .performer-meta {
-  font-family: var(--sans);
-  font-size: 12px;
-  color: var(--ink3);
-  margin-bottom: .6rem;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: .4rem;
+  margin-bottom: .5rem;
 }
 .performer-instrument {
+  font-size: 13px;
   font-weight: 500;
-  color: var(--ink2);
+  color: var(--text2);
 }
 .cvp-badge {
-  font-family: var(--sans);
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .06em;
+  font-weight: 700;
+  letter-spacing: .05em;
   text-transform: uppercase;
   color: var(--cvp);
-  background: #f0ebfe;
-  border: 1px solid #d0bef8;
+  background: #ede9fe;
   border-radius: 20px;
   padding: 2px 8px;
 }
 .performer-teacher {
-  font-family: var(--sans);
-  font-size: 12.5px;
-  color: var(--ink3);
-  margin-bottom: .75rem;
+  font-size: 13px;
+  color: var(--text3);
+  font-weight: 400;
+  margin-bottom: .65rem;
 }
 .performer-teacher em {
   font-style: normal;
-  color: var(--ink2);
-  font-weight: 500;
+  color: var(--text2);
+  font-weight: 600;
 }
 
-.songs {
-  margin-bottom: .85rem;
-}
+/* ── Songs ── */
+.songs { margin-bottom: .7rem; }
 .song-line {
-  font-family: var(--serif);
-  font-size: 16px;
-  color: var(--ink);
-  line-height: 1.45;
-  padding-left: 1.1rem;
+  font-size: 15px;
+  color: var(--text1);
+  line-height: 1.5;
+  padding-left: 1rem;
   position: relative;
 }
 .song-line::before {
-  content: '\2022';
+  content: "\2022";
   position: absolute;
   left: 0;
   color: var(--acc);
+  font-weight: 700;
 }
 .song-title {
-  font-style: italic;
+  font-weight: 600;
 }
 .song-composer {
-  color: var(--ink3);
+  color: var(--text3);
+  font-weight: 400;
   font-size: 14px;
 }
-.song-line + .song-line {
-  margin-top: .3rem;
-}
+.song-line + .song-line { margin-top: .25rem; }
 
+/* ── Program notes ── */
 .program-notes {
-  font-family: var(--serif);
-  font-size: 15.5px;
+  font-size: 14px;
   line-height: 1.65;
-  color: var(--ink2);
-  font-style: italic;
-}
-.program-notes::before {
-  content: '\201C';
-  color: var(--ink3);
-}
-.program-notes::after {
-  content: '\201D';
-  color: var(--ink3);
+  color: var(--text2);
+  margin-top: .6rem;
+  padding-top: .6rem;
+  border-top: 1px solid var(--border);
 }
 
 /* ── Loading / error ── */
 .state-msg {
   text-align: center;
   padding: 4rem 1rem;
-  font-family: var(--sans);
-  color: var(--ink3);
+  color: var(--text3);
   font-size: 14px;
 }
 .state-msg .spinner {
   display: inline-block;
   width: 24px;
   height: 24px;
-  border: 2px solid var(--rule);
-  border-top-color: var(--ink3);
+  border: 2px solid var(--border);
+  border-top-color: var(--text3);
   border-radius: 50%;
   animation: spin .7s linear infinite;
   margin-bottom: 1rem;
@@ -275,17 +249,15 @@ body {
 .footer {
   text-align: center;
   padding: 2rem 1rem;
-  border-top: 1px solid var(--rule);
-  font-family: var(--sans);
-  font-size: 11px;
-  color: var(--ink3);
-  letter-spacing: .05em;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text3);
 }
 
 @media print {
   .day-nav { display: none; }
   .day-section { display: block !important; }
-  .performer { break-inside: avoid; }
+  .performer { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
 }
 </style>
 </head>
