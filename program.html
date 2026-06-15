@@ -13,12 +13,12 @@
   --bg:     #d8d8d8;
   --card:   #f5f5f5;
   --text1:  #111111;
-  --text2:  #444444;
-  --text3:  #888888;
-  --border: #e0e0e0;
+  --text2:  #222222;
+  --text3:  #111111;
+  --border: #bbbbbb;
   --acc:    #1a56db;
   --cvp:    #6d28d9;
-  --nav-bg: #ffffff;
+  --nav-bg: #f5f5f5;
   --f:      "Inter", system-ui, -apple-system, sans-serif;
 }
 
@@ -41,24 +41,24 @@ body {
 }
 .masthead-eyebrow {
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: .08em;
   text-transform: uppercase;
-  color: var(--text3);
+  color: #111;
   margin-bottom: .4rem;
 }
 .masthead-title {
   font-size: clamp(22px, 5vw, 30px);
   font-weight: 700;
   letter-spacing: -.02em;
-  color: var(--text1);
+  color: #111;
   line-height: 1.1;
   margin-bottom: .3rem;
 }
 .masthead-sub {
   font-size: 13px;
-  color: var(--text3);
-  font-weight: 400;
+  color: #333;
+  font-weight: 500;
 }
 
 /* ── Day tabs ── */
@@ -66,22 +66,21 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: var(--nav-bg);
-  border-bottom: 1px solid var(--border);
+  background: #222;
+  border-bottom: 2px solid #000;
   display: flex;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  box-shadow: 0 1px 4px rgba(0,0,0,.06);
 }
 .day-nav::-webkit-scrollbar { display: none; }
 .day-tab {
   flex-shrink: 0;
   font-family: var(--f);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text3);
-  padding: .85rem 1.25rem;
+  font-size: 14px;
+  font-weight: 600;
+  color: #aaa;
+  padding: 1rem 1.4rem;
   border: none;
   border-bottom: 3px solid transparent;
   background: transparent;
@@ -91,10 +90,10 @@ body {
   line-height: 1.2;
   text-align: center;
 }
-.day-tab:hover { color: var(--text1); }
+.day-tab:hover { color: #fff; }
 .day-tab.active {
-  color: var(--acc);
-  border-bottom-color: var(--acc);
+  color: #fff;
+  border-bottom-color: #fff;
   font-weight: 700;
 }
 
@@ -114,29 +113,29 @@ body {
   margin-bottom: 1rem;
 }
 .day-header-name {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
-  color: var(--text1);
+  color: #111;
   letter-spacing: -.01em;
 }
 .day-header-date {
-  font-size: 13px;
-  color: var(--text3);
-  font-weight: 400;
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
   margin-top: .15rem;
 }
 
 /* ── Segment group ── */
 .segment-group { margin-bottom: 1.5rem; }
 .segment-label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: .1em;
+  letter-spacing: .08em;
   text-transform: uppercase;
-  color: var(--text3);
+  color: #111;
   padding: .5rem 0;
   margin-bottom: .75rem;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid #999;
 }
 
 /* ── Performer card ── */
@@ -145,13 +144,13 @@ body {
   border-radius: 12px;
   padding: 1.1rem 1.15rem;
   margin-bottom: .75rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,.07);
+  box-shadow: 0 1px 3px rgba(0,0,0,.12);
 }
 
 .performer-name {
-  font-size: 19px;
+  font-size: 20px;
   font-weight: 700;
-  color: var(--text1);
+  color: #111;
   line-height: 1.2;
   margin-bottom: .25rem;
   letter-spacing: -.01em;
@@ -164,9 +163,9 @@ body {
   margin-bottom: .5rem;
 }
 .performer-instrument {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text2);
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
 }
 .cvp-badge {
   font-size: 10px;
@@ -179,22 +178,22 @@ body {
   padding: 2px 8px;
 }
 .performer-teacher {
-  font-size: 13px;
-  color: var(--text3);
-  font-weight: 400;
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
   margin-bottom: .65rem;
 }
 .performer-teacher em {
   font-style: normal;
-  color: var(--text2);
-  font-weight: 600;
+  color: #111;
+  font-weight: 700;
 }
 
 /* ── Songs ── */
 .songs { margin-bottom: .7rem; }
 .song-line {
-  font-size: 15px;
-  color: var(--text1);
+  font-size: 16px;
+  color: #111;
   line-height: 1.5;
   padding-left: 1rem;
   position: relative;
@@ -207,38 +206,38 @@ body {
   font-weight: 700;
 }
 .song-title {
-  font-weight: 600;
+  font-weight: 700;
 }
 .song-composer {
-  color: var(--text3);
+  color: #444;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 15px;
 }
 .song-line + .song-line { margin-top: .25rem; }
 
 /* ── Program notes ── */
 .program-notes {
-  font-size: 14px;
-  line-height: 1.65;
-  color: var(--text2);
-  margin-top: .6rem;
-  padding-top: .6rem;
-  border-top: 1px solid var(--border);
+  font-size: 15px;
+  line-height: 1.7;
+  color: #222;
+  margin-top: .75rem;
+  padding-top: .75rem;
+  border-top: 1px solid #ccc;
 }
 
 /* ── Loading / error ── */
 .state-msg {
   text-align: center;
   padding: 4rem 1rem;
-  color: var(--text3);
-  font-size: 14px;
+  color: #333;
+  font-size: 15px;
 }
 .state-msg .spinner {
   display: inline-block;
   width: 24px;
   height: 24px;
-  border: 2px solid var(--border);
-  border-top-color: var(--text3);
+  border: 2px solid #bbb;
+  border-top-color: #333;
   border-radius: 50%;
   animation: spin .7s linear infinite;
   margin-bottom: 1rem;
@@ -249,9 +248,10 @@ body {
 .footer {
   text-align: center;
   padding: 2rem 1rem;
-  border-top: 1px solid var(--border);
-  font-size: 12px;
-  color: var(--text3);
+  border-top: 1px solid #bbb;
+  font-size: 13px;
+  color: #333;
+  font-weight: 500;
 }
 
 @media print {
@@ -284,7 +284,7 @@ var GAS_URL = 'https://script.google.com/macros/s/AKfycbzenlfK9eu0G17af-fdjrkiRT
 var DAY_ORDER  = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
 var DAY_DATES  = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
 var SEG_ORDER  = ['Early','Single','Late'];
-var SEG_LABELS = {Early:'Early Session',Single:'Single Session',Late:'Late Session'};
+var SEG_LABELS = {};
 var activeDay  = null;
 
 function api(payload, cb) {
@@ -402,9 +402,7 @@ function renderDay(dayPerformers, day) {
     if (!group || !group.length) return;
     h += '<div class="segment-group">';
     // Only show segment label if more than one segment on this day
-    if (segs.length > 1) {
-      h += '<div class="segment-label">' + esc(SEG_LABELS[seg] || seg) + '</div>';
-    }
+
     group.forEach(function(p) { h += renderPerformer(p); });
     h += '</div>';
   });
@@ -447,7 +445,7 @@ function render(performers) {
   var nav = document.getElementById('dayNav');
   nav.innerHTML = days.map(function(d) {
     return '<button class="day-tab" data-day="' + esc(d) + '" onclick="showDay(\'' + esc(d) + '\')">' +
-           esc(d) + (DAY_DATES[d] ? '<br><span style="font-size:10px;opacity:.7">' + esc(DAY_DATES[d]) + '</span>' : '') +
+           esc(d) +
            '</button>';
   }).join('');
 
