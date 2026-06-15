@@ -218,11 +218,12 @@ body {
 /* ── Program notes ── */
 .program-notes {
   font-size: 14px;
-  line-height: 1.75;
+  line-height: 1.65;
   color: var(--text2);
-  margin-top: .75rem;
-  padding-top: .75rem;
-  border-top: 1px solid var(--border);
+  margin-top: .35rem;
+  margin-bottom: .5rem;
+  padding-left: 1rem;
+  font-style: italic;
 }
 
 /* ── Loading / error ── */
@@ -290,12 +291,12 @@ var activeDay  = null;
 function api(payload, cb) {
   fetch(GAS_URL, {
     method: 'POST',
-    headers: {'Content-Type': 'text/plain'},
+    headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify(payload)
   })
   .then(function(res) { return res.json(); })
-  .then(function(r)   { cb(null, r); })
-  .catch(function(e)  { cb(String(e)); });
+  .then(function(data) { cb(null, data); })
+  .catch(function(e) { cb(String(e)); });
 }
 
 function esc(s) {
@@ -352,6 +353,9 @@ function renderPerformer(p) {
         h += ' <span class="song-composer">&mdash; ' + esc(p.song1Composer) + '</span>';
       }
       h += '</div>';
+      if ((p.song1Info || '').trim()) {
+        h += '<div class="program-notes">' + esc(p.song1Info.trim()) + '</div>';
+      }
     }
     if (hasSong2) {
       h += '<div class="song-line">';
@@ -360,17 +364,11 @@ function renderPerformer(p) {
         h += ' <span class="song-composer">&mdash; ' + esc(p.song2Composer) + '</span>';
       }
       h += '</div>';
+      if ((p.song2Info || '').trim()) {
+        h += '<div class="program-notes">' + esc(p.song2Info.trim()) + '</div>';
+      }
     }
     h += '</div>';
-  }
-
-  // Program notes (song1Info first, then song2Info if different)
-  var notes1 = (p.song1Info || '').trim();
-  var notes2 = (p.song2Info || '').trim();
-  var notes  = notes1;
-  if (notes2 && notes2 !== notes1) notes = notes1 ? notes1 + ' ' + notes2 : notes2;
-  if (notes) {
-    h += '<div class="program-notes">' + esc(notes) + '</div>';
   }
 
   h += '</div>';
