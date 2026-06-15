@@ -13,9 +13,9 @@
   --bg:     #d0d0d0;
   --card:   #f6f6f6;
   --navy:   #1e3a5f;
-  --text1:  #111111;
-  --text2:  #333333;
-  --text3:  #666666;
+  --text1:  #000000;
+  --text2:  #1a1a1a;
+  --text3:  #444444;
   --border: #e0e0e0;
   --cvp:    #6d28d9;
   --f:      "Inter", system-ui, -apple-system, sans-serif;
@@ -117,7 +117,7 @@ body {
 }
 .day-header-date {
   font-size: 13px;
-  color: #444;
+  color: #111;
   font-weight: 500;
   margin-top: .15rem;
 }
@@ -177,8 +177,8 @@ body {
   padding: 2px 8px;
 }
 .performer-teacher {
-  font-size: 13px;
-  color: var(--text3);
+  font-size: 14px;
+  color: #222222;
   font-weight: 400;
   margin-bottom: .65rem;
 }
@@ -209,7 +209,7 @@ body {
   font-weight: 700;
 }
 .song-composer {
-  color: var(--text3);
+  color: #333333;
   font-weight: 400;
   font-size: 14px;
 }
@@ -251,7 +251,7 @@ body {
   padding: 2rem 1rem;
   border-top: 1px solid #bbb;
   font-size: 13px;
-  color: #555;
+  color: #333;
   font-weight: 500;
 }
 
@@ -281,7 +281,7 @@ body {
 <div class="footer"><a href="https://keylab.nyc" target="_blank" style="color:inherit;text-decoration:none">Keylab</a> &middot; <a href="https://keylab.nyc" target="_blank" style="color:inherit;text-decoration:none">keylab.nyc</a></div>
 
 <script>
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbzenlfK9eu0G17af-fdjrkiRT-qZLcsLByN-QGb_SCIpmev_xoI3PkY6OW92nuiz4L45g/exec';
+var GAS_URL = '<?= ScriptApp.getService().getUrl() ?>';
 var DAY_ORDER  = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
 var DAY_DATES  = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
 var SEG_ORDER  = ['Early','Single','Late'];
@@ -289,14 +289,13 @@ var SEG_LABELS = {};
 var activeDay  = null;
 
 function api(payload, cb) {
-  fetch(GAS_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify(payload)
-  })
-  .then(function(res) { return res.json(); })
-  .then(function(data) { cb(null, data); })
-  .catch(function(e) { cb(String(e)); });
+  google.script.run
+    .withSuccessHandler(function(raw) {
+      try { cb(null, JSON.parse(raw)); }
+      catch(e) { cb('Parse error'); }
+    })
+    .withFailureHandler(function(e) { cb(String(e)); })
+    .callApi(JSON.stringify(payload));
 }
 
 function esc(s) {
