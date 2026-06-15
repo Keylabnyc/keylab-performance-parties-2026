@@ -10,15 +10,14 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:     #d8d8d8;
-  --card:   #f5f5f5;
+  --bg:     #d0d0d0;
+  --card:   #f6f6f6;
+  --navy:   #1e3a5f;
   --text1:  #111111;
-  --text2:  #222222;
-  --text3:  #111111;
-  --border: #bbbbbb;
-  --acc:    #1a56db;
+  --text2:  #333333;
+  --text3:  #666666;
+  --border: #e0e0e0;
   --cvp:    #6d28d9;
-  --nav-bg: #f5f5f5;
   --f:      "Inter", system-ui, -apple-system, sans-serif;
 }
 
@@ -34,30 +33,29 @@ body {
 
 /* ── Header ── */
 .masthead {
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
-  padding: 1.5rem 1.25rem 1.25rem;
+  background: var(--navy);
+  padding: 1.5rem 1.25rem 0;
   text-align: center;
 }
 .masthead-eyebrow {
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: .08em;
+  letter-spacing: .1em;
   text-transform: uppercase;
-  color: #111;
+  color: rgba(255,255,255,.6);
   margin-bottom: .4rem;
 }
 .masthead-title {
   font-size: clamp(22px, 5vw, 30px);
   font-weight: 700;
   letter-spacing: -.02em;
-  color: #111;
+  color: #fff;
   line-height: 1.1;
   margin-bottom: .3rem;
 }
 .masthead-sub {
   font-size: 13px;
-  color: #333;
+  color: rgba(255,255,255,.65);
   font-weight: 500;
 }
 
@@ -66,8 +64,8 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: #222;
-  border-bottom: 2px solid #000;
+  background: var(--navy);
+  border-top: 1px solid rgba(255,255,255,.12);
   display: flex;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -79,18 +77,17 @@ body {
   font-family: var(--f);
   font-size: 14px;
   font-weight: 600;
-  color: #aaa;
-  padding: 1rem 1.4rem;
+  color: rgba(255,255,255,.45);
+  padding: .85rem 1.25rem;
   border: none;
   border-bottom: 3px solid transparent;
   background: transparent;
   cursor: pointer;
   transition: color .12s, border-color .12s;
   white-space: nowrap;
-  line-height: 1.2;
   text-align: center;
 }
-.day-tab:hover { color: #fff; }
+.day-tab:hover { color: rgba(255,255,255,.8); }
 .day-tab.active {
   color: #fff;
   border-bottom-color: #fff;
@@ -109,7 +106,7 @@ body {
 .day-section.visible { display: block; }
 
 .day-header {
-  padding: 1rem 0 .75rem;
+  padding: .5rem 0 .75rem;
   margin-bottom: 1rem;
 }
 .day-header-name {
@@ -119,8 +116,8 @@ body {
   letter-spacing: -.01em;
 }
 .day-header-date {
-  font-size: 14px;
-  color: #333;
+  font-size: 13px;
+  color: #444;
   font-weight: 500;
   margin-top: .15rem;
 }
@@ -144,7 +141,7 @@ body {
   border-radius: 12px;
   padding: 1.1rem 1.15rem;
   margin-bottom: .75rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,.12);
+  box-shadow: 0 1px 4px rgba(0,0,0,.1);
 }
 
 .performer-name {
@@ -152,7 +149,7 @@ body {
   font-weight: 700;
   color: #111;
   line-height: 1.2;
-  margin-bottom: .25rem;
+  margin-bottom: .2rem;
   letter-spacing: -.01em;
 }
 .performer-meta {
@@ -163,9 +160,11 @@ body {
   margin-bottom: .5rem;
 }
 .performer-instrument {
-  font-size: 14px;
-  font-weight: 600;
-  color: #222;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: .06em;
 }
 .cvp-badge {
   font-size: 10px;
@@ -178,21 +177,21 @@ body {
   padding: 2px 8px;
 }
 .performer-teacher {
-  font-size: 14px;
-  color: #333;
-  font-weight: 500;
+  font-size: 13px;
+  color: var(--text3);
+  font-weight: 400;
   margin-bottom: .65rem;
 }
 .performer-teacher em {
   font-style: normal;
-  color: #111;
-  font-weight: 700;
+  color: var(--text2);
+  font-weight: 600;
 }
 
 /* ── Songs ── */
 .songs { margin-bottom: .7rem; }
 .song-line {
-  font-size: 16px;
+  font-size: 15px;
   color: #111;
   line-height: 1.5;
   padding-left: 1rem;
@@ -202,34 +201,35 @@ body {
   content: "\2022";
   position: absolute;
   left: 0;
-  color: var(--acc);
-  font-weight: 700;
+  color: var(--navy);
+  font-size: 18px;
+  line-height: 1.1;
 }
 .song-title {
   font-weight: 700;
 }
 .song-composer {
-  color: #444;
+  color: var(--text3);
   font-weight: 400;
-  font-size: 15px;
+  font-size: 14px;
 }
 .song-line + .song-line { margin-top: .25rem; }
 
 /* ── Program notes ── */
 .program-notes {
-  font-size: 15px;
-  line-height: 1.7;
-  color: #222;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--text2);
   margin-top: .75rem;
   padding-top: .75rem;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid var(--border);
 }
 
 /* ── Loading / error ── */
 .state-msg {
   text-align: center;
   padding: 4rem 1rem;
-  color: #333;
+  color: #444;
   font-size: 15px;
 }
 .state-msg .spinner {
@@ -237,7 +237,7 @@ body {
   width: 24px;
   height: 24px;
   border: 2px solid #bbb;
-  border-top-color: #333;
+  border-top-color: var(--navy);
   border-radius: 50%;
   animation: spin .7s linear infinite;
   margin-bottom: 1rem;
@@ -250,7 +250,7 @@ body {
   padding: 2rem 1rem;
   border-top: 1px solid #bbb;
   font-size: 13px;
-  color: #333;
+  color: #555;
   font-weight: 500;
 }
 
