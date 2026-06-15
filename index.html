@@ -2,3020 +2,473 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" type="image/png" href="data:image/png;base64,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">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Keylab Performance Parties 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keylab Performance Parties 2026 — Program</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --bg:      #dcdcdc;
-    --bg2:     #d0d0d0;
-    --bg3:     #c4c4c4;
-    --card-bg: #e8e8e8;
-    --border:  #c0c0c0;
-    --text:    #1c1914;
-    --text2:   #6b6560;
-    --text3:   #a09890;
-    --acc:     #c8440a;
-    --acc-lt:  #f9ede6;
-    --acc-dk:  #a33608;
-    --blue:    #2563eb;
-    --blue-dk: #1d4ed8;
-    --blue-lt: #eff6ff;
-    --warn:    #7a4a1a;
-    --warn-lt: #faf4ec;
-    --info:    #2d4a6b;
-    --info-lt: #eaeff5;
-    --err:     #8b2e2e;
-    --err-lt:  #f5eaea;
-    --green:   #1e3a2f;
-    --green-lt:#e4ede8;
-    --radius:  12px;
-    --shadow:  0 1px 3px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.05);
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg:      #2e3032;
-      --bg2:     #444648;
-      --bg3:     #4e5052;
-      --card-bg: #4c4e50;
-      --border:  #606264;
-      --text:    #ffffff;
-      --text2:   #e8e8e4;
-      --text3:   #c0c0bc;
-      --acc:     #e07050;
-      --acc-lt:  #2a1a14;
-      --acc-dk:  #f08868;
-      --blue:    #1a4fc4;
-      --blue-dk: #1440a8;
-      --blue-lt: #1a2c3a;
-      --warn:    #d8a848;
-      --warn-lt: #2a2010;
-      --info:    #88b0cc;
-      --info-lt: #182430;
-      --err:     #d87870;
-      --err-lt:  #281414;
-      --green:   #68b088;
-      --green-lt:#142018;
-      --shadow:  0 1px 3px rgba(0,0,0,.25), 0 4px 16px rgba(0,0,0,.2);
-    }
-    .btn-primary  { background: #1a4fc4 !important; color: #ffffff !important; border: none !important; }
-    .btn-primary:hover { background: #1440a8 !important; }
-    .btn-secondary { background: #1a4fc4 !important; color: #ffffff !important; border: none !important; }
-    .btn-secondary:hover { background: #1440a8 !important; }
-    .btn-cancel { background: #8b2e2e !important; color: #ffffff !important; border: none !important; }
-    .btn-cancel:hover { background: #7a2020 !important; }
-    .btn-nav { background: #4e5052 !important; color: #f4f4f2 !important; border: none !important; }
-    .btn-nav:hover { background: #5a5c5e !important; }
-    .confirm-title { color: #ffffff; }
-    .confirm-sub { color: #ffffff; }
-  }
-
-  html {
-    width: 100%;
-    overflow-x: hidden;
-  }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    font-size: 17px;
-    line-height: 1.6;
-    min-height: 100vh;
-    width: 100%;
-    overflow-x: hidden;
-  }
-
-  .page-wrap {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 0 16px 48px;
-  }
-
-  /* ── Header ── */
-  .site-header {
-    padding: 28px 0 20px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 28px;
-  }
-  .site-header .wordmark {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: var(--acc);
-    margin-bottom: 4px;
-  }
-  .site-header h1 {
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--text);
-    line-height: 1.25;
-  }
-  .site-header .tagline {
-    font-size: 13px;
-    color: var(--text3);
-    margin-top: 3px;
-  }
-
-  /* ── Cards ── */
-  .card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 22px 20px;
-    margin-bottom: 16px;
-    box-shadow: var(--shadow);
-  }
-  .card-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 18px;
-  }
-
-  /* ── Fields ── */
-  .field {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin-bottom: 14px;
-  }
-  .field label {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text2);
-  }
-  .field input, .field textarea, .field select {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    padding: 10px 13px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--bg);
-    color: var(--text);
-    outline: none;
-    transition: border-color .15s;
-    width: 100%;
-  }
-  .field input:focus, .field textarea:focus, .field select:focus {
-    border-color: var(--acc);
-  }
-  .hint {
-    font-size: 12px;
-    color: var(--text3);
-    line-height: 1.4;
-    margin-top: 2px;
-  }
-
-  /* ── Buttons ── */
-  .btn-primary {
-    display: block;
-    width: 100%;
-    padding: 12px 20px;
-    background: var(--blue);
-    color: #fff;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 500;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    text-align: center;
-    transition: background .15s;
-  }
-  .btn-primary:hover { background: var(--blue-dk); }
-
-  .btn-secondary {
-    display: block;
-    width: 100%;
-    padding: 12px 20px;
-    background: var(--blue);
-    color: #fff;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 500;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    text-align: center;
-    transition: background .15s;
-  }
-  .btn-secondary:hover { background: var(--blue-dk); }
-
-  .btn-cancel {
-    display: block;
-    width: 100%;
-    padding: 12px 20px;
-    background: var(--err);
-    color: #fff;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 500;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    text-align: center;
-    transition: background .15s;
-  }
-  .btn-cancel:hover { background: var(--err-lt); color: var(--err); }
-
-  .btn-ghost {
-    background: none;
-    border: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    color: var(--text3);
-    cursor: pointer;
-    padding: 6px 0;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-  }
-  .btn-ghost:hover { color: var(--text2); }
-
-  .btn-nav {
-    display: block;
-    width: 100%;
-    padding: 12px 20px;
-    background: transparent;
-    color: var(--text2);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 500;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    cursor: pointer;
-    text-align: center;
-    transition: background .15s, border-color .15s;
-  }
-  .btn-nav:hover { background: var(--bg2); border-color: var(--text3); }
-
-  .text-link {
-    background: none;
-    border: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    color: var(--blue);
-    cursor: pointer;
-    padding: 8px 0;
-    display: block;
-    text-align: center;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-  }
-
-  .btn-wrap {
-    margin-bottom: 12px;
-  }
-  .btn-desc {
-    font-size: 12px;
-    color: var(--text3);
-    margin-top: 5px;
-    line-height: 1.4;
-  }
-
-  /* ── Notices ── */
-  .notice {
-    display: flex;
-    gap: 12px;
-    padding: 12px 16px;
-    border-radius: 0 6px 6px 0;
-    border-left: 3px solid var(--border);
-    background: var(--card-bg);
-    font-size: 13px;
-    line-height: 1.5;
-    margin-bottom: 16px;
-    align-items: flex-start;
-    color: var(--text);
-  }
-  .ni { flex-shrink: 0; margin-top: 1px; font-size: 15px; }
-  .notice-success { border-left-color: var(--green); }
-  .notice-warn    { border-left-color: var(--warn); }
-  .notice-info    { border-left-color: var(--text3); }
-  .notice-err     { border-left-color: var(--err); }
-
-  /* ── Status pill ── */
-  .status-pill {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: .01em;
-  }
-  .pill-unconfirmed { background: var(--bg3); color: var(--text2); }
-  .pill-confirmed { background: var(--green-lt); color: var(--green); }
-  .pill-confirmed-guest { background: var(--green-lt); color: var(--green); }
-  .pill-cancelled { background: var(--err-lt); color: var(--err); }
-  .pill-not-participating { background: var(--bg3); color: var(--text3); }
-
-  /* ── Status explanation line ── */
-  .status-explain {
-    font-size: 13px;
-    color: var(--text2);
-    margin-top: 10px;
-    margin-bottom: 4px;
-    line-height: 1.4;
-  }
-
-  /* ── Admin note callout ── */
-  .admin-note-callout {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 14px;
-    margin-top: 12px;
-    font-size: 13px;
-    color: var(--warn);
-    line-height: 1.45;
-  }
-  .admin-note-callout strong {
-    display: block;
-    margin-bottom: 4px;
-    font-weight: 600;
-  }
-
-  /* ── Assignment card ── */
-  .assign-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 18px 16px;
-    margin-bottom: 16px;
-  }
-  .assign-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    margin-bottom: 14px;
-    gap: 10px;
-  }
-  .assign-label {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--text2);
-    margin-bottom: 5px;
-  }
-  .assign-day {
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--text);
-    line-height: 1.15;
-  }
-  .assign-seg {
-    font-size: 13px;
-    color: var(--text);
-    margin-top: 3px;
-  }
-  .arrive-badge {
-    font-size: 13px;
-    font-weight: 500;
-    background: var(--bg2);
-    color: var(--text);
-    padding: 7px 12px;
-    border-radius: 7px;
-    margin-bottom: 14px;
-  }
-  .assign-meta {
-    border-top: 1px solid var(--border);
-    padding-top: 12px;
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .assign-meta-item { flex: 1; min-width: 80px; }
-  .assign-meta-label {
-    font-size: 11px;
-    color: var(--text2);
-    text-transform: uppercase;
-    letter-spacing: .06em;
-    margin-bottom: 2px;
-  }
-  .assign-meta-val { font-size: 14px; font-weight: 500; color: var(--text); }
-
-  .action-divider { height: 1px; background: var(--border); margin: 20px 0; }
-
-  /* ── Status badge (legacy, kept for any remaining references) ── */
-  .status-badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-  }
-  .status-confirmed { background: var(--green-lt); color: var(--green); }
-  .status-confirmed-guest { background: var(--blue-lt); color: var(--blue); }
-  .status-cancelled { background: var(--err-lt); color: var(--err); }
-  .status-unconfirmed { background: var(--bg3); color: var(--text2); }
-
-  /* ── Cancelled notice ── */
-  .cancelled-notice {
-    background: var(--err-lt);
-    border: 1px solid var(--err);
-    border-radius: 8px;
-    padding: 14px 16px;
-    margin-bottom: 16px;
-  }
-  .cn-title { font-size: 14px; font-weight: 600; color: var(--err); margin-bottom: 4px; }
-  .cn-body { font-size: 13px; color: var(--err); opacity: 0.8; line-height: 1.4; }
-
-  /* ── Swap grid ── */
-  .swap-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 10px;
-    margin-bottom: 18px;
-  }
-  .slot-btn {
-    padding: 14px 10px;
-    border: 1.5px solid var(--border);
-    border-radius: 9px;
-    background: var(--bg);
-    cursor: pointer;
-    text-align: left;
-    font-family: 'DM Sans', sans-serif;
-    transition: border-color .15s, background .15s;
-  }
-  .slot-btn:hover:not(:disabled) { border-color: var(--acc); background: var(--acc-lt); }
-  .slot-btn:disabled { opacity: .45; cursor: not-allowed; }
-  .slot-btn.current { border-color: var(--acc); background: var(--acc-lt); }
-  .slot-btn.is-orig { border-color: var(--blue); background: var(--blue-lt); }
-  .slot-name { font-size: 14px; font-weight: 600; color: var(--text); }
-  .slot-time { font-size: 12px; color: var(--text3); margin-top: 2px; }
-  .slot-avail { font-size: 11px; margin-top: 5px; }
-  .slot-avail.open { color: var(--green); }
-  .slot-avail.full { color: var(--err); }
-
-  /* ── Pref grid ── */
-  .pref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-bottom: 16px; }
-  .pref-btn {
-    padding: 12px 10px;
-    border: 1.5px solid var(--border);
-    border-radius: 9px;
-    background: var(--bg);
-    cursor: pointer;
-    text-align: left;
-    font-family: 'DM Sans', sans-serif;
-    transition: border-color .15s, background .15s;
-  }
-  .pref-btn.selected { border-color: var(--acc); background: var(--acc-lt); }
-  .pref-btn.already-requested { border-color: var(--info); background: var(--info-lt); }
-  .pref-btn.already-requested.selected { border-color: var(--acc); background: var(--acc-lt); }
-  .pref-btn.cancel-request { border-color: var(--err); background: var(--err-lt); }
-  .pref-btn.current-slot { border-color: var(--text3); }
-  .pref-name { font-size: 13px; font-weight: 600; color: var(--text); }
-  .pref-time { font-size: 11px; color: var(--text3); margin-top: 2px; }
-  .pref-already-label { font-size: 10px; color: var(--info); font-weight: 600; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.03em; }
-
-  /* ── Guest select ── */
-  .guest-summary {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 14px;
-    font-size: 14px;
-    color: var(--text2);
-    margin-bottom: 18px;
-    line-height: 1.5;
-  }
-  .guest-select-wrap { margin-bottom: 12px; }
-  .guest-select-wrap label {
-    display: block;
-    font-size: 13px;
-    color: var(--text2);
-    margin-bottom: 5px;
-  }
-  .guest-select-wrap select {
-    width: 100%;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    padding: 10px 13px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--bg);
-    color: var(--text);
-    outline: none;
-  }
-
-  /* ── Confirm sent ── */
-  .confirm-icon { font-size: 36px; text-align: center; margin-bottom: 10px; }
-  .confirm-title { font-size: 20px; font-weight: 700; text-align: center; color: var(--text); margin-bottom: 6px; }
-  .confirm-sub { font-size: 14px; color: var(--text); text-align: center; margin-bottom: 18px; line-height: 1.5; }
-  .confirm-detail {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px;
-    margin-bottom: 16px;
-  }
-  .confirm-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 4px 0;
-    border-bottom: 1px solid var(--border);
-    gap: 10px;
-  }
-  .confirm-row:last-child { border-bottom: none; }
-  .confirm-key { font-size: 12px; color: var(--text3); flex-shrink: 0; }
-  .confirm-val { font-size: 14px; font-weight: 500; color: var(--text); text-align: right; }
-
-  /* ── Message sent ── */
-  .msg-sent { text-align: center; padding: 10px 0 6px; }
-  .msg-sent .icon { font-size: 36px; margin-bottom: 10px; }
-
-  /* ── Loading ── */
-  .loading-wrap {
-    text-align: center;
-    padding: 48px 20px;
-    color: var(--text3);
-    font-size: 15px;
-  }
-  .spin { display: inline-block; animation: spin 1s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .back-row { margin-top: 14px; }
-
-  /* ── Pick student buttons ── */
-  .pick-btn {
-    display: block;
-    width: 100%;
-    text-align: left;
-    padding: 14px 16px;
-    margin-bottom: 10px;
-    border: 1.5px solid var(--border);
-    border-radius: 9px;
-    background: var(--bg);
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    transition: border-color .15s, background .15s;
-  }
-  .pick-btn:hover { border-color: var(--blue); background: var(--blue-lt); }
-  .pick-btn-name { font-size: 15px; font-weight: 600; color: var(--text); }
-  .pick-btn-meta { font-size: 12px; color: var(--text3); margin-top: 3px; }
-
-  /* ── Info accordion ── */
-  #info-section { margin-top: 32px; }
-  .info-heading {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: var(--text3);
-    margin-bottom: 10px;
-  }
-  .info-section {
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    margin-bottom: 8px;
-    overflow: hidden;
-    background: var(--card-bg);
-  }
-  .info-toggle {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 13px 16px;
-    background: none;
-    border: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text);
-    cursor: pointer;
-    text-align: left;
-    gap: 10px;
-  }
-  .info-toggle:hover { background: var(--bg2); }
-  .info-toggle .arrow { transition: transform .2s; flex-shrink: 0; font-size: 11px; color: var(--text3); }
-  .info-toggle.open .arrow { transform: rotate(180deg); }
-  .info-body {
-    display: none;
-    padding: 0 16px 16px;
-    font-size: 13px;
-    color: var(--text2);
-    line-height: 1.6;
-    border-top: 1px solid var(--border);
-  }
-  .info-body.open { display: block; }
-  .info-body h4 { font-size: 13px; font-weight: 600; color: var(--text); margin: 12px 0 4px; }
-  .info-body h4:first-child { margin-top: 14px; }
-  .info-body p { margin-bottom: 8px; }
-  .info-body ul { padding-left: 18px; margin-bottom: 8px; }
-  .info-body li { margin-bottom: 4px; }
-  .info-body a { color: var(--blue); }
-</style>
-<script>
-// Force GAS iframe to respect device width
-(function() {
-  try {
-    // Tell the GAS host to resize to full available width
-    if (window.google && google.script && google.script.host) {
-      google.script.host.setWidth(window.screen.width > 0 ? Math.min(window.screen.width, 480) : 480);
-    }
-  } catch(e) {}
-
-  // If we're inside an iframe, inject a viewport meta into the parent if accessible
-  try {
-    if (window.self !== window.top) {
-      var parentHead = window.top.document.head;
-      var existing = window.top.document.querySelector('meta[name="viewport"]');
-      if (!existing) {
-        var m = window.top.document.createElement('meta');
-        m.name = 'viewport';
-        m.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-        parentHead.appendChild(m);
-      } else {
-        existing.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-      }
-    }
-  } catch(e) {}
-})();
-</script>
-</head>
-<body>
-<div class="page-wrap">
-  <header class="site-header">
-    <div class="wordmark">Keylab</div>
-    <h1>Performance Parties 2026</h1>
-    <div class="tagline">June 15&ndash;19 &middot; 94 Luquer St, Brooklyn</div>
-    <div style="margin-top:10px"><a href="https://keylabnyc.github.io/keylab-performance-parties-2026/program.html" target="_blank" style="font-size:12px;font-weight:500;color:var(--acc);text-decoration:none;letter-spacing:.03em">&#9654; View Performance Program</a></div>
-  </header>
-  <div id="root"></div>
-  <div id="info-section"></div>
-</div>
-
-<script>
-// ── State ────────────────────────────────────────────────────────
-var state   = "lookup";
-var student = null;
-var slots   = null;
-var phase   = "pre";
-var canSwap = false;
-var errMsg  = "";
-var schedRequestCancelled = false;
-var unconfirmReverted = false;
-window._rejoinPickContext = null;
-window._rejoinOrigConfirmDay = null;
-window._rejoinOrigConfirmSeg = null;
-var _requestedSegs = [];
-var _inModifyMode = false;
-var lookupName = "", lookupPw = "", lookupEmail = "";
-var lookupMatches = []; // for multi-match picker
-var selectedMatch = null; // {id, name, day, seg} chosen from picker
-var pendingConfirmStatus = "confirmed";
-var pendingRejoinDay      = null;   // set when guest-select is reached via rejoin flow
-var pendingRejoinSeg      = null;
-var pendingRejoinPrevDay  = null;   // original day/seg to restore if user goes back
-var pendingRejoinPrevSeg  = null;
-var prefSelected = [];
-var pendingGuestList = [];
-var pendingAuthIntent = null;
-var pendingSwapDay = null;
-var pendingSwapSeg = null; // 'confirm-performer' | 'confirm-guest' | 'cancel' | null
-var emailSaveSuccess = false;
-var managingBooking = false; // toggled by "Manage my booking" button
-
-var TIMES = {
-  Monday:    {Early:"Monday, June 15 \u2014 4:00 PM",  Late:"Monday, June 15 \u2014 5:00 PM"},
-  Tuesday:   {Early:"Tuesday, June 16 \u2014 4:00 PM", Late:"Tuesday, June 16 \u2014 5:00 PM"},
-  Wednesday: {Early:"Wednesday, June 17 \u2014 4:00 PM",Late:"Wednesday, June 17 \u2014 5:00 PM"},
-  Thursday:  {Early:"Thursday, June 18 \u2014 4:00 PM",Late:"Thursday, June 18 \u2014 5:00 PM"},
-  Friday:    {Single:"Friday, June 19 \u2014 4:00 PM"}
-};
-var ARRIVE = {Early:"Arrive 3:30\u20133:50 PM", Late:"Arrive 4:45\u20135:00 PM", Single:"Arrive 3:30\u20133:50 PM"};
-
-var GAS_URL = 'https://script.google.com/a/macros/keylab.nyc/s/AKfycbzenlfK9eu0G17af-fdjrkiRT-qZLcsLByN-QGb_SCIpmev_xoI3PkY6OW92nuiz4L45g/exec';
-function api(p, cb) {
-  fetch(GAS_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify(p)
-  })
-  .then(function(res) { return res.json(); })
-  .then(function(data) { cb(null, data); })
-  .catch(function(e) { cb(e); });
+:root {
+  --bg:     #d0d0d0;
+  --card:   #f6f6f6;
+  --navy:   #1e3a5f;
+  --text1:  #111111;
+  --text2:  #333333;
+  --text3:  #666666;
+  --border: #e0e0e0;
+  --cvp:    #6d28d9;
+  --f:      "Inter", system-ui, -apple-system, sans-serif;
 }
 
-// Safety guard: ensure esc is always available before any callback fires
+body {
+  background: var(--bg);
+  color: var(--text1);
+  font-family: var(--f);
+  font-size: 16px;
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Header ── */
+.masthead {
+  background: var(--navy);
+  padding: 1.5rem 1.25rem 0;
+  text-align: center;
+}
+.masthead-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.6);
+  margin-bottom: .4rem;
+}
+.masthead-title {
+  font-size: clamp(22px, 5vw, 30px);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: #fff;
+  line-height: 1.1;
+  margin-bottom: .3rem;
+}
+.masthead-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,.65);
+  font-weight: 500;
+}
+
+/* ── Day tabs ── */
+.day-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--navy);
+  border-top: 1px solid rgba(255,255,255,.12);
+  display: flex;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.day-nav::-webkit-scrollbar { display: none; }
+.day-tab {
+  flex-shrink: 0;
+  font-family: var(--f);
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255,255,255,.45);
+  padding: .85rem 1.25rem;
+  border: none;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: color .12s, border-color .12s;
+  white-space: nowrap;
+  text-align: center;
+}
+.day-tab:hover { color: rgba(255,255,255,.8); }
+.day-tab.active {
+  color: #fff;
+  border-bottom-color: #fff;
+  font-weight: 700;
+}
+
+/* ── Content ── */
+.content {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 5rem;
+}
+
+/* ── Day section ── */
+.day-section { display: none; }
+.day-section.visible { display: block; }
+
+.day-header {
+  padding: .5rem 0 .75rem;
+  margin-bottom: 1rem;
+}
+.day-header-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -.01em;
+}
+.day-header-date {
+  font-size: 13px;
+  color: #444;
+  font-weight: 500;
+  margin-top: .15rem;
+}
+
+/* ── Segment group ── */
+.segment-group { margin-bottom: 1.5rem; }
+.segment-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #111;
+  padding: .5rem 0;
+  margin-bottom: .75rem;
+  border-bottom: 1px solid #999;
+}
+
+/* ── Performer card ── */
+.performer {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 1.1rem 1.15rem;
+  margin-bottom: .75rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,.1);
+}
+
+.performer-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111;
+  line-height: 1.2;
+  margin-bottom: .2rem;
+  letter-spacing: -.01em;
+}
+.performer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .4rem;
+  margin-bottom: .5rem;
+}
+.performer-instrument {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.cvp-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--cvp);
+  background: #ede9fe;
+  border-radius: 20px;
+  padding: 2px 8px;
+}
+.performer-teacher {
+  font-size: 13px;
+  color: var(--text3);
+  font-weight: 400;
+  margin-bottom: .65rem;
+}
+.performer-teacher em {
+  font-style: normal;
+  color: var(--text2);
+  font-weight: 600;
+}
+
+/* ── Songs ── */
+.songs { margin-bottom: .7rem; }
+.song-line {
+  font-size: 15px;
+  color: #111;
+  line-height: 1.5;
+  padding-left: 1rem;
+  position: relative;
+}
+.song-line::before {
+  content: "\2022";
+  position: absolute;
+  left: 0;
+  color: var(--navy);
+  font-size: 18px;
+  line-height: 1.1;
+}
+.song-title {
+  font-weight: 700;
+}
+.song-composer {
+  color: var(--text3);
+  font-weight: 400;
+  font-size: 14px;
+}
+.song-line + .song-line { margin-top: .25rem; }
+
+/* ── Program notes ── */
+.program-notes {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--text2);
+  margin-top: .75rem;
+  padding-top: .75rem;
+  border-top: 1px solid var(--border);
+}
+
+/* ── Loading / error ── */
+.state-msg {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: #444;
+  font-size: 15px;
+}
+.state-msg .spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #bbb;
+  border-top-color: var(--navy);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  margin-bottom: 1rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Footer ── */
+.footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  border-top: 1px solid #bbb;
+  font-size: 13px;
+  color: #555;
+  font-weight: 500;
+}
+
+@media print {
+  .day-nav { display: none; }
+  .day-section { display: block !important; }
+  .performer { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+}
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="masthead-eyebrow"><a href="https://keylab.nyc" target="_blank" style="color:inherit;text-decoration:none">Keylab</a> &middot; 94 Luquer St, Brooklyn</div>
+  <div class="masthead-title">Performance Parties 2026</div>
+  <div class="masthead-sub">June 15&ndash;19 &middot; Program</div>
+</div>
+
+<nav class="day-nav" id="dayNav"></nav>
+
+<div class="content" id="content">
+  <div class="state-msg" id="stateMsg">
+    <div class="spinner"></div><br>Loading program&hellip;
+  </div>
+</div>
+
+<div class="footer"><a href="https://keylab.nyc" target="_blank" style="color:inherit;text-decoration:none">Keylab</a> &middot; <a href="https://keylab.nyc" target="_blank" style="color:inherit;text-decoration:none">keylab.nyc</a></div>
+
+<script>
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbzenlfK9eu0G17af-fdjrkiRT-qZLcsLByN-QGb_SCIpmev_xoI3PkY6OW92nuiz4L45g/exec';
+var DAY_ORDER  = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+var DAY_DATES  = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
+var SEG_ORDER  = ['Early','Single','Late'];
+var SEG_LABELS = {};
+var activeDay  = null;
+
+function api(payload, cb) {
+  fetch(GAS_URL, {
+    method: 'POST',
+    headers: {'Content-Type': 'text/plain'},
+    body: JSON.stringify(payload)
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(r)   { cb(null, r); })
+  .catch(function(e)  { cb(String(e)); });
+}
+
 function esc(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-
-function statusLabel(st) {
-  var map = {
-    'unconfirmed': 'Unconfirmed',
-    'confirmed': 'Confirmed performer',
-    'confirmed-guest': 'Attending, not performing',
-    'cancelled': 'Cancelled',
-    'not-participating': 'Not attending'
-  };
-  return map[st] || st;
+function buildInstrumentLabel(p) {
+  var i1 = (p.instrument  || '').trim();
+  var i2 = (p.instrument2 || '').trim();
+  if (!i1 && !i2) return '';
+  if (!i2 || i1.toLowerCase() === i2.toLowerCase()) return i1;
+  return i1 + ', ' + i2;
 }
 
-function statusPillClass(st) {
-  if (st === 'confirmed')        return 'pill-confirmed';
-  if (st === 'confirmed-guest')  return 'pill-confirmed-guest';
-  if (st === 'cancelled')        return 'pill-cancelled';
-  if (st === 'not-participating') return 'pill-not-participating';
-  return 'pill-unconfirmed';
+function buildTeacherLabel(p) {
+  var t1 = (p.teacherFull  || '').trim();
+  var t2 = (p.teacherFull2 || '').trim();
+  if (!t1 && !t2) return '';
+  if (!t2) return t1;
+  if (!t1) return t2;
+  return t1 + ' &amp; ' + t2;
 }
 
-function statusExplain(st) {
-  if (st === 'unconfirmed')        return 'Your participation has not yet been confirmed. Please confirm using the options below.';
-  if (st === 'confirmed')          return "You're confirmed as a performer.";
-  if (st === 'confirmed-guest')    return "You're confirmed as attending, not performing.";
-  if (st === 'cancelled')          return 'Your participation has been cancelled. See options below to rejoin.';
-  if (st === 'not-participating')  return 'You are marked as not attending. Please contact us at info@keylab.nyc for assistance.';
-  return '';
-}
-
-// Legacy statusClass kept for any remaining references
-function statusClass(st) {
-  if (st === 'confirmed')        return 'status-confirmed';
-  if (st === 'confirmed-guest')  return 'status-confirmed-guest';
-  if (st === 'cancelled')        return 'status-cancelled';
-  return 'status-unconfirmed';
-}
-
-function showErr(m) { errMsg = m; render(); }
-
-function goBack() {
-  // If we entered guest-select via a rejoin flow, restore the original day/seg
-  if (pendingRejoinDay) {
-    student.day = pendingRejoinPrevDay;
-    student.seg = pendingRejoinPrevSeg;
-    pendingRejoinDay = null; pendingRejoinSeg = null;
-    pendingRejoinPrevDay = null; pendingRejoinPrevSeg = null;
-  }
-  state = 'found'; errMsg = ''; render();
-}
-
-// ── Lookup step 1: name search ─────────────────────────────────
-function doLookup() {
-  errMsg = '';
-  var n = (document.getElementById("fn") || {}).value || "";
-  if (!n.trim()) { showErr("Please enter the student's first name."); return; }
-  lookupName = n.trim();
-  state = "loading"; render();
-  api({action:"lookup", name:lookupName, password:"", email:""}, function(e, r) {
-    if (e || !r)  { state = "lookup"; showErr("Connection error. Please try again."); return; }
-    if (!r.ok && !r.multiple) { state = "lookup"; showErr(r.error || "No student found. Check the spelling or contact info@keylab.nyc."); return; }
-    if (r.multiple) {
-      lookupMatches = r.matches;
-      state = "pick-student"; errMsg = ''; render();
-    } else if (r.nameOnly) {
-      selectedMatch = r.match;
-      lookupMatches = [];
-      state = "auth"; errMsg = ''; render();
-    } else {
-      // Shouldn't happen in step 1, but handle gracefully
-      state = "lookup"; showErr("Could not find student. Please try again.");
-    }
-  });
-}
-
-// ── Lookup step 2a: pick from multiple matches ─────────────────
-function doPickStudent(idx) {
-  errMsg = '';
-  selectedMatch = lookupMatches[idx];
-  state = "auth"; errMsg = ''; render();
-}
-
-// ── Lookup step 2b: password + email entry ─────────────────────
-function doAuth() {
-  errMsg = '';
-  var pw    = (document.getElementById("fpw")   || {}).value || "";
-  var email = (document.getElementById("femail")|| {}).value || "";
-  if (!pw.trim()) { showErr("Please enter your password."); return; }
-  lookupPw = pw.trim(); lookupEmail = email.trim();
-  state = "loading"; render();
-  api({action:"lookup", name:selectedMatch.name, studentId:selectedMatch.id, password:lookupPw, email:lookupEmail}, function(e, r) {
-    if (e || !r)  { pendingAuthIntent = null; state = "auth"; showErr("Connection error. Please try again."); return; }
-    if (!r.ok)    { pendingAuthIntent = null; state = "auth"; showErr(r.error || "Incorrect password."); return; }
-    student = r.student;
-    if (!lookupEmail && student.email) lookupEmail = student.email;
-    api({action:"getSlots"}, function(e2, r2) {
-      if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; canSwap = !!r2.canSwap; }
-      else { phase = phase || 'pre'; }
-      pendingAuthIntent = null;
-      managingBooking = false;
-      state = "found"; errMsg = ''; render();
-    });
-  });
-}
-
-// ── Refresh student data from sheet ───────────────────────────
-function refreshStudent(cb) {
-  api({action:"lookup", name:selectedMatch ? selectedMatch.name : lookupName, studentId:student.id, password:lookupPw, email:lookupEmail}, function(e, r) {
-    if (!e && r && r.ok && r.student) { student = r.student; }
-    if (cb) cb();
-  });
-}
-
-// ── Confirm — guest selector flow ──────────────────────────────
-function doSaveEmail() {
-  var inp = document.getElementById("email-collect");
-  var email = inp ? inp.value.trim() : '';
-  if (!email) { return; }
-  lookupEmail = email;
-  // Persist to sheet via lookup (email write-back happens in lookup handler)
-  api({action:"lookup", name:lookupName, studentId:(student && student.id), password:lookupPw, email:lookupEmail}, function(e, r) {
-    if (!e && r && r.ok && r.student) {
-      student.email = lookupEmail;
-      emailSaveSuccess = true;
-    }
-    render();
-  });
-}
-function doStartConfirm(status) {
-  pendingConfirmStatus = status;
-  // Clone existing guest names into editable pending list
-  pendingGuestList = (student && student.guestNames && student.guestNames.length > 0)
-    ? student.guestNames.slice()
-    : [];
-  state = "guest-select";
-  errMsg = '';
-  render();
-}
-
-function doConfirmWithGuests() {
-  errMsg = '';
-  var sel = document.getElementById("guest-count-sel");
-  if (!sel || sel.value === "") { showErr("Please select how many guests will be attending."); return; }
-  var gCount = parseInt(sel.value);
-  // Collect guest names
-  var names = [];
-  for (var i = 0; i < gCount; i++) {
-    var inp = document.getElementById("gname-" + i);
-    var nm = inp ? inp.value.trim() : '';
-    if (!nm) { showErr("Please enter a name for each guest."); return; }
-    names.push(nm);
-  }
-  var status = pendingConfirmStatus;
-  state = "loading"; render();
-
-  // Rejoin flow: student picked a new segment before reaching guest-select
-  if (pendingRejoinDay) {
-    var toDay = pendingRejoinDay; var toSeg = pendingRejoinSeg;
-    var prevDay = pendingRejoinPrevDay; var prevSeg = pendingRejoinPrevSeg;
-    pendingRejoinDay = null; pendingRejoinSeg = null;
-    pendingRejoinPrevDay = null; pendingRejoinPrevSeg = null;
-    api({action:"rejoin", studentId:student.id, password:lookupPw, toDay:toDay, toSeg:toSeg, email:lookupEmail, guests:gCount, guestNames:names}, function(e, r) {
-      if (e || !r || !r.ok) {
-        if (r && r.slotFull) {
-          // Restore original segment so found state shows correct info if family backs out
-          student.day = prevDay || student.day; student.seg = prevSeg || student.seg;
-          errMsg = "This segment just filled up. Please choose another spot below.";
-          api({action:"getSlots"}, function(e2, r2) {
-            if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; canSwap = !!r2.canSwap; }
-            state = "rejoin-pick"; render();
-          });
-          return;
-        }
-        student.day = prevDay || student.day; student.seg = prevSeg || student.seg;
-        state = "guest-select"; showErr((r && r.error) || "Could not save. Please try again."); return;
-      }
-      student.day = toDay; student.seg = toSeg; student.status = 'confirmed';
-      student.guests = gCount; student.guestNames = names;
-      api({action:"getSlots"}, function(e2, r2) {
-        if (!e2 && r2 && r2.ok) { slots = r2.slots; canSwap = !!r2.canSwap; }
-        window._swapResult = r.confirmation;
-        window._rejoinOrigDay = null; window._rejoinOrigSeg = null;
-        state = "swap-confirmed"; render();
-      });
-    });
-    return;
-  }
-
-  // Standard confirm flow
-  api({action:"confirm", studentId:student.id, password:lookupPw, status:status, guests:gCount, guestNames:names, email:lookupEmail}, function(e, r) {
-    if (e || !r || !r.ok) {
-      if (r && r.slotFull) {
-        errMsg = "This segment just filled up. Please choose another spot below.";
-        api({action:"getSlots"}, function(e2, r2) {
-          if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
-          state = "rejoin-pick"; render();
-        });
-        return;
-      }
-      state = "guest-select"; showErr((r && r.error) || "Could not save. Please try again."); return;
-    }
-    student.status = status;
-    student.guests = gCount;
-    student.guestNames = names;
-    if (r.earlyConfirm) {
-      student.earlyConfirm = true;
-      var tags = student.tags || '';
-      if (tags.indexOf('early-confirm') === -1) {
-        student.tags = tags ? tags + '|early-confirm' : 'early-confirm';
-      }
-    }
-    refreshStudent(function() { state = "confirm-sent"; render(); });
-  });
-}
-
-// ── Cancel ─────────────────────────────────────────────────────
-function doStartCancel() { state = "cancel"; errMsg = ''; render(); }
-
-function doSubmitCancel() {
-  errMsg = '';
-  var note = (document.getElementById("cancel-note") || {}).value || "";
-  if (!note.trim()) { showErr("Please explain why you're cancelling."); return; }
-  var btn = document.getElementById("cancel-btn");
-  if (btn) { btn.disabled = true; btn.textContent = "Cancelling\u2026"; }
-  api({action:"cancel", studentId:student.id, password:lookupPw, note:note.trim(), email:lookupEmail}, function(e, r) {
-    if (e || !r || !r.ok) {
-      if (btn) { btn.disabled = false; btn.textContent = "Confirm cancellation"; }
-      showErr((r && r.error) || "Could not cancel. Please try again.");
-      return;
-    }
-    student.status = 'cancelled';
-    // Mirror the orig: tag the backend just wrote, so rCancelConfirmed can find it
-    var tags = student.tags || '';
-    if (tags.indexOf('orig:') === -1) {
-      var origTag = 'orig:' + student.day + '_' + student.seg;
-      student.tags = tags ? tags + '|' + origTag : origTag;
-    }
-    // Refresh slots so rejoin buttons appear immediately on the booking screen
-    api({action:"getSlots"}, function(e2, r2) {
-      if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
-      state = "cancel-confirmed"; render();
-    });
-  });
-}
-
-// ── Preferences ────────────────────────────────────────────────
-function doStartPreferences() {
-  prefSelected = [];
-  state = "preferences"; errMsg = ''; render();
-}
-
-function togglePref(key) {
-  var CYCLE = ['preferred', 'available', 'last-resort', 'sibling'];
-  var CYCLE_REQ = ['preferred', 'available', 'last-resort', 'sibling', 'cancel-request'];
-  var PREF_LABELS = {preferred: '\u2b50 Preferred', available: '\u2713 Available', 'last-resort': '\u2193 Last resort', sibling: '\ud83d\udc6b Sibling', 'cancel-request': '\u2716 Cancel request'};
-  var isRequested = false;
-  for (var ri = 0; ri < _requestedSegs.length; ri++) { if (_requestedSegs[ri].key === key) { isRequested = true; break; } }
-  var cycle = isRequested ? CYCLE_REQ : CYCLE;
-  var idx = -1;
-  for (var i = 0; i < prefSelected.length; i++) { if (prefSelected[i].key === key) { idx = i; break; } }
-  if (idx === -1) {
-    prefSelected.push({key: key, type: cycle[0]});
-  } else {
-    var nextTypeIdx = cycle.indexOf(prefSelected[idx].type) + 1;
-    if (isRequested) {
-      // Always cycle — never fully deselect a previously-requested segment
-      prefSelected[idx].type = cycle[nextTypeIdx >= cycle.length ? 0 : nextTypeIdx];
-    } else {
-      if (nextTypeIdx >= cycle.length) {
-        prefSelected.splice(idx, 1);
-      } else {
-        prefSelected[idx].type = cycle[nextTypeIdx];
-      }
-    }
-  }
-  // Update buttons in-place — do NOT call render() which replaces innerHTML
-  // and breaks inline onclick handlers in the GAS sandbox
-  var btns = document.querySelectorAll('.pref-grid button');
-  for (var bi = 0; bi < btns.length; bi++) {
-    var btn = btns[bi];
-    var bkey = btn.getAttribute('data-prefkey');
-    if (!bkey) continue;
-    var selObj = null;
-    for (var si = 0; si < prefSelected.length; si++) { if (prefSelected[si].key === bkey) { selObj = prefSelected[si]; break; } }
-    var isSel = !!selObj;
-    var isCancelReq = isSel && selObj.type === 'cancel-request';
-    // Update selected class
-    if (isSel) { btn.classList.add('selected'); } else { btn.classList.remove('selected'); }
-    // Update cancel-request class
-    if (isCancelReq) { btn.classList.add('cancel-request'); } else { btn.classList.remove('cancel-request'); }
-    // Update or remove type label div
-    var labelDiv = btn.querySelector('.pref-type-label');
-    if (isSel) {
-      var labelText = PREF_LABELS[selObj.type] || selObj.type;
-      if (!labelDiv) {
-        labelDiv = document.createElement('div');
-        labelDiv.className = 'pref-time pref-type-label';
-        labelDiv.style.fontWeight = '600';
-        labelDiv.style.marginTop = '4px';
-        btn.appendChild(labelDiv);
-      }
-      labelDiv.textContent = labelText;
-    } else {
-      if (labelDiv) labelDiv.parentNode.removeChild(labelDiv);
-    }
-  }
-}
-
-function doSubmitPreferences() {
-  errMsg = '';
-  var activeSelected = prefSelected.filter(function(k) { return k.type !== 'cancel-request'; });
-  var hasPendingPref = !!(student && (student.schedRequest && student.schedRequest.length) || getLatestSchedRequest(student && student.notes));
-
-  // Modify mode — entered via doModifyRequest OR student has a pending request
-  if (_inModifyMode || hasPendingPref) {
-
-    // Step 1: show review screen
-    if (state !== 'pref-confirm') {
-      state = 'pref-confirm'; errMsg = ''; render(); return;
-    }
-
-    // Step 2: on confirm screen — withdraw if no active segments
-    if (!activeSelected.length) {
-      var btn = document.getElementById('pref-btn');
-      if (btn) { btn.disabled = true; btn.textContent = 'Submitting\u2026'; }
-      api({action: 'withdrawSchedRequest', studentId: student.id, password: lookupPw}, function(e, r) {
-        if (e || !r || !r.ok) {
-          if (btn) { btn.disabled = false; btn.textContent = 'Yes, cancel my request \u2192'; }
-          showErr((r && r.error) || 'Could not cancel request. Please try again.');
-          return;
-        }
-        student.schedRequest = null;
-        var now = new Date();
-        var pad = function(n) { return n < 10 ? '0'+n : String(n); };
-        var ts = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
-        student.notes = (student.notes ? student.notes + '\n\n' : '') + '[' + ts + '] RESOLVED \u2014 Scheduling request withdrawn by family.';
-        schedRequestCancelled = true;
-        _inModifyMode = false;
-        _requestedSegs = [];
-        prefSelected = [];
-        state = 'found'; errMsg = ''; render();
-      });
-      return;
-    }
-
-    // Step 2: on confirm screen — submit updated request
-    var note = (document.getElementById('pref-note') || {}).value || '';
-    var btn2 = document.getElementById('pref-btn');
-    if (btn2) { btn2.disabled = true; btn2.textContent = 'Submitting\u2026'; }
-    var segments = activeSelected.map(function(k) {
-      var p = k.key.split('_'); return p[0] + ' ' + p[1] + ' [' + k.type + ']';
-    });
-    api({action: 'submitPreferences', studentId: student.id, password: lookupPw, segments: segments, note: note.trim(), email: lookupEmail}, function(e, r) {
-      if (e || !r || !r.ok) {
-        if (btn2) { btn2.disabled = false; btn2.textContent = 'Submit request \u2192'; }
-        showErr((r && r.error) || 'Could not submit. Please try again.');
-        return;
-      }
-      student.schedRequest = segments;
-      _inModifyMode = false;
-      _requestedSegs = [];
-      prefSelected = [];
-      refreshStudent(function() { state = 'pref-sent'; render(); });
-    });
-    return;
-  }
-
-  // Fresh request — no pending request when flow started
-  if (!activeSelected.length) { showErr('Please select at least one segment.'); return; }
-  var note2 = (document.getElementById('pref-note') || {}).value || '';
-  var btn3 = document.getElementById('pref-btn');
-  if (btn3) { btn3.disabled = true; btn3.textContent = 'Submitting\u2026'; }
-  var segments2 = activeSelected.map(function(k) {
-    var p = k.key.split('_'); return p[0] + ' ' + p[1] + ' [' + k.type + ']';
-  });
-  api({action: 'submitPreferences', studentId: student.id, password: lookupPw, segments: segments2, note: note2.trim(), email: lookupEmail}, function(e, r) {
-    if (e || !r || !r.ok) {
-      if (btn3) { btn3.disabled = false; btn3.textContent = 'Submit preferences'; }
-      showErr((r && r.error) || 'Could not submit. Please try again.');
-      return;
-    }
-    refreshStudent(function() { state = 'pref-sent'; render(); });
-  });
-}
-
-// ── Unconfirm ──────────────────────────────────────────────────
-function doStartUnconfirm() { state = "unconfirm"; errMsg = ''; render(); }
-
-function doSubmitUnconfirm() {
-  errMsg = '';
-  var btn = document.getElementById("unconfirm-btn");
-  if (btn) { btn.disabled = true; btn.textContent = "Reverting\u2026"; }
-  api({action:"unconfirm", studentId:student.id, password:lookupPw, email:lookupEmail}, function(e, r) {
-    if (e || !r || !r.ok) {
-      if (btn) { btn.disabled = false; btn.textContent = "Yes, revert to unconfirmed"; }
-      showErr((r && r.error) || "Could not revert status. Please try again.");
-      return;
-    }
-    unconfirmReverted = true;
-    refreshStudent(function() { state = "found"; render(); });
-  });
-}
-
-// ── Edit Guests ────────────────────────────────────────────────
-function doStartEditGuests() { state = "edit-guests"; errMsg = ''; render(); }
-
-function doSubmitEditGuests() {
-  errMsg = '';
-  var guestCount = 0;
-  var guestNames = [];
-  
-  // Collect guest names from input fields
-  for (var i = 1; i <= 3; i++) {
-    var nameField = document.getElementById("guest-name-" + i);
-    if (nameField && nameField.value && nameField.value.trim()) {
-      guestNames.push(nameField.value.trim());
-      guestCount++;
-    }
-  }
-  
-  var btn = document.getElementById("edit-guests-btn");
-  if (btn) { btn.disabled = true; btn.textContent = "Saving\u2026"; }
-  
-  api({action:"confirm", studentId:student.id, password:lookupPw, status:student.status, guests:guestCount, guestNames:guestNames, email:lookupEmail}, function(e, r) {
-    if (e || !r || !r.ok) {
-      if (btn) { btn.disabled = false; btn.textContent = "Save changes"; }
-      showErr((r && r.error) || "Could not update guest list. Please try again.");
-      return;
-    }
-    student.guests = guestCount; student.guestNames = guestNames;
-    state = "confirm-sent"; render();
-  });
-}
-
-// ── Rejoin ─────────────────────────────────────────────────────
-function doRejoin() {
-  // Always fetch fresh slot data before attempting any rejoin
-  state = "loading"; render();
-  api({action:"getSlots"}, function(e, r) {
-    if (!e && r && r.ok) { slots = r.slots; phase = r.phase; canSwap = !!r.canSwap; }
-    doRejoinWithFreshSlots();
-  });
-}
-
-function doRejoinWithFreshSlots() {
-  if (phase === 'pre' || phase === 'priority') {
-    var tags = student.tags || '';
-    var origMatch = tags.match(/orig:([A-Za-z]+)_([A-Za-z]+)/);
-    if (origMatch) {
-      var origDay = origMatch[1];
-      var origSeg = origMatch[2];
-      var origKey = origDay + '_' + origSeg;
-      var slotData = slots && slots[origKey];
-      if (slotData && !slotData.isFull) {
-        api({action:"rejoin", studentId:student.id, password:lookupPw, toDay:origDay, toSeg:origSeg, email:lookupEmail}, function(e, r) {
-          if (e || !r || !r.ok) {
-            // Slot raced to full between check and write — show dead-end
-            state = "found";
-            showErr("Your original segment just filled up. Check back on May 4th when self-service scheduling opens, or submit a scheduling request and we\u2019ll be in touch asap.");
-            render(); return;
-          }
-          student.day = origDay; student.seg = origSeg; student.status = 'confirmed';
-          api({action:"getSlots"}, function(e2, r2) {
-            if (!e2 && r2 && r2.ok) { slots = r2.slots; }
-            window._swapResult = r.confirmation;
-            state = "swap-confirmed"; render();
-          });
-        });
-        return;
-      } else {
-        // Orig slot full or unknown — dead-end, no grid
-        state = "found";
-        errMsg = "Your original segment is now full. Check back on May 4th when self-service scheduling opens, or submit a scheduling request and we\u2019ll be in touch with an update asap.";
-        render();
-        return;
-      }
-    }
-    // No orig tag — shouldn't happen, but dead-end gracefully
-    state = "found";
-    errMsg = "No original segment found. Please contact us at info@keylab.nyc for assistance.";
-    render();
-    return;
-  }
-
-  api({action:"rejoin", studentId:student.id, password:lookupPw}, function(e, r) {
-    if (e || !r || !r.ok) { state = "found"; showErr((r && r.error) || "Could not process. Please try again."); return; }
-    if (r.needsSlot) {
-      var origDay = r.origDay;
-      var origSeg = r.origSeg;
-      api({action:"getSlots"}, function(e2, r2) {
-        if (!e2 && r2 && r2.ok) { slots = r2.slots; }
-        if (origDay && origSeg) {
-          var origKey = origDay + '_' + origSeg;
-          var slotData = slots && slots[origKey];
-          window._rejoinOrigDay = (slotData && !slotData.isFull) ? origDay : null;
-          window._rejoinOrigSeg = (slotData && !slotData.isFull) ? origSeg : null;
-        }
-        window._rejoinPickContext = 'open';
-        state = "rejoin-pick"; errMsg = ''; render();
-      });
-    } else {
-      state = "found"; render();
-    }
-  });
-}
-
-function doRejoinDirect(toDay, toSeg) {
-  // Fast-path: called from "Return to original spot" — confirms immediately, no guest-select.
-  errMsg = '';
-  state = "loading"; render();
-  api({action:"rejoin", studentId:student.id, password:lookupPw, toDay:toDay, toSeg:toSeg, email:lookupEmail}, function(e, r) {
-    if (e || !r || !r.ok) {
-      state = "found"; showErr((r && r.error) || "Could not restore your spot. Please try again.");
-      return;
-    }
-    student.day = toDay; student.seg = toSeg; student.status = 'confirmed';
-    api({action:"getSlots"}, function(e2, r2) {
-      if (!e2 && r2 && r2.ok) { slots = r2.slots; canSwap = !!r2.canSwap; }
-      window._swapResult = r.confirmation;
-      window._rejoinOrigDay = null; window._rejoinOrigSeg = null;
-      state = "swap-confirmed"; render();
-    });
-  });
-}
-
-// ── Swap ───────────────────────────────────────────────────────
-function doStartSwap() {
-  state = "loading"; render();
-  api({action:"getSlots"}, function(e, r) {
-    if (!e && r && r.ok) { slots = r.slots; phase = r.phase; canSwap = !!r.canSwap; }
-    state = "swap"; errMsg = ''; render();
-  });
-}
-
-function doPickSwap(toDay, toSeg) {
-  pendingSwapDay = toDay;
-  pendingSwapSeg = toSeg;
-  errMsg = ''; state = "swap-confirm"; render();
-}
-
-function doSwap(toDay, toSeg) {
-  errMsg = '';
-  state = "swapping"; render();
-  api({action:"swap", studentId:student.id, toDay:toDay, toSeg:toSeg, password:lookupPw, email:lookupEmail}, function(e, r) {
-    if (e || !r || !r.ok) { state = "swap"; showErr((r && r.error) || "Swap failed. Please try again."); return; }
-    student.day = toDay; student.seg = toSeg; student.status = 'confirmed';
-    api({action:"getSlots"}, function(e2, r2) {
-      if (!e2 && r2 && r2.ok) { slots = r2.slots; }
-      state = "swap-confirmed";
-      window._swapResult = r.confirmation;
-      render();
-    });
-  });
-}
-
-// ── Message ────────────────────────────────────────────────────
-function doStartMessage() { state = "messaging"; errMsg = ''; render(); }
-
-function doSendMessage() {
-  errMsg = '';
-  var msg = (document.getElementById("msg-text") || {}).value || "";
-  if (!msg.trim()) { showErr("Please enter a message."); return; }
-  var btn = document.getElementById("send-btn");
-  if (btn) { btn.disabled = true; btn.textContent = "Sending\u2026"; }
-  api({action:"message", studentId:student.id, password:lookupPw, message:msg.trim(), email:lookupEmail}, function(e, r) {
-    if (e || !r || !r.ok) {
-      if (btn) { btn.disabled = false; btn.textContent = "Send message"; }
-      showErr((r && r.error) || "Could not send. Please email info@keylab.nyc directly.");
-      return;
-    }
-    state = "msg-sent"; render();
-  });
-}
-
-// ── Render ─────────────────────────────────────────────────────
-function attachFoundListeners(root) {
-  root.addEventListener('click', function(e) {
-    var el = e.target;
-    while (el && el !== root) {
-      var action = el.getAttribute && el.getAttribute('data-action');
-      if (action) {
-        if (action === 'modifyRequest') doModifyRequest();
-        else if (action === 'cancelRequest') { state = 'withdraw-confirm'; errMsg = ''; render(); }
-        else if (action === 'manageBooking') { managingBooking = true; render(); }
-        return;
-      }
-      el = el.parentNode;
-    }
-  });
-}
-
-function attachWithdrawListener(root) {
-  // withdraw-confirm flow removed — listener retained as no-op for safety
-}
-
-function render() {
-  var root = document.getElementById("root");
-  if (!root) return;
-
-  if (state === "loading" || state === "swapping") {
-    root.innerHTML = '<div class="loading-wrap"><span class="spin">&#10227;</span> ' +
-      (state === "swapping" ? "Saving your change\u2026" : "One moment\u2026") + '</div>';
-    renderInfo("lookup");
-    return;
-  }
-
-  var screens = {
-    "lookup":           function() { root.innerHTML = rLookup();          renderInfo("lookup"); },
-    "pick-student":     function() { root.innerHTML = rPickStudent();     renderInfo("lookup"); },
-    "auth":             function() { root.innerHTML = rAuth();            renderInfo("lookup"); },
-    "found":            function() { root.innerHTML = rFound();           renderInfo("found"); attachFoundListeners(root); },
-    "guest-select":     function() { root.innerHTML = rGuestSelect(); renderInfo("found"); updateGuestNameFields(); },
-    "preferences":      function() { root.innerHTML = rPreferences();     renderInfo("found"); },
-    "pref-sent":        function() { root.innerHTML = rPrefSent();        renderInfo("found"); },
-    "cancel":           function() { root.innerHTML = rCancel();          renderInfo("found"); },
-    "cancel-confirmed": function() { root.innerHTML = rCancelConfirmed(); renderInfo("found"); },
-    "unconfirm":        function() { root.innerHTML = rUnconfirm();       renderInfo("found"); },
-    "edit-guests":      function() { root.innerHTML = rEditGuests();      renderInfo("found"); },
-    "rejoin-pick":      function() {
-      if (!slots) { state = "loading"; render(); api({action:"getSlots"}, function(e,r) { if(!e&&r&&r.ok){slots=r.slots;phase=r.phase;canSwap=!!r.canSwap;} state="rejoin-pick"; render(); }); return; }
-      root.innerHTML = rRejoinPick(); renderInfo("found");
-    },
-    "rejoin-type":      function() { root.innerHTML = rRejoinType(); renderInfo("found"); },
-    "swap":             function() { root.innerHTML = rSwap();            renderInfo("found"); },
-    "swap-confirm":     function() { root.innerHTML = rSwapConfirm();    renderInfo("found"); },
-    "swap-confirmed":   function() { root.innerHTML = rSwapConfirmed();   renderInfo("found"); },
-    "confirm-sent":     function() { root.innerHTML = rConfirmSent();     renderInfo("found"); },
-    "messaging":        function() { root.innerHTML = rMessaging();       renderInfo("found"); },
-    "msg-sent":         function() { root.innerHTML = rMsgSent();         renderInfo("found"); },
-    "withdraw-confirm": function() { root.innerHTML = rWithdrawConfirm();  renderInfo("found"); attachWithdrawListener(root); },
-    "pref-confirm":     function() { root.innerHTML = rPrefConfirm();      renderInfo("found"); },
-    "rejoin-orig-confirm": function() { root.innerHTML = rRejoinOrigConfirm(); renderInfo("found"); }
-  };
-
-  if (screens[state]) screens[state]();
-}
-
-// ── Shared error fragment ──────────────────────────────────────
-function errFrag() {
-  if (!errMsg) return '';
-  return '<div class="notice notice-err"><span class="ni">&#9888;</span><span>' + esc(errMsg) + '</span></div>';
-}
-
-// ── Screen: Lookup (step 1 — name search) ─────────────────────
-function rLookup() {
-  return '<div class="card">' +
-    '<div class="card-title">Find your booking</div>' +
-    '<div class="notice notice-info" style="margin-bottom:16px"><span class="ni">&#128197;</span>' +
-    '<span><strong>Hi Keylab Parents!</strong> Here is some helpful info for using this site and managing your child\u2019s performance scheduling details. We are looking forward to celebrating with everyone!<br><br>' +
-    '<strong>Monday\u2013Friday students</strong> have a reserved spot on their regular lesson day.<br>' +
-    '&nbsp;&nbsp;&bull; If their currently assigned spot works, you can confirm their participation as a performer or an attending non-performer and add guests here.<br>' +
-    '&nbsp;&nbsp;&bull; If the spot doesn\u2019t work, you can self-service reschedule online into any open spot from May 4th until June 1st.<br><br>' +
-    '<strong>Rescheduling Opens May 4th</strong><br>' +
-    '&nbsp;&nbsp;&bull; Families can self-book online here into any open spot, or submit schedule change requests, until June 1st.<br><br>' +
-    '<em>Not Participating This Year?</em> Log in to cancel and free up your spot for another family.</span></div>' +
-    errFrag() +
-    '<div class="field"><label>Student\'s first name</label>' +
-    '<input id="fn" type="text" placeholder="e.g. Emma" autocomplete="off" ' +
-    'onkeydown="if(event.key===\'Enter\')doLookup()"></div>' +
-    '<button class="btn-primary" onclick="doLookup()">Find my booking &rarr;</button>' +
-    '</div>';
-}
-
-// ── Screen: Pick student (multiple matches) ────────────────────
-function rPickStudent() {
-  var isMultiSlot = lookupMatches.length > 1 &&
-    lookupMatches.every(function(m) { return m.tags && m.tags.indexOf('multi-day') > -1; });
-  var html = '<div class="card">' +
-    '<div class="card-title">' + (isMultiSlot ? 'Choose a performance segment' : 'Select your child') + '</div>';
-  if (isMultiSlot) {
-    html += '<div class="notice notice-warn" style="margin-bottom:16px"><span class="ni">&#9888;</span><span>' +
-      '<strong>' + esc(lookupMatches[0].name.trim().split(/\s+/)[0]) + ' is scheduled in multiple slots.</strong> ' +
-      'Select the segment you\'d like to confirm. <strong>The other spot will be released</strong> when you confirm.' +
-      '</span></div>';
-  } else {
-    html += '<p style="font-size:13px;color:var(--text2);margin-bottom:16px">We found multiple students named <strong>' + esc(lookupName) + '</strong>. Select your child:</p>';
-  }
-  html += errFrag();
-  var dateLabels = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
-  lookupMatches.forEach(function(m, idx) {
-    var slotLabel = m.day + (m.seg !== 'Single' ? ' ' + m.seg : '') + ' \u2014 ' + (dateLabels[m.day] || '');
-    var statusBit = m.status && m.status !== 'unconfirmed' ? ' &middot; ' + statusLabel(m.status) : '';
-    html += '<button onclick="doPickStudent(' + idx + ')" class="pick-btn">' +
-      '<div class="pick-btn-name">' + esc(m.name) + '</div>' +
-      '<div class="pick-btn-meta">' + slotLabel + statusBit + '</div>' +
-      '</button>';
-  });
-  html += '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="state=\'lookup\';errMsg=\'\';render()">&#8592; Back</button></div>';
-  return html;
-}
-
-// ── Screen: Auth (step 2 — full booking display + intent) ───────
-function rAuth() {
-  var dateLabels   = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
-  var timeLookup   = {Early:'4:00 PM', Late:'5:00 PM', Single:'4:00 PM'};
-  var segLabels    = {Early:'Early session', Late:'Late session', Single:'Single session'};
-  var arriveLookup = {Early:'Arrive 3:30\u20133:50 PM', Late:'Arrive 4:45\u20135:00 PM', Single:'Arrive 3:30\u20133:50 PM'};
-  var m = selectedMatch || {};
-  var st = m.status || 'unconfirmed';
-  var isInactive = st === 'cancelled' || st === 'not-participating';
-  var isConfirmed = st === 'confirmed';
-  var isGuest     = st === 'confirmed-guest';
-
-  var html = '<div class="card">' +
-    '<div class="card-title">Your performance party booking</div>';
-
-  // ── Zone 1: Booking summary (no login required) ───────────────
-
-  // Booking card
-  html += '<div class="assign-card" style="margin-bottom:16px">';
-  if (isInactive) {
-    html += '<div class="assign-top">' +
-      '<div><div class="assign-label">Performance booking</div>' +
-      '<div class="assign-day">' + esc(m.name || '') + '</div></div>' +
-      '<span class="status-pill ' + statusPillClass(st) + '">' + statusLabel(st) + '</span>' +
-      '</div>' +
-      (m.tags && m.tags.indexOf('saturday') > -1
-        ? '<div class="notice notice-warn" style="margin-top:8px"><span class="ni">&#128274;</span><span>Log in to check your booking details.</span></div>'
-        : '<p style="font-size:13px;color:var(--text2);margin-top:8px;line-height:1.4">Your child is not currently scheduled. Log in to manage your booking.</p>');
-  } else if (!m.day || !m.seg) {
-    // No segment assigned — show saturday-style notice regardless of tag
-    html += '<div class="assign-top">' +
-      '<div><div class="assign-label">Performance booking</div>' +
-      '<div class="assign-day">' + esc(m.name || '') + '</div></div>' +
-      '<span class="status-pill pill-unconfirmed">' + statusLabel(st) + '</span>' +
-      '</div>' +
-      '<div class="notice notice-warn" style="margin-top:8px"><span class="ni">&#128274;</span><span>Log in to check your booking details.</span></div>';
-  } else {
-    html += '<div class="assign-top">' +
-      '<div><div class="assign-label">' + esc(m.name || '') + (isGuest ? ' is attending:' : st === 'unconfirmed' ? ' is invited to perform:' : ' is scheduled to perform:') + '</div>' +
-      '<div class="assign-day">' + (m.day || '') + ', ' + (dateLabels[m.day] || '') + '</div>' +
-      '<div class="assign-seg">' + (segLabels[m.seg] || '') + ' &mdash; ' + (timeLookup[m.seg] || '') + '</div>' +
-      '<div class="assign-seg" style="font-size:12px;color:var(--text3)">Approx. 45 min &ndash; 1 hour</div></div>' +
-      '<span class="status-pill ' + statusPillClass(st) + '">' + statusLabel(st) + '</span>' +
-      '</div>';
-    html += '<div class="arrive-badge">&#128336; ' + (arriveLookup[m.seg] || '') + '</div>';
-    // Guests + names if confirmed
-    if (isConfirmed || isGuest) {
-      var gCount = parseInt(m.guests) || 0;
-      var guestNamesHtml = '';
-      if (m.guestNames && m.guestNames.length > 0) {
-        guestNamesHtml = '<div class="assign-meta-item" style="flex-basis:100%;min-width:100%">' +
-          '<div class="assign-meta-label">Guest names</div>' +
-          '<div class="assign-meta-val" style="font-size:13px;font-weight:400">' +
-          m.guestNames.map(function(n) { return esc(n); }).join(' &middot; ') +
-          '</div></div>';
-      }
-      html += '<div class="assign-meta">' +
-        '<div class="assign-meta-item"><div class="assign-meta-label">Guests</div>' +
-        '<div class="assign-meta-val">' + gCount + '</div></div>' +
-        guestNamesHtml + '</div>';
-    }
-  }
-  html += '</div>';
-
-  // Scheduling request callout (pre-login)
-  if (m.schedRequest && m.schedRequest.length) {
-    html += '<div class="notice notice-info" style="margin-bottom:16px;flex-direction:column;gap:4px">' +
-      '<div style="font-weight:600;margin-bottom:4px">&#128197; Scheduling request under review</div>' +
-      '<div><strong>Current spot:</strong> ' + (m.day && m.seg ? esc(m.day) + (m.seg !== 'Single' ? ' ' + esc(m.seg) : '') : 'Currently unassigned') + '</div>' +
-      '<div><strong>Requested:</strong> ' + m.schedRequest.filter(function(x){return x;}).map(function(x) { return esc(x); }).join(', ') + '</div>' +
-      '<div style="margin-top:4px;font-size:12px">Your request is under review — we\'ll update you as soon as possible.</div>' +
-      '</div>';
-  }
-
-  // Unconfirmed: prominent amber callout — suppress for students with no day/seg (saturday/unassigned)
-  if (st === 'unconfirmed' && m.day && m.seg && !(m.tags && m.tags.indexOf('saturday') > -1)) {
-    var unconfBannerMsg = (phase === 'open')
-      ? 'Log in to confirm your spot. Spots are first come, first served — the schedule locks June 1st.'
-      : (phase === 'locked')
-      ? 'The schedule is now locked. Adding performers, guests, or making scheduling changes are not guaranteed. Log in to manage your booking.'
-      : 'Please confirm your participation before May 4th. After May 4th, performance segments are open to all families on a first come first served basis with a maximum of 10 performers per segment.';
-    html += '<div class="notice notice-warn" style="border-width:2px;border-radius:10px;padding:16px 16px 14px;margin-bottom:16px">' +
-      '<span class="ni">&#9888;&#65039;</span><span><strong>Action required — your spot is not yet confirmed</strong><br>' +
-      unconfBannerMsg +
-      '</span></div>';
-  }
-
-  // ── Zone 2: Password entry ────────────────────────────────────
-  html += '<div class="action-divider"></div>';
-
-  // Email on file message
-  var emailBlock = m.hasEmail
-    ? '<div class="notice notice-success" style="margin-bottom:14px">&#10003; Your email is on file — confirmations will be sent to the address we have on record.</div>'
-    : '<div class="field"><label>Email address <span style="font-weight:400;color:var(--text3)">(optional)</span></label>' +
-      '<input id="femail" type="email" placeholder="your@email.com" autocomplete="email" ' +
-      'onkeydown="if(event.key===&apos;Enter&apos;)doAuth()">' +
-      '<div class="hint">No email on file — add yours to receive confirmation emails.</div></div>';
-
-  html += emailBlock;
-  html += '<div class="field"><label>Password</label>' +
-    '<input id="fpw" type="password" placeholder="Your password" autocomplete="current-password" ' +
-    'onkeydown="if(event.key===&apos;Enter&apos;)doAuth()">' +
-    '<div class="hint">Check the Performance Party email sent to you previously for your password.</div></div>';
-
-  html += errFrag();
-
-  html += '<button class="btn-primary" onclick="doAuth()">Log in &rarr;</button>';
-
-  html += '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="state=\'' + (lookupMatches.length > 1 ? 'pick-student' : 'lookup') + '\';errMsg=\'\';render()">&#8592; Back</button></div>';
-  return html;
-}
-
-function doAuthWithIntent(intent) {
-  pendingAuthIntent = intent;
-  doAuth();
-}
-
-// ── Shared button-with-description helper ──────────────────────
-function btnWrap(btnHtml, desc) {
-  return '<div class="btn-wrap">' + btnHtml + '<div class="btn-desc">' + desc + '</div></div>';
-}
-
-// ── Screen: Found ──────────────────────────────────────────────
-function rFound() {
-  var s = student;
-  var isInactive = s.status === 'cancelled' || s.status === 'not-participating';
-  var firstName = esc(s.name.trim().split(/\s+/)[0]);
-  var dateLabels = {
-    Monday:'June 15', Tuesday:'June 16', Wednesday:'June 17',
-    Thursday:'June 18', Friday:'June 19'
-  };
-  var sessionLabel = s.seg === 'Early' ? 'Early session' : s.seg === 'Late' ? 'Late session' : 'Single session';
-  var timeLabel = {Early:'4:00 PM', Late:'5:00 PM', Single:'4:00 PM'}[s.seg] || '';
-
-  var html = errFrag();
-
-  // Booking card
-  html += '<div class="assign-card">';
-
-  if (isInactive) {
-    html += '<div class="assign-top">' +
-      '<div><div class="assign-label">Performance booking</div>' +
-      '<div class="assign-day">' + firstName + '</div></div>' +
-      '<span class="status-pill ' + statusPillClass(s.status) + '">' + statusLabel(s.status) + '</span>' +
-      '</div>';
-
-  } else if (!s.day || !s.seg) {
-    // No segment assigned — saturday/unassigned student, show warm notice
-    html += '<div class="assign-top">' +
-      '<div><div class="assign-label">Performance booking</div>' +
-      '<div class="assign-day">' + firstName + '</div></div>' +
-      '<span class="status-pill pill-unconfirmed">' + statusLabel(s.status) + '</span>' +
-      '</div>';
-
-  } else {
-    html += '<div class="assign-top">' +
-      '<div><div class="assign-label">' +
-      firstName + (s.status === 'confirmed-guest' ? ' is attending:' : s.status === 'unconfirmed' ? ' is invited to perform:' : ' is scheduled to perform:') +
-      '</div>' +
-      '<div class="assign-day">' + esc(s.day) + ', ' + esc(dateLabels[s.day] || '') + '</div>' +
-      '<div class="assign-seg">' + sessionLabel + ' &mdash; ' + timeLabel + '</div>' +
-      '<div class="assign-seg" style="font-size:12px;color:var(--text3)">Approx. 45 min &ndash; 1 hour</div></div>' +
-      '<span class="status-pill ' + statusPillClass(s.status) + '">' + statusLabel(s.status) + '</span>' +
-      '</div>';
-    html += '<div class="arrive-badge">&#128336; ' + (ARRIVE[s.seg] || '') + '</div>';
-    if (s.status === 'confirmed' || s.status === 'confirmed-guest') {
-      var guestNamesCard = '';
-      if (s.guestNames && s.guestNames.length > 0) {
-        guestNamesCard = '<div class="assign-meta-item" style="flex-basis:100%;min-width:100%"><div class="assign-meta-label">Guest names</div>' +
-          '<div class="assign-meta-val" style="font-size:13px;font-weight:400">' +
-          s.guestNames.map(function(n) { return esc(n); }).join(' &middot; ') +
-          '</div></div>';
-      }
-      html += '<div class="assign-meta">' +
-        '<div class="assign-meta-item"><div class="assign-meta-label">Guests</div>' +
-        '<div class="assign-meta-val">' + (parseInt(s.guests) || 0) + '</div></div>' +
-        guestNamesCard +
-        '</div>';
-      html += calendarLinks(s);
-    } else {
-      html += '<p style="font-size:13px;color:var(--text2);margin-top:10px;line-height:1.4">' +
-        esc(statusExplain(s.status)) + '</p>';
-    }
-  }
-
-  html += '</div>';
-
-  // Scheduling request callout
-  var schedSegs = s.schedRequest || getLatestSchedRequest(s.notes);
-
-  if (schedRequestCancelled) {
-    html += '<div class="notice notice-info" style="margin-bottom:4px"><span class="ni">&#10003;</span><span>All segments have been cancelled. If you change your mind you can book into any available spot before June 1st!</span></div>';
-    schedRequestCancelled = false;
-  } else if (schedSegs && schedSegs.length) {
-    var heldSpot = (s.day && s.seg)
-      ? esc(s.day) + (s.seg !== 'Single' ? ' ' + esc(s.seg) : '')
-      : 'Currently unassigned';
-    html += '<div class="notice notice-info" style="flex-direction:column;gap:6px;margin-bottom:12px">' +
-      '<div style="font-size:15px;font-weight:600">Your scheduling request has been received and is being reviewed.</div>' +
-      '<div style="font-size:13px;margin-bottom:2px;line-height:1.5">' +
-      '<strong>Current spot:</strong> ' + heldSpot +
-      '</div>' +
-      '<div style="font-size:13px;margin-bottom:10px;line-height:1.5">' +
-      '<strong>Requested:</strong> ' + schedSegs.filter(function(x) { return x; }).map(function(x) { return esc(x); }).join(', ') +
-      '</div>' +
-      '</div>' +
-      btnWrap('<button onclick="doModifyRequest()" class="btn-primary">Modify request</button>', 'Click here to update your request.');
-  }
-
-  if (unconfirmReverted) {
-    html += '<div class="notice notice-info" style="margin-bottom:4px"><span class="ni">&#10003;</span><span>Your status has been reverted to unconfirmed status. Reschedule as a performer or non-performing attendee into any segment before June 1st.</span></div>';
-    unconfirmReverted = false;
-  }
-
-  // Email notice — success confirmation or prompt to add
-  if (emailSaveSuccess) {
-    html += '<div class="notice notice-success" style="margin-bottom:0"><span class="ni">&#10003;</span><span>' +
-      '<strong>Email saved!</strong> Confirmation emails will be sent to ' + esc(lookupEmail) + '.' +
-      '</span></div>';
-    emailSaveSuccess = false;
-  } else if (!lookupEmail) {
-    html += '<div class="notice notice-warn" style="margin-bottom:0"><span class="ni">&#9993;</span><span>' +
-      '<strong>No email on file.</strong> Add your email address so we can send you confirmations.' +
-      '<div style="display:flex;gap:8px;margin-top:8px">' +
-      '<input id="email-collect" type="email" placeholder="your@email.com" autocomplete="email" ' +
-      'style="flex:1;font-family:\'DM Sans\',sans-serif;font-size:14px;padding:7px 10px;border:1px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text)">' +
-      '<button onclick="doSaveEmail()" style="font-family:\'DM Sans\',sans-serif;font-size:13px;font-weight:500;padding:7px 14px;background:var(--blue);color:#fff;border:none;border-radius:7px;cursor:pointer">Save</button>' +
-      '</div>' +
-      '</span></div>';
-  }
-
-  html += '<div class="action-divider"></div>';
-
-  var isConfirmedAny = s.status === 'confirmed' || s.status === 'confirmed-guest';
-  if (isConfirmedAny && !managingBooking) {
-    // Show single "Manage my booking" button — actions hidden until tapped
-    html += btnWrap('<button class="btn-secondary" data-action="manageBooking">Manage my booking</button>', 'View and manage your booking options.');
-  } else {
-    html += rActions(s, isInactive);
-  }
-
-  html += '<div class="back-row"><button class="btn-nav" onclick="student=null;selectedMatch=null;lookupMatches=[];managingBooking=false;state=\'lookup\';errMsg=\'\';render()">Log out</button></div>';
-  return html;
-}
-
-// ── Unified action block ───────────────────────────────────────
-function rActions(s, isInactive) {
-  var html = '';
-  var hasPendingRequest = !!(s.schedRequest && s.schedRequest.length) || !!(getLatestSchedRequest(s.notes));
-
-  // ── Confirmed performer: dedicated "Make a Change" section ────
-  if (!isInactive && s.status === 'confirmed') {
-    html += '<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:10px">Make a change</div>';
-    if (canSwap) {
-      html += btnWrap(
-        '<button class="btn-secondary" onclick="doStartSwap()">Reschedule &rarr;</button>',
-        'Instantly reschedule into any open spot, per availability. Your current spot will be released.'
-      );
-    } else if (phase === 'pre' || phase === 'priority' || (phase === 'open' && !canSwap)) {
-      // Fix 7: status-aware scheduling request copy
-      var schedReqDesc = 'Self-service rescheduling opens May 4th, but you can also request to be placed into any segment during performance week. We\'ll put a hold on your current spot so you don\'t lose it, review your request, and contact you asap with an update.';
-      if (!hasPendingRequest) {
-        html += btnWrap(
-          '<button class="btn-secondary" onclick="doStartPreferences()">Request a reschedule</button>',
-          schedReqDesc
-        );
-      }
-    }
-    // Unconfirm button — available through June 1st
-    if (phase !== 'locked') {
-      html += btnWrap(
-        '<button class="btn-secondary" onclick="doStartUnconfirm()">Change my mind — revert to unconfirmed</button>',
-        'If you change your mind, you can revert to unconfirmed status. Reschedule as a performer or non-performing attendee into any segment before June 1st.'
-      );
-    }
-    // Edit guest list button
-    if (phase !== 'locked') {
-      html += btnWrap(
-        '<button class="btn-secondary" onclick="doStartEditGuests()">Edit guest list</button>',
-        'Change or remove guests from your booking.'
-      );
-    }
-    // Change to attending (not performing)
-    if (phase !== 'locked') {
-      html += btnWrap(
-        '<button class="btn-secondary" onclick="doStartConfirm(\'confirmed-guest\')">Change to attending, not performing</button>',
-        'Update your status to attending non-performer. You can switch back to confirmed performer if there are open spots anytime before June 1st.'
-      );
-    }
-    html += btnWrap(
-      '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
-      phase === 'locked'
-        ? 'Your spot will be released. The schedule is locked so rejoining is not guaranteed \u2014 contact us at info@keylab.nyc.'
-        : 'Your spot will be released immediately. You can rejoin into any open spot up until June 1st.'
-    );
-    html += '<button class="btn-secondary" onclick="doStartMessage()">Send a message to Keylab</button>';
-    return html;
-  }
-
-  // ── Confirmed-guest: attending non-performer ──────────────────
-  if (!isInactive && s.status === 'confirmed-guest') {
-    html += '<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:10px">Make a change</div>';
-    html += btnWrap(
-      '<button class="btn-primary" onclick="doStartConfirm(\'confirmed\')">Confirm as performer &rarr;</button>',
-      'Switch to confirmed performer. You\'ll select your guest count.'
-    );
-    if (canSwap) {
-      html += btnWrap(
-        '<button class="btn-secondary" onclick="doStartSwap()">Reschedule &rarr;</button>',
-        'Instantly reschedule into any open spot, per availability. Your current spot will be released.'
-      );
-    } else if (phase !== 'locked' && !hasPendingRequest) {
-      html += btnWrap(
-        '<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>',
-        'Need a different day or segment? Submit a request and we\'ll do our best to accommodate you.'
-      );
-    }
-    // Unconfirm button — available through June 1st
-    if (phase !== 'locked') {
-      html += btnWrap(
-        '<button class="btn-secondary" onclick="doStartUnconfirm()">Change my mind — revert to unconfirmed</button>',
-        'If you change your mind, you can revert to unconfirmed status. Reschedule as a performer or non-performing attendee into any segment before June 1st.'
-      );
-    }
-    // Edit guest list button
-    if (phase !== 'locked') {
-      html += btnWrap(
-        '<button class="btn-secondary" onclick="doStartEditGuests()">Edit guest list</button>',
-        'Change or remove guests from your booking.'
-      );
-    }
-    html += '<button class="btn-secondary" onclick="doStartMessage()">Send a message to Keylab</button>';
-    html += '<div class="action-divider"></div>';
-    html += btnWrap(
-      '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
-      phase === 'locked'
-        ? 'Your spot will be released. The schedule is locked so rejoining is not guaranteed \u2014 contact us at info@keylab.nyc.'
-        : 'Your spot will be released immediately. You can rejoin into any open spot up until June 1st.'
-    );
-    return html;
-  }
-
-  // ── Saturday/unassigned families: no segment, skip confirm buttons ──
-  var isSaturday = (s.tags || '').indexOf('saturday') > -1 || (!s.day && !s.seg);
-  if (isSaturday) {
-    if (phase === 'pre' || phase === 'priority') {
-      html += '<div class="notice notice-info"><span class="ni">&#127926;</span><span>' +
-        'Submit a scheduling request and we\'ll do our best to place your child before May 4th. From May 4th you can self-service reschedule into any open spot.' +
-        '</span></div>';
-      if (!hasPendingRequest) {
-        html += btnWrap(
-          '<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>',
-          'Tell us your preferred days and we\'ll be in touch with available options.'
-        );
-      }
-      html += btnWrap(
-        '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
-        'Let us know if your child won\'t be joining us this year.'
-      );
-    } else if (phase === 'open') {
-      html += '<div class="notice notice-info"><span class="ni">&#127926;</span><span>' +
-        'The schedule is now open! Pick any available spot below. Spots are first come, first served. The schedule locks June 1st.' +
-        '</span></div>';
-      html += btnWrap(
-        '<button class="btn-primary" onclick="doRejoin()">Choose a performance spot &rarr;</button>',
-        'Pick any available spot during performance week.'
-      );
-      html += btnWrap(
-        '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
-        'Let us know if your child won\'t be joining us this year.'
-      );
-    } else {
-      // Locked
-      html += '<div class="notice notice-warn"><span class="ni">&#128274;</span><span>' +
-        'The schedule is now locked. Adding performers, guests, or making scheduling changes are not guaranteed.' +
-        '</span></div>';
-      html += btnWrap('<button class="btn-secondary" onclick="doStartMessage()">Send us a message</button>',
-        'Contact us for assistance. We\'ll do our best to help.');
-    }
-    return html;
-  }
-
-  // ── Standard phase logic (unconfirmed + inactive) ─────────────
-  if (phase === 'pre') {
-    if (!isInactive) {
-      // Priority deadline banner removed
-      if (s.status !== 'confirmed') {
-        html += btnWrap(
-          '<button class="btn-primary" onclick="doStartConfirm(\'confirmed\')">Confirm as performer &rarr;</button>',
-          'Reserve your child\'s performance spot and up to 3 guest seats.'
-        );
-      }
-      if (s.status !== 'confirmed-guest') {
-        html += btnWrap(
-          '<button class="btn-secondary" onclick="doStartConfirm(\'confirmed-guest\')">Confirm as attending, not performing</button>',
-          'For kids who aren\'t performing but want to come. Bring up to 3 guests.'
-        );
-      }
-    } else {
-      // Inactive — offer original slot restore only (no grid picker until May 4th)
-      var tags = s.tags || '';
-      var origMatch = tags.match(/orig:([A-Za-z]+)_([A-Za-z]+)/);
-      if (origMatch) {
-        var origDay = origMatch[1], origSeg = origMatch[2];
-        var slotData = slots && slots[origDay + '_' + origSeg];
-        if (slotData && !slotData.isFull) {
-          html += btnWrap(
-            '<button class="btn-primary" onclick="window._rejoinOrigConfirmDay=\'' + origDay + '\';window._rejoinOrigConfirmSeg=\'' + origSeg + '\';state=\'rejoin-orig-confirm\';render()">Return to ' + origDay + ' ' + origSeg + ' spot &rarr;</button>',
-            'Restores you to your previously scheduled ' + origDay + ' ' + origSeg + ' spot instantly.'
-          );
-        } else {
-          html += '<div class="notice notice-warn" style="margin-bottom:12px"><span class="ni">&#9888;</span><span>' +
-            'Your original segment is now full. Check back on May 4th when self-service scheduling opens, or submit a scheduling request and we\'ll be in touch with an update asap.' +
-            '</span></div>';
-        }
-      }
-    }
-    // Fix 7: status-aware scheduling request copy
-    var schedReqDesc2 = hasPendingRequest
-      ? 'Your request is under review. Click here to review or make changes.'
-      : 'Tell us your preferred days and we\'ll do our best to place you in a segment that works.';
-    if (!hasPendingRequest) {
-      html += btnWrap(
-        '<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>',
-        schedReqDesc2
-      );
-    }
-    if (!isInactive) {
-      html += btnWrap(
-        '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
-        'Your spot will be released immediately. You can rejoin into any open spot up until June 1st.'
-      );
-    }
-
-  } else if (phase === 'priority') {
-    html += '<div class="notice notice-info"><span class="ni">&#8987;</span><span>' +
-      'We\'re finalizing priority scheduling requests. Self-service rescheduling opens <strong>May 4th</strong>.' +
-      '</span></div>';
-    if (isInactive) {
-      // Inactive students can still rejoin original slot during priority phase
-      var tagsPri = s.tags || '';
-      var origMatchPri = tagsPri.match(/orig:([A-Za-z]+)_([A-Za-z]+)/);
-      if (origMatchPri) {
-        var origDayPri = origMatchPri[1], origSegPri = origMatchPri[2];
-        var slotDataPri = slots && slots[origDayPri + '_' + origSegPri];
-        if (slotDataPri && !slotDataPri.isFull) {
-          html += btnWrap(
-            '<button class="btn-primary" onclick="window._rejoinOrigConfirmDay=\'' + origDayPri + '\';window._rejoinOrigConfirmSeg=\'' + origSegPri + '\';state=\'rejoin-orig-confirm\';render()">Return to ' + origDayPri + ' ' + origSegPri + ' spot &rarr;</button>',
-            'Restores you to your previously scheduled spot instantly.'
-          );
-        } else {
-          html += '<div class="notice notice-warn" style="margin-bottom:12px"><span class="ni">&#9888;</span><span>' +
-            'Your original segment is now full. Check back on May 4th when self-service scheduling opens, or submit a scheduling request and we\'ll be in touch with an update asap.' +
-            '</span></div>';
-        }
-      }
-      if (!hasPendingRequest) {
-        html += btnWrap(
-          '<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>',
-          'We\'ll do our best to find you an available spot. Self-service rescheduling opens May 4th — schedule locks June 1st.'
-        );
-      }
-    } else {
-      if (s.status !== 'confirmed') {
-        html += btnWrap(
-          '<button class="btn-primary" onclick="doStartConfirm(\'confirmed\')">Confirm as performer &rarr;</button>',
-          'Reserve your child\'s performance spot and up to 3 guest seats.'
-        );
-      }
-      if (s.status !== 'confirmed-guest') {
-        html += btnWrap(
-          '<button class="btn-secondary" onclick="doStartConfirm(\'confirmed-guest\')">Confirm as attending, not performing</button>',
-          'For kids who aren\'t performing but want to come. Bring up to 3 guests.'
-        );
-      }
-      if (!hasPendingRequest) {
-        html += btnWrap(
-          '<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>',
-          'Tell us your preferred days and we\'ll do our best to place you in a segment that works.'
-        );
-      }
-      html += btnWrap(
-        '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
-        'Your spot will be released immediately. You can rejoin into any open spot using this tool.'
-      );
-    }
-    html += '<button class="btn-secondary" onclick="doStartMessage()">Send a message</button>';
-
-  } else if (phase === 'open') {
-    if (isInactive) {
-      var tags2 = s.tags || '';
-      var origMatch2 = tags2.match(/orig:([A-Za-z]+)_([A-Za-z]+)/);
-      var origDay2 = null, origSeg2 = null;
-      if (origMatch2) {
-        origDay2 = origMatch2[1]; origSeg2 = origMatch2[2];
-        var slotData2 = slots && slots[origDay2 + '_' + origSeg2];
-        if (slotData2 && !slotData2.isFull) {
-          // Fix 9: specific rejoin button copy
-          html += btnWrap(
-            '<button class="btn-primary" onclick="window._rejoinOrigConfirmDay=\'' + origDay2 + '\';window._rejoinOrigConfirmSeg=\'' + origSeg2 + '\';state=\'rejoin-orig-confirm\';render()">Return to ' + origDay2 + ' ' + origSeg2 + ' spot &rarr;</button>',
-            'Restores you to your previously scheduled ' + origDay2 + ' ' + origSeg2 + ' spot instantly, if it\'s still available.'
-          );
-        } else if (slotData2 && slotData2.isFull) {
-          html += '<div class="notice notice-warn" style="margin-bottom:12px"><span class="ni">&#9888;</span><span>' +
-            'This segment is now full. ' +
-            '<button onclick="doRejoin()" style="background:none;border:none;color:var(--warn);font-family:\'DM Sans\',sans-serif;font-size:13px;font-weight:600;cursor:pointer;text-decoration:underline;padding:0">Choose another spot</button>. ' +
-            'The schedule locks June 1st.' +
-            '</span></div>';
-        }
-      }
-      // Fix 9: "Choose a different spot" with specific copy
-      var isSaturdayOpen = s.tags && s.tags.indexOf('saturday') > -1;
-      html += btnWrap(
-        '<button class="btn-secondary" onclick="doRejoin()">Choose a performance spot</button>',
-        isSaturdayOpen
-          ? 'Pick any available spot during performance week. Spots are first come, first served. The schedule locks June 1st.'
-          : 'Pick any available spot during the week. Your original ' + (origDay2 ? origDay2 + ' ' + origSeg2 + ' ' : '') + 'spot will not be held \u2014 spots are first come, first served.'
-      );
-    } else if (s.status === 'unconfirmed') {
-      // Unconfirmed in open phase — show confirm options first, then reschedule
-      html += btnWrap(
-        '<button class="btn-primary" onclick="doStartConfirm(\'confirmed\')">Confirm as performer &rarr;</button>',
-        'Your child will perform. You\'ll select guest count and names on the next screen.'
-      );
-      html += btnWrap(
-        '<button class="btn-primary" onclick="doStartConfirm(\'confirmed-guest\')">Attending, not performing</button>',
-        'For kids who aren\'t performing but want to come. Bring up to 3 guests.'
-      );
-      html += btnWrap(
-        '<button class="btn-secondary" onclick="doRejoin()">Reschedule into a different spot &rarr;</button>',
-        'Pick a different segment during performance week. Spots are first come, first served.'
-      );
-      html += btnWrap(
-        '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
-        'Your spot will be released immediately. You can rejoin into any open spot before June 1st.'
-      );
-    } else {
-      // Confirmed or confirmed-guest in open phase — show reschedule only if canSwap
-      if (canSwap) {
-        html += btnWrap(
-          '<button class="btn-primary" onclick="doStartSwap()">Reschedule &rarr;</button>',
-          'Move instantly to any available spot. Your current spot will be released.'
-        );
-      }
-      html += btnWrap(
-        '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
-        'Your spot will be released immediately. You can rejoin into any open spot before June 1st.'
-      );
-    }
-
-  } else {
-    // Locked
-    html += '<div class="notice notice-warn"><span class="ni">&#128274;</span><span>' +
-      'The schedule is now locked. Adding performers, guests, or making scheduling changes are not guaranteed.' +
-      '</span></div>';
-    html += btnWrap('<button class="btn-secondary" onclick="doStartMessage()">Send us a message</button>',
-      'Contact us for assistance. We\'ll do our best to help.');
-    if (!isInactive) {
-      html += btnWrap(
-        '<button class="btn-cancel" onclick="doStartCancel()">Cancel / Not Attending</button>',
-        'Your spot will be released immediately. The schedule is locked so rejoining is not guaranteed \u2014 contact us at info@keylab.nyc.'
-      );
-    }
-  }
-
-  return html;
-}
-
-// ── Screen: Guest selector ─────────────────────────────────────
-function rGuestSelect() {
-  var s = student;
-  var dateLabels = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
-  var sessionLabel = s.seg === 'Early' ? 'Early session' : s.seg === 'Late' ? 'Late session' : 'Single session';
-  var timeLabel = {Early:'4:00 PM', Late:'5:00 PM', Single:'4:00 PM'}[s.seg] || '';
-  var slotDisplay = esc(s.day) + ', ' + (dateLabels[s.day] || '') + ' \u2014 ' + sessionLabel + ', ' + timeLabel;
-  var isPerformer = pendingConfirmStatus === 'confirmed';
-  var heading = isPerformer ? 'Confirm as performer' : 'Confirm as attending non-performer';
-
-  var firstName = esc((student && student.name || '').trim().split(/\s+/)[0]);
-  var descLine = isPerformer
-    ? firstName + ' will have a confirmed spot as a performer.'
-    : firstName + ' will attend and cheer on the performers but will not perform. You can still bring up to 3 guests, 4 people total.';
-
-  var html = '<div class="card">' +
-    '<div class="card-title">' + heading + '</div>' +
-    '<p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.5">' + descLine + '</p>' +
-    '<div class="guest-summary">' +
-    '<strong>' + esc(s.name) + '</strong><br>' +
-    slotDisplay +
-    '</div>' +
-    errFrag();
-
-  // Re-confirmation flow: student already has guest names on file
-  if (s.guestNames && s.guestNames.length > 0) {
-    html += '<p style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Your guests on file:</p>';
-
-    if (pendingGuestList.length === 0) {
-      html += '<div class="notice notice-warn" style="margin-bottom:12px"><span class="ni">&#9888;</span><span>All guest seats removed. Submitting will set your guest count to 0.</span></div>';
-    }
-
-    for (var gi = 0; gi < pendingGuestList.length; gi++) {
-      html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">' +
-        '<input type="text" id="gname-' + gi + '" value="' + esc(pendingGuestList[gi]) + '" ' +
-        'style="flex:1;font-family:\'DM Sans\',sans-serif;font-size:14px;padding:8px 11px;border:1px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text)">' +
-        '<button onclick="removeGuestSlot(' + gi + ')" style="flex-shrink:0;background:none;border:1.5px solid #e5c5c2;border-radius:7px;color:var(--err);font-size:12px;padding:6px 10px;cursor:pointer;font-family:\'DM Sans\',sans-serif">Remove</button>' +
-        '</div>';
-    }
-
-    html += '<div class="notice notice-info" style="margin-top:4px;margin-bottom:14px"><span class="ni">&#8505;</span><span>' +
-      'Guest seats are set at confirmation. Extra seats can be requested by emailing <a href="mailto:info@keylab.nyc" style="color:inherit;text-decoration:underline">info@keylab.nyc</a> — additional seats are not guaranteed.' +
-      '</span></div>' +
-      '<button class="btn-primary" onclick="doConfirmWithGuestNames()">Confirm &rarr;</button>';
-
-  } else {
-    // First-time confirmation flow
-    var opts = '<option value="">Select\u2026</option>';
-    for (var i = 0; i <= 3; i++) {
-      opts += '<option value="' + i + '"' + (i === parseInt(s.guests) ? ' selected' : '') + '>' + i + (i === 1 ? ' guest' : ' guests') + '</option>';
-    }
-    html += '<p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.5">You may bring up to 3 guests (4 people total including your child).</p>' +
-      '<p style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px">How many guests will be attending?</p>' +
-      '<div class="guest-select-wrap">' +
-      '<label>Number of guests</label>' +
-      '<select id="guest-count-sel" onchange="updateGuestNameFields()">' + opts + '</select>' +
-      '</div>' +
-      '<div id="guest-name-fields"></div>' +
-      '<div class="notice notice-info" style="margin-top:14px;margin-bottom:14px"><span class="ni">&#8505;</span><span>' +
-      'Guest seats are set at confirmation. Extra seats can be requested by emailing <a href="mailto:info@keylab.nyc" style="color:inherit;text-decoration:underline">info@keylab.nyc</a> — additional seats are not guaranteed.' +
-      '</span></div>' +
-      '<button class="btn-primary" onclick="doConfirmWithGuests()">Confirm &rarr;</button>';
-  }
-
-  html += '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="goBack()">&#8592; My booking</button></div>';
-  return html;
-}
-
-function updateGuestNameFields() {
-  var sel = document.getElementById("guest-count-sel");
-  var container = document.getElementById("guest-name-fields");
-  if (!sel || !container) return;
-  var count = parseInt(sel.value);
-  if (isNaN(count) || count === 0) { container.innerHTML = ''; return; }
-  var html = '<p style="font-size:13px;font-weight:600;color:var(--text);margin:12px 0 8px">Guest names:</p>';
-  for (var i = 0; i < count; i++) {
-    html += '<div style="margin-bottom:8px">' +
-      '<input type="text" id="gname-' + i + '" placeholder="Guest ' + (i + 1) + ' name" ' +
-      'style="width:100%;font-family:\'DM Sans\',sans-serif;font-size:14px;padding:8px 11px;border:1px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text)">' +
-      '</div>';
-  }
-  container.innerHTML = html;
-}
-
-function removeGuestSlot(idx) {
-  // Snapshot current input values into pendingGuestList before removing
-  for (var i = 0; i < pendingGuestList.length; i++) {
-    var inp = document.getElementById("gname-" + i);
-    if (inp) pendingGuestList[i] = inp.value.trim() || pendingGuestList[i];
-  }
-  pendingGuestList.splice(idx, 1);
-  errMsg = '';
-  render(); // re-render guest-select with updated list
-}
-
-function doConfirmWithGuestNames() {
-  errMsg = '';
-  // Read current input values (rendered by index from pendingGuestList)
-  var names = [];
-  for (var i = 0; i < pendingGuestList.length; i++) {
-    var inp = document.getElementById("gname-" + i);
-    var nm = inp ? inp.value.trim() : pendingGuestList[i];
-    if (!nm) { showErr("Please enter a name for each guest, or remove the empty seat."); return; }
-    names.push(nm);
-  }
-  var status = pendingConfirmStatus;
-  var count = names.length;
-  state = "loading"; render();
-
-  // Rejoin flow: student picked a new segment before reaching guest-select
-  if (pendingRejoinDay) {
-    var toDay = pendingRejoinDay; var toSeg = pendingRejoinSeg;
-    var prevDay = pendingRejoinPrevDay; var prevSeg = pendingRejoinPrevSeg;
-    pendingRejoinDay = null; pendingRejoinSeg = null;
-    pendingRejoinPrevDay = null; pendingRejoinPrevSeg = null;
-    api({action:"rejoin", studentId:student.id, password:lookupPw, toDay:toDay, toSeg:toSeg, email:lookupEmail, guests:count, guestNames:names}, function(e, r) {
-      if (e || !r || !r.ok) {
-        if (r && r.slotFull) {
-          student.day = prevDay || student.day; student.seg = prevSeg || student.seg;
-          errMsg = "This segment just filled up. Please choose another spot below.";
-          api({action:"getSlots"}, function(e2, r2) {
-            if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; canSwap = !!r2.canSwap; }
-            state = "rejoin-pick"; render();
-          });
-          return;
-        }
-        student.day = prevDay || student.day; student.seg = prevSeg || student.seg;
-        state = "guest-select"; showErr((r && r.error) || "Could not save. Please try again."); return;
-      }
-      student.day = toDay; student.seg = toSeg; student.status = 'confirmed';
-      student.guests = count; student.guestNames = names;
-      api({action:"getSlots"}, function(e2, r2) {
-        if (!e2 && r2 && r2.ok) { slots = r2.slots; canSwap = !!r2.canSwap; }
-        window._swapResult = r.confirmation;
-        window._rejoinOrigDay = null; window._rejoinOrigSeg = null;
-        state = "swap-confirmed"; render();
-      });
-    });
-    return;
-  }
-
-  // Standard confirm flow
-  api({action:"confirm", studentId:student.id, password:lookupPw, status:status, guests:count, guestNames:names, email:lookupEmail}, function(e, r) {
-    if (e || !r || !r.ok) {
-      if (r && r.slotFull) {
-        errMsg = "This segment just filled up. Please choose another spot below.";
-        api({action:"getSlots"}, function(e2, r2) {
-          if (!e2 && r2 && r2.ok) { slots = r2.slots; phase = r2.phase; }
-          state = "rejoin-pick"; render();
-        });
-        return;
-      }
-      state = "guest-select"; showErr((r && r.error) || "Could not save. Please try again."); return;
-    }
-    student.status = status;
-    student.guests = count;
-    student.guestNames = names;
-    if (r.earlyConfirm) {
-      student.earlyConfirm = true;
-      var tags = student.tags || '';
-      if (tags.indexOf('early-confirm') === -1) student.tags = tags ? tags + '|early-confirm' : 'early-confirm';
-    }
-    state = "confirm-sent"; render();
-  });
-}
-
-// ── Calendar link helper ───────────────────────────────────────
-var SLOT_DATES = {
-  Monday:    {Early:"20260615T200000Z", Late:"20260615T210000Z"},
-  Tuesday:   {Early:"20260616T200000Z", Late:"20260616T210000Z"},
-  Wednesday: {Early:"20260617T200000Z", Late:"20260617T210000Z"},
-  Thursday:  {Early:"20260618T200000Z", Late:"20260618T210000Z"},
-  Friday:    {Single:"20260619T200000Z"}
-};
-var SLOT_DATES_END = {
-  Monday:    {Early:"20260615T210000Z", Late:"20260615T220000Z"},
-  Tuesday:   {Early:"20260616T210000Z", Late:"20260616T220000Z"},
-  Wednesday: {Early:"20260617T210000Z", Late:"20260617T220000Z"},
-  Thursday:  {Early:"20260618T210000Z", Late:"20260618T220000Z"},
-  Friday:    {Single:"20260619T210000Z"}
-};
-
-function calendarLinks(s) {
-  var title     = 'Performance Party - ' + s.name;
-  var location  = '94 Luquer St, Brooklyn NY 11231';
-  var arrive    = ARRIVE[s.seg] || '';
-  var tFull     = TIMES[s.day] && TIMES[s.day][s.seg] ? TIMES[s.day][s.seg] : '';
-  var desc      = arrive + '. Performance: ' + tFull + '. Teacher: ' + (s.teacher || 'TBD') + '. Guests: ' + (parseInt(s.guests) || 0) + '.';
-  var dtStart   = SLOT_DATES[s.day] && SLOT_DATES[s.day][s.seg] ? SLOT_DATES[s.day][s.seg] : '';
-  var dtEnd     = SLOT_DATES_END[s.day] && SLOT_DATES_END[s.day][s.seg] ? SLOT_DATES_END[s.day][s.seg] : '';
-  if (!dtStart) return '';
-
-  var gcUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
-    '&text=' + encodeURIComponent(title) +
-    '&dates=' + dtStart + '/' + dtEnd +
-    '&details=' + encodeURIComponent(desc) +
-    '&location=' + encodeURIComponent(location);
-
-  var ics = [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'BEGIN:VEVENT',
-    'DTSTART:' + dtStart,
-    'DTEND:' + dtEnd,
-    'SUMMARY:' + title,
-    'DESCRIPTION:' + desc.replace(/,/g, '\\,'),
-    'LOCATION:' + location,
-    'END:VEVENT',
-    'END:VCALENDAR'
-  ].join('\r\n');
-  var icsUri = 'data:text/calendar;charset=utf8,' + encodeURIComponent(ics);
-
-  return '<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">' +
-    '<a href="' + gcUrl + '" target="_blank" style="' +
-      'flex:1;min-width:120px;text-align:center;padding:9px 14px;border-radius:7px;' +
-      'background:var(--blue);color:#fff;font-size:13px;font-weight:500;' +
-      'text-decoration:none;display:block">' +
-      '&#128197; Add to Google Calendar</a>' +
-    '<a href="' + icsUri + '" download="keylab-performance-party.ics" style="' +
-      'flex:1;min-width:120px;text-align:center;padding:9px 14px;border-radius:7px;' +
-      'background:var(--bg3);color:var(--text);font-size:13px;font-weight:500;' +
-      'text-decoration:none;display:block">' +
-      '&#128197; Add to Apple / Outlook</a>' +
-    '</div>';
-}
-
-// ── Screen: Confirm sent ───────────────────────────────────────
-function rConfirmSent() {
-  var s = student;
-  var isGuest = s.status === 'confirmed-guest';
-  var firstName = esc(s.name.trim().split(/\s+/)[0]);
-  var dateLabels = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
-  var sessionLabel = s.seg === 'Early' ? 'Early session' : s.seg === 'Late' ? 'Late session' : 'Single session';
-  var timeLabel = {Early:'4:00 PM', Late:'5:00 PM', Single:'4:00 PM'}[s.seg] || '';
-  var arriveLabel = {Early:'3:30\u20133:50 PM', Late:'4:45\u20135:00 PM', Single:'3:30\u20133:50 PM'}[s.seg] || '';
-
-  var guestNamesHtml = '';
-  if (s.guestNames && s.guestNames.length > 0) {
-    guestNamesHtml = '<div class="confirm-row"><span class="confirm-key">Guest names</span><span class="confirm-val">' +
-      s.guestNames.map(function(n) { return esc(n); }).join('<br>') +
-      '</span></div>';
-  }
-
-  return '<div class="card">' +
-    '<div class="confirm-icon">&#9989;</div>' +
-    '<div class="confirm-title">You\'re confirmed!</div>' +
-    '<div class="confirm-sub">' +
-    (isGuest
-      ? firstName + ' is confirmed as an attending non-performer! Please see details below. Thanks for joining the event and being a part of performance party week!'
-      : 'We\'re so excited to have ' + firstName + ' performing. See you at the party!') +
-    '</div>' +
-    '<div class="confirm-detail">' +
-    '<div class="confirm-row"><span class="confirm-key">Date</span><span class="confirm-val">' + esc(s.day) + ', ' + esc(dateLabels[s.day] || '') + '</span></div>' +
-    '<div class="confirm-row"><span class="confirm-key">Session</span><span class="confirm-val">' + sessionLabel + ' &mdash; ' + timeLabel + '</span></div>' +
-    '<div class="confirm-row"><span class="confirm-key">Duration</span><span class="confirm-val">Approx. 45 min &ndash; 1 hour</span></div>' +
-    '<div class="confirm-row"><span class="confirm-key">Arrive by</span><span class="confirm-val">' + arriveLabel + '</span></div>' +
-    '<div class="confirm-row"><span class="confirm-key">Teacher</span><span class="confirm-val">' + esc(s.teacher || 'TBD') + '</span></div>' +
-    '<div class="confirm-row"><span class="confirm-key">Guests</span><span class="confirm-val">' + (parseInt(s.guests) || 0) + '</span></div>' +
-    guestNamesHtml +
-    '</div>' +
-    '<div class="notice notice-info"><span class="ni">&#128197;</span><span>If you added your email address, a confirmation email will be sent shortly. Click below to add the event to your calendar.</span></div>' +
-    calendarLinks(s) +
-    '</div>' +
-    (phase !== 'locked' ? '<div style="margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:7px;background:var(--bg3);"><div style="font-size:12px;font-weight:600;color:var(--text3);margin-bottom:8px">CHANGED YOUR MIND?</div><p style="font-size:13px;color:var(--text2);margin:0 0 10px 0;line-height:1.4">No problem! You can revert to unconfirmed status anytime before June 1st. Reschedule as a performer or non-performing attendee into any segment before June 1st.</p><button class="btn-secondary" style="width:100%;text-align:center" onclick="doStartUnconfirm()">Revert</button></div>' : '') +
-    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; My booking</button></div>';
-}
-
-// ── Screen: Cancel ─────────────────────────────────────────────
-function rCancel() {
-  return '<div class="card">' +
-    '<div class="card-title">Cancel participation</div>' +
-    '<div class="notice notice-warn"><span class="ni">&#9888;</span><span>' +
-    'Your spot will be <strong>released immediately</strong> and may be taken by another family. If you want to rejoin, you can book into any available spot up until June 1st.' +
-    '</span></div>' +
-    errFrag() +
-    '<div class="field"><label>Reason for cancelling</label>' +
-    '<textarea id="cancel-note" rows="4" placeholder="Please let us know why you\'re cancelling so we can improve our events." style="resize:vertical"></textarea>' +
-    '</div>' +
-    '<button class="btn-cancel" id="cancel-btn" onclick="doSubmitCancel()">Confirm cancellation</button>' +
-    '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="goBack()">&#8592; Keep my spot</button></div>';
-}
-
-// ── Screen: Cancel confirmed ───────────────────────────────────
-// ── Screen: Rejoin slot picker (single select) ────────────────
-function rRejoinPick() {
-  var DAYS  = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
-  var SEGS  = {Monday:['Early','Late'],Tuesday:['Early','Late'],Wednesday:['Early','Late'],Thursday:['Early','Late'],Friday:['Single']};
-  var PTIMES = {Monday:{Early:'4:00 PM',Late:'5:00 PM'},Tuesday:{Early:'4:00 PM',Late:'5:00 PM'},Wednesday:{Early:'4:00 PM',Late:'5:00 PM'},Thursday:{Early:'4:00 PM',Late:'5:00 PM'},Friday:{Single:'4:00 PM'}};
-
-  var PREF_LABELS = {preferred: '\u2b50 Preferred', available: '\u2713 Available', 'last-resort': '\u2193 Last resort', sibling: '\ud83d\udc6b Sibling'};
-
-  var grid = '<div class="pref-grid">';
-  DAYS.forEach(function(day) {
-    SEGS[day].forEach(function(seg) {
-      var key = day + '_' + seg;
-      var slotData = slots && slots[key];
-      var isFull = slotData && slotData.isFull;
-      var open = slotData ? slotData.open : 0;
-      var cls = 'slot-btn' + (isFull ? '' : '');
-      grid += '<button class="' + cls + '" ' +
-        (isFull ? 'disabled' : 'onclick="doRejoinFromPick(\'' + day + '\',\'' + seg + '\')"') + '>' +
-        '<div class="slot-name">' + day + (seg === 'Single' ? '' : ' ' + seg) + '</div>' +
-        '<div class="slot-time">' + PTIMES[day][seg] + '</div>' +
-        '<div class="slot-avail ' + (isFull ? 'full' : 'open') + '">' + (isFull ? 'Full' : open + ' spot' + (open === 1 ? '' : 's') + ' open') + '</div>' +
-        '</button>';
-    });
-  });
-  grid += '</div>';
-
-  var pickTitle = 'Choose a spot';
-  var pickInstructions = 'Book into any open spot. Spots are first come, first served — schedule locks June 1st.';
-
-  return '<div class="card">' +
-    '<div class="card-title">' + pickTitle + '</div>' +
-    '<p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.45">' +
-    pickInstructions +
-    '</p>' +
-    errFrag() +
-    grid +
-    '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="goBack()">&#8592; Back</button></div>';
-}
-
-function doGoToRejoinPick() {
-  window._rejoinPickContext = 'cancelled';
-  state = 'loading'; render();
-  api({action:"getSlots"}, function(e, r) {
-    if (!e && r && r.ok) { slots = r.slots; phase = r.phase; canSwap = !!r.canSwap; }
-    state = 'rejoin-pick'; errMsg = ''; render();
-  });
-}
-
-function rRejoinType() {
-  var dateLabels = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
-  var sessionLabel = student.seg === 'Early' ? 'Early session' : student.seg === 'Late' ? 'Late session' : 'Single session';
-  var timeLabel = {Early:'4:00 PM', Late:'5:00 PM', Single:'4:00 PM'}[student.seg] || '';
-  var slotDisplay = esc(student.day) + ', ' + (dateLabels[student.day] || '') + ' \u2014 ' + sessionLabel + ', ' + timeLabel;
-  return '<div class="card">' +
-    '<div class="card-title">How will ' + esc(student.name.trim().split(/\s+/)[0]) + ' be joining?</div>' +
-    '<div class="guest-summary"><strong>' + esc(student.name) + '</strong><br>' + slotDisplay + '</div>' +
-    errFrag() +
-    btnWrap(
-      '<button class="btn-primary" onclick="doStartConfirm(&apos;confirmed&apos;)">Confirm as performer \u2192</button>',
-      student.name.trim().split(/\s+/)[0] + ' will perform. You\'ll select guests on the next screen.'
-    ) +
-    btnWrap(
-      '<button class="btn-secondary" onclick="doStartConfirm(&apos;confirmed-guest&apos;)">Attending, not performing</button>',
-      'Coming to watch and cheer! You can still bring up to 3 guests.'
-    ) +
-    '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="doRejoinTypeBack()">&#8592; Choose a different spot</button></div>';
-}
-
-function doRejoinTypeBack() {
-  // Restore original day/seg and return to the segment picker
-  if (pendingRejoinDay) {
-    student.day = pendingRejoinPrevDay;
-    student.seg = pendingRejoinPrevSeg;
-    pendingRejoinDay = null; pendingRejoinSeg = null;
-    pendingRejoinPrevDay = null; pendingRejoinPrevSeg = null;
-  }
-  state = 'rejoin-pick'; errMsg = ''; render();
-}
-
-function doRejoinFromPick(toDay, toSeg) {
-  errMsg = '';
-  // Store destination, update student display, then show performer/CNP choice screen
-  pendingRejoinDay     = toDay;
-  pendingRejoinSeg     = toSeg;
-  pendingRejoinPrevDay = student.day;
-  pendingRejoinPrevSeg = student.seg;
-  student.day = toDay;
-  student.seg = toSeg;
-  state = "rejoin-type"; render();
-}
-
-function rCancelConfirmed() {
-  var hasPendingRequest = !!(student.schedRequest && student.schedRequest.length) || !!(getLatestSchedRequest(student.notes));
-  var tags = student.tags || '';
-  var origMatch = tags.match(/orig:([A-Za-z]+)_([A-Za-z]+)/);
-  var origDay = origMatch ? origMatch[1] : null;
-  var origSeg = origMatch ? origMatch[2] : null;
-  var origKey = origDay && origSeg ? origDay + '_' + origSeg : null;
-  var origAvailable = origKey && slots && slots[origKey] && !slots[origKey].isFull;
-  var origFull = origKey && slots && slots[origKey] && slots[origKey].isFull;
-  var canPickAny = (phase === 'open' || phase === 'locked');
-
-  var rejoinBlock = '';
-  if (origAvailable) {
-    rejoinBlock =
-      '<div class="notice notice-info" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#128260;</span><span>Your original spot is still available if you changed your mind.</span></div>' +
-      btnWrap('<button class="btn-primary" onclick="window._rejoinOrigConfirmDay=\'' + origDay + '\';window._rejoinOrigConfirmSeg=\'' + origSeg + '\';state=\'rejoin-orig-confirm\';render()">Return to ' + origDay + ' ' + origSeg + ' \u2192</button>', 'Restores your original spot instantly.');
-  } else if (origFull && !canPickAny) {
-    rejoinBlock =
-      '<div class="notice notice-warn" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#9888;</span><span>Your original segment is now full. Check back on May 4th when self-service scheduling opens, or submit a scheduling request and we\'ll be in touch with an update asap.</span></div>' +
-      (!hasPendingRequest ? btnWrap('<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>', 'Tell us your preferred days. We\'ll contact you with available options.') : '');
-  } else if (canPickAny) {
-    rejoinBlock =
-      '<div class="notice notice-info" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#128260;</span><span>You can rejoin into any available spot. The schedule locks June 1st.</span></div>' +
-      btnWrap('<button class="btn-secondary" onclick="doGoToRejoinPick()">Choose an available spot</button>', 'Pick any open spot during the week.');
-  } else {
-    // pre/priority, no orig tag or orig unavailable — offer scheduling request
-    rejoinBlock =
-      '<div class="notice notice-info" style="margin-top:16px;margin-bottom:12px"><span class="ni">&#128197;</span><span>Self-service scheduling opens May 4th. Submit a scheduling request and we\'ll be in touch asap.</span></div>' +
-      (!hasPendingRequest ? btnWrap('<button class="btn-secondary" onclick="doStartPreferences()">Submit a scheduling request</button>', 'Tell us your preferred days. We\'ll contact you with available options.') : '');
-  }
-
-  return '<div class="card">' +
-    '<div class="confirm-icon">&#128218;</div>' +
-    '<div class="confirm-title">Your spot has been released</div>' +
-    rejoinBlock +
-    '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; My booking</button></div>';
-}
-
-// ── Screen: Unconfirm ──────────────────────────────────────────
-function rUnconfirm() {
-  return '<div class="card">' +
-    '<div class="card-title">Change my mind</div>' +
-    '<div class="notice notice-info"><span class="ni">&#9432;</span><span>' +
-    (phase === 'open' || phase === 'locked'
-      ? 'You can reschedule as a performer or non-performing attendee into any segment before June 1st.'
-      : 'You can reschedule as a performer or non-performing attendee into any segment before June 1st.'
-    ) +
-    '</span></div>' +
-    errFrag() +
-    '<button class="btn-primary" id="unconfirm-btn" onclick="doSubmitUnconfirm()">Yes, revert to unconfirmed</button>' +
-    '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; Keep my spot</button></div>';
-}
-
-// ── Screen: Edit Guests ────────────────────────────────────────
-function rEditGuests() {
-  var s = student;
-  var confirmedCount = parseInt(s.guests) || 0;
-  var html = '<div class="card">' +
-    '<div class="card-title">Edit guest list</div>' +
-    '<div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5">' +
-    'You can edit or remove guests from your booking. You have ' + confirmedCount + ' guest seat' + (confirmedCount !== 1 ? 's' : '') + ' confirmed.' +
-    '</div>' +
-    errFrag();
-  
-  // Only show fields for already-confirmed guests — cannot add beyond confirmed count
-  for (var i = 1; i <= confirmedCount; i++) {
-    var existingName = (s.guestNames && s.guestNames[i-1]) ? s.guestNames[i-1] : '';
-    html += '<div style="margin-bottom:12px">' +
-      '<label style="display:block;font-size:12px;font-weight:600;color:var(--text3);margin-bottom:4px">Guest ' + i + '</label>' +
-      '<input id="guest-name-' + i + '" type="text" placeholder="Guest name" value="' + esc(existingName) + '" ' +
-      'style="width:100%;padding:8px 10px;font-family:\'DM Sans\',sans-serif;font-size:14px;border:1px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text);box-sizing:border-box">' +
-      '</div>';
-  }
-
-  if (confirmedCount === 0) {
-    html += '<div style="font-size:13px;color:var(--text3);margin-bottom:16px;padding:12px;background:var(--bg3);border-radius:7px">No guests are currently on your booking.</div>';
-  }
-  
-  html += '<div style="font-size:12px;color:var(--text3);margin-bottom:16px;margin-top:8px">' +
-    'Clear a field to remove that guest. To add guests, please contact us at info@keylab.nyc.' +
-    '</div>' +
-    '<button class="btn-primary" id="edit-guests-btn" onclick="doSubmitEditGuests()">Save changes</button>' +
-    '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; My booking</button></div>';
-  return html;
-}
-
-// ── Screen: Preferences ────────────────────────────────────────
-function rPreferences() {
-  var DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
-  var SEGS = {Monday:['Early','Late'],Tuesday:['Early','Late'],Wednesday:['Early','Late'],Thursday:['Early','Late'],Friday:['Single']};
-  var PTIMES = {Monday:{Early:'4:00 PM',Late:'5:00 PM'},Tuesday:{Early:'4:00 PM',Late:'5:00 PM'},Wednesday:{Early:'4:00 PM',Late:'5:00 PM'},Thursday:{Early:'4:00 PM',Late:'5:00 PM'},Friday:{Single:'4:00 PM'}};
-  var PREF_LABELS = {preferred: '\u2b50 Preferred', available: '\u2713 Available', 'last-resort': '\u2193 Last resort', sibling: '\ud83d\udc6b Sibling', 'cancel-request': '\u2716 Cancel request'};
-
-  // Already-requested segments (from existing request)
-  var schedSegs = student.schedRequest || getLatestSchedRequest(student.notes);
-  var prefRequested = schedSegs ? schedSegs.map(function(s) { return s.trim().replace(/^[^A-Za-z]+/, '').trim().replace(/ /g, '_'); }) : [];
-
-  // Current spot label logic
-  var curKey = (student.day && student.seg) ? student.day + '_' + student.seg : null;
-  function curLabel() {
-    if (!curKey) return null;
-    var slotData = slots && slots[curKey];
-    var st = student.status;
-    if (st === 'confirmed') return 'confirmed performer spot \u2014 will be released if request is approved';
-    if (st === 'confirmed-guest') return 'confirmed non-performer spot \u2014 will be released if request is approved';
-    // Unconfirmed
-    if (slotData && slotData.isFull) return 'currently full';
-    if (slotData && !slotData.isFull) return 'backup spot being held';
-    return null;
-  }
-  var currentLabel = curLabel();
-
-  var grid = '<div class="pref-grid">';
-  DAYS.forEach(function(day) {
-    SEGS[day].forEach(function(seg) {
-      var key = day + '_' + seg;
-      var selObj = null;
-      for (var si = 0; si < prefSelected.length; si++) { if (prefSelected[si].key === key) { selObj = prefSelected[si]; break; } }
-      var isSel = !!selObj;
-      var isReq = prefRequested.indexOf(key) > -1;
-      var isCur = curKey === key;
-      var isCancelReq = isSel && selObj.type === 'cancel-request';
-      var isDisabled = isCur;
-      var cls = 'pref-btn' + (isSel ? ' selected' : '') + (isReq && !isCur ? ' already-requested' : '') + (isCur ? ' current-slot' : '') + (isCancelReq ? ' cancel-request' : '');
-      var typeLabel = isSel ? '<div class="pref-time pref-type-label" style="font-weight:600;margin-top:4px">' + (PREF_LABELS[selObj.type] || selObj.type) + '</div>' : '';
-      grid += '<button class="' + cls + '" data-prefkey="' + key + '" ' + (isDisabled ? 'disabled style="opacity:0.6;cursor:not-allowed"' : 'onclick="togglePref(\'' + key + '\')"') + '>' +
-        '<div class="pref-name">' + day + (seg === 'Single' ? '' : ' ' + seg) + '</div>' +
-        '<div class="pref-time">' + PTIMES[day][seg] + '</div>' +
-        (isCur && currentLabel ? '<div class="pref-time" style="color:var(--info);margin-top:3px">' + currentLabel + '</div>' : '') +
-        (isReq && !isCur ? '<div class="pref-already-label">already requested</div>' : '') +
-        typeLabel +
-        '</button>';
-    });
-  });
-  grid += '</div>';
-
-  var isInactivePref = student && (student.status === 'cancelled' || student.status === 'not-participating');
-  var hasPendingPref = !!(student && (student.schedRequest && student.schedRequest.length) || getLatestSchedRequest(student && student.notes));
-  var holdNotice = '';
-  if (!isInactivePref && hasPendingPref) {
-    holdNotice = '<div class="notice notice-info" style="margin-bottom:14px"><span class="ni">&#128274;</span><span>' +
-      '<strong>Your request is under review.</strong> Click here to review or make changes.' +
-      '</span></div>';
-  }
-
-  var cardTitle = hasPendingPref
-    ? 'Update your scheduling request'
-    : 'Select one or more segments';
-
-  var cardInstructions = hasPendingPref
-    ? '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Any currently requested segments are highlighted below. When you\'re done, tap Submit \u2014 your previous selections will be permanently overwritten.</p>'
-    : '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Choose every segment that could work for you. Add any notes below before submitting \u2014 we\'ll do our best to place you in a preferred segment.</p>';
-
-  var priorityNote = '';
-
-  var legend = '<div style="margin-bottom:14px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg3)">' +
-    '<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">How to use</div>' +
-    '<div style="font-size:12px;color:var(--text2);margin-bottom:4px">Tap a segment to select it. Tap again to change its priority status.</div>' +
-    '<div style="font-size:12px;color:var(--text2);margin-top:6px">' +
-    '<div style="margin-bottom:3px">\u2b50 <strong>Preferred</strong> \u2014 works great</div>' +
-    '<div style="margin-bottom:3px">\u2713 <strong>Available</strong> \u2014 works</div>' +
-    '<div style="margin-bottom:3px">\u2193 <strong>Last resort</strong> \u2014 if nothing else</div>' +
-    '<div style="margin-bottom:3px">\ud83d\udc6b <strong>Sibling</strong> \u2014 coordinating</div>' +
-    (hasPendingPref ? '<div style="margin-bottom:3px">\u2716 <strong>Cancel request</strong> \u2014 remove this segment</div>' : '') +
-    '</div>' +
-    '</div>';
-
-  return '<div class="card">' +
-    '<div class="card-title">' + cardTitle + '</div>' +
-    cardInstructions +
-    errFrag() +
-    priorityNote +
-    (hasPendingPref ? '' : holdNotice) +
-    legend +
-    grid +
-    '<div class="field"><label>Additional notes <span style="font-weight:400;color:var(--text3)">(optional)</span></label>' +
-    '<textarea id="pref-note" rows="3" placeholder="Any scheduling conflicts, sibling arrangements, or other notes." style="resize:vertical"></textarea></div>' +
-    '<button class="btn-primary" id="pref-btn" onclick="doSubmitPreferences()">Submit preferences</button>' +
-    '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="goBack()">&#8592; Back</button></div>';
-}
-
-// ── Screen: Pref sent ──────────────────────────────────────────
-function rPrefSent() {
-  var phaseNote = phase === 'locked'
-    ? 'Your request has been received. We\'ll be in touch as soon as possible.'
-    : 'Click here to review or make changes to your booking.';
-  return '<div class="card">' +
-    '<div class="confirm-icon">&#128197;</div>' +
-    '<div class="confirm-title">Request received!</div>' +
-    '<div class="confirm-sub">Your scheduling preference has been submitted. We\'ll do our best to accommodate you.</div>' +
-    '<div class="notice notice-info"><span class="ni">&#128274;</span><span>' + phaseNote + '</span></div>' +
-    '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="doPrefSentBack()">&#8592; My booking</button></div>';
-}
-
-// ── Screen: Pref confirm (modify mode review) ──────────────────
-function rPrefConfirm() {
-  var PREF_LABELS = {preferred: '\u2b50 Preferred', available: '\u2713 Available', 'last-resort': '\u2193 Last resort', sibling: '\ud83d\udc6b Sibling'};
-  var prevSegs = student.schedRequest || getLatestSchedRequest(student.notes) || [];
-  var prevList = prevSegs.length
-    ? prevSegs.map(function(s) { return '<li>' + esc(fmtSchedSegment(s)) + '</li>'; }).join('')
-    : '<li>None</li>';
-
-  // Filter out cancel-request entries — those are being dropped
-  var activeSelected = prefSelected.filter(function(k) { return k.type !== 'cancel-request'; });
-
-  var updList;
-  if (!activeSelected.length) {
-    updList = '<li>No segments selected \u2014 any previously requested segments will be cancelled.</li>';
-  } else {
-    updList = activeSelected.map(function(k) {
-      var p = k.key.split('_');
-      var seg = p[0] + (p[1] === 'Single' ? '' : ' ' + p[1]);
-      var label = PREF_LABELS[k.type] || k.type;
-      return '<li>' + esc(seg) + ' \u2014 ' + label + '</li>';
-    }).join('');
-  }
-
-  var confirmCopy = activeSelected.length
-    ? '<p style="font-size:13px;color:var(--text2);margin-top:12px;line-height:1.45"><em>Submitting will permanently update your previously requested segments to what you have selected here. If you change your mind after submitting, you can submit a new scheduling request. Spots are not guaranteed and are assigned on a first come first served basis.</em></p>'
-    : '<p style="font-size:13px;color:var(--text2);margin-top:12px;line-height:1.45"><em>Submitting will cancel your scheduling request. Any previously requested segments will be cancelled.</em></p>';
-  var confirmBtn = activeSelected.length
-    ? '<button class="btn-primary" id="pref-btn" onclick="doSubmitPreferences()">Submit request \u2192</button>'
-    : '<button class="btn-cancel" id="pref-btn" onclick="doSubmitPreferences()">Yes, cancel my request \u2192</button>';
-
-  return '<div class="card">' +
-    '<div class="card-title">Review your updated request</div>' +
-    errFrag() +
-    '<div style="margin-bottom:10px"><div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Your previous request</div>' +
-    '<ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text2);line-height:1.6">' + prevList + '</ul></div>' +
-    '<div style="margin-bottom:4px"><div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Your updated request</div>' +
-    '<ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text2);line-height:1.6">' + updList + '</ul></div>' +
-    confirmCopy +
-    '<div style="display:flex;gap:10px;margin-top:16px">' +
-    '<button class="btn-secondary" onclick="state=\'preferences\';errMsg=\'\';render()">Go back</button>' +
-    confirmBtn +
-    '</div>' +
-    '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="goBack()">&#8592; Back</button></div>';
-}
-
-// ── Screen: Rejoin original confirm ────────────────────────────
-function rRejoinOrigConfirm() {
-  var day = window._rejoinOrigConfirmDay || '';
-  var seg = window._rejoinOrigConfirmSeg || '';
-  var segLabel = seg === 'Single' ? day : day + ' ' + seg;
-  return '<div class="card">' +
-    '<div class="card-title">Return to your original spot?</div>' +
-    '<div style="font-size:16px;font-weight:600;margin-bottom:12px">' + esc(segLabel) + '</div>' +
-    '<div class="notice notice-info"><span class="ni">&#10003;</span><span>You\'ll be confirmed immediately. Your spot will be restored as it was.</span></div>' +
-    errFrag() +
-    '<button class="btn-primary" onclick="doRejoinDirect(window._rejoinOrigConfirmDay, window._rejoinOrigConfirmSeg)">Confirm return \u2192</button>' +
-    '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; Back</button></div>';
-}
-
-// ── Screen: Swap ───────────────────────────────────────────────
-function rSwap() {
-  var DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
-  var SEGS = {Monday:['Early','Late'],Tuesday:['Early','Late'],Wednesday:['Early','Late'],Thursday:['Early','Late'],Friday:['Single']};
-  var STIMES = {Monday:{Early:'4:00 PM',Late:'5:00 PM'},Tuesday:{Early:'4:00 PM',Late:'5:00 PM'},Wednesday:{Early:'4:00 PM',Late:'5:00 PM'},Thursday:{Early:'4:00 PM',Late:'5:00 PM'},Friday:{Single:'4:00 PM'}};
-
-  var origDay = window._rejoinOrigDay;
-  var origSeg = window._rejoinOrigSeg;
-  var origFull = origDay && origSeg && slots && slots[origDay + '_' + origSeg] && slots[origDay + '_' + origSeg].isFull;
-
-  var grid = '<div class="swap-grid">';
-  DAYS.forEach(function(day) {
-    SEGS[day].forEach(function(seg) {
-      var key = day + '_' + seg;
-      var isCur = student.day === day && student.seg === seg;
-      var isOrig = origDay === day && origSeg === seg;
-      var slotInfo = slots && slots[key];
-      var isFull = slotInfo ? slotInfo.isFull : false;
-      var openCount = slotInfo ? slotInfo.open : 0;
-      var cls = 'slot-btn' + (isCur ? ' current' : '') + (isOrig ? ' is-orig' : '');
-      var availText = isCur ? 'Current segment' : (isFull ? 'Full' : openCount + ' spot' + (openCount === 1 ? '' : 's') + ' available');
-      var availCls = (isFull && !isCur) ? 'full' : 'open';
-      grid += '<button class="' + cls + '" onclick="doPickSwap(\'' + day + '\',\'' + seg + '\')"' + ((isFull && !isCur) ? ' disabled' : '') + '>' +
-        '<div class="slot-name">' + day + (seg === 'Single' ? '' : ' ' + seg) + '</div>' +
-        '<div class="slot-time">' + STIMES[day][seg] + '</div>' +
-        '<div class="slot-avail ' + availCls + '">' + availText + '</div>' +
-        '</button>';
-    });
-  });
-  grid += '</div>';
-
-  return '<div class="card">' +
-    '<div class="card-title">Reschedule</div>' +
-    (origFull
-      ? '<div class="notice notice-warn"><span class="ni">&#9888;</span><span>Your original segment <strong>' + origDay + ' ' + origSeg + '</strong> is full. Choose another available slot below.</span></div>'
-      : (origDay ? '<div class="notice notice-info"><span class="ni">&#128260;</span><span>Your original segment <strong>' + origDay + ' ' + origSeg + '</strong> has space \u2014 it\'s highlighted below.</span></div>' : '')) +
-    errFrag() +
-    grid +
-    '<p style="font-size:12px;color:var(--text3);margin-top:4px;line-height:1.4">Spots are first come, first served.</p>' +
-    '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="goBack()">&#8592; Back</button></div>';
-}
-
-// ── Screen: Swap confirm (pre-commit confirmation) ────────────
-function rSwapConfirm() {
-  var DATES = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
-  var STIMES = {Monday:{Early:'4:00 PM',Late:'5:00 PM'},Tuesday:{Early:'4:00 PM',Late:'5:00 PM'},
-                Wednesday:{Early:'4:00 PM',Late:'5:00 PM'},Thursday:{Early:'4:00 PM',Late:'5:00 PM'},
-                Friday:{Single:'4:00 PM'}};
-  var SEGLBL = {Early:'Early session',Late:'Late session',Single:'Single session'};
-  var ARRIVE = {Early:'Arrive 3:30–3:50 PM',Late:'Arrive 4:45–5:00 PM',Single:'Arrive 3:30–3:50 PM'};
-  var day = pendingSwapDay;
-  var seg = pendingSwapSeg;
-  var curLabel = esc(student.day) + (student.seg !== 'Single' ? ' ' + esc(student.seg) : '');
-  var newDate = DATES[day] || '';
-  var newTime = (STIMES[day] && STIMES[day][seg]) || '';
-  var newSeg = SEGLBL[seg] || seg;
-  var newArrive = ARRIVE[seg] || '';
-  var h = '<div class="card">';
-  h += '<div class="card-title">Confirm your move</div>';
-  h += '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5">Your current spot (' + curLabel + ') will be <strong>released immediately</strong>. This cannot be undone.</p>';
-  h += '<div class="assign-card" style="margin-bottom:20px">';
-  h += '<div class="assign-top"><div>';
-  h += '<div class="assign-label">New segment</div>';
-  h += '<div class="assign-day">' + esc(day) + ', ' + newDate + '</div>';
-  h += '<div class="assign-seg">' + newSeg + ' &mdash; ' + newTime + '</div>';
-  h += '</div></div>';
-  h += '<div class="arrive-badge">&#128336; ' + newArrive + '</div>';
+function renderPerformer(p) {
+  var isCvp = p.status === 'confirmed-video';
+  var instr  = buildInstrumentLabel(p);
+  var teacher = buildTeacherLabel(p);
+
+  var h = '<div class="performer">';
+
+  // Name
+  h += '<div class="performer-name">' + esc(p.name) + '</div>';
+
+  // Instrument + CVP badge
+  h += '<div class="performer-meta">';
+  if (instr) h += '<span class="performer-instrument">' + esc(instr) + '</span>';
+  if (isCvp) h += '<span class="cvp-badge">Video Performance</span>';
   h += '</div>';
-  h += errFrag();
-  h += '<button class="btn-primary" onclick="doSwap(pendingSwapDay,pendingSwapSeg)">Confirm move &rarr;</button>';
+
+  // Teacher
+  if (teacher) {
+    h += '<div class="performer-teacher">Teacher: <em>' + teacher + '</em></div>';
+  }
+
+  // Songs
+  var hasSong1 = (p.song1Title || '').trim();
+  var hasSong2 = (p.song2Title || '').trim();
+  if (hasSong1 || hasSong2) {
+    h += '<div class="songs">';
+    if (hasSong1) {
+      h += '<div class="song-line">';
+      h += '<span class="song-title">' + esc(p.song1Title) + '</span>';
+      if ((p.song1Composer || '').trim()) {
+        h += ' <span class="song-composer">&mdash; ' + esc(p.song1Composer) + '</span>';
+      }
+      h += '</div>';
+    }
+    if (hasSong2) {
+      h += '<div class="song-line">';
+      h += '<span class="song-title">' + esc(p.song2Title) + '</span>';
+      if ((p.song2Composer || '').trim()) {
+        h += ' <span class="song-composer">&mdash; ' + esc(p.song2Composer) + '</span>';
+      }
+      h += '</div>';
+    }
+    h += '</div>';
+  }
+
+  // Program notes (song1Info first, then song2Info if different)
+  var notes1 = (p.song1Info || '').trim();
+  var notes2 = (p.song2Info || '').trim();
+  var notes  = notes1;
+  if (notes2 && notes2 !== notes1) notes = notes1 ? notes1 + ' ' + notes2 : notes2;
+  if (notes) {
+    h += '<div class="program-notes">' + esc(notes) + '</div>';
+  }
+
   h += '</div>';
-  h += '<div class="back-row"><button class="btn-nav" onclick="state=\'swap\';errMsg=\'\';render()">&#8592; Choose a different segment</button></div>';
   return h;
 }
 
-// ── Screen: Swap confirmed ─────────────────────────────────────
-function rSwapConfirmed() {
-  var s = student;
-  var c = window._swapResult || {};
-  var isRejoin = !c.fromDay;
-  var dateLabels = {Monday:'June 15',Tuesday:'June 16',Wednesday:'June 17',Thursday:'June 18',Friday:'June 19'};
-  var sessionLabel = s.seg === 'Early' ? 'Early session' : s.seg === 'Late' ? 'Late session' : 'Single session';
-  var timeLabel = {Early:'4:00 PM', Late:'5:00 PM', Single:'4:00 PM'}[s.seg] || '';
-  var arriveLabel = {Early:'3:30\u20133:50 PM', Late:'4:45\u20135:00 PM', Single:'3:30\u20133:50 PM'}[s.seg] || '';
-  return '<div class="card">' +
-    '<div class="confirm-icon">&#9989;</div>' +
-    '<div class="confirm-title">' + (isRejoin ? 'You\'re confirmed!' : 'You\'re rescheduled!') + '</div>' +
-    '<div class="confirm-sub">' + (isRejoin
-      ? esc(c.studentName || s.name) + ' is confirmed for the spot below.'
-      : esc(c.studentName || s.name) + '\'s booking has been updated. Here are the new details.') + '</div>' +
-    '<div class="confirm-detail">' +
-    '<div class="confirm-row"><span class="confirm-key">Date</span><span class="confirm-val">' + esc(s.day) + ', ' + esc(dateLabels[s.day] || '') + '</span></div>' +
-    '<div class="confirm-row"><span class="confirm-key">Session</span><span class="confirm-val">' + sessionLabel + ' &mdash; ' + timeLabel + '</span></div>' +
-    '<div class="confirm-row"><span class="confirm-key">Duration</span><span class="confirm-val">Approx. 45 min &ndash; 1 hour</span></div>' +
-    '<div class="confirm-row"><span class="confirm-key">Arrive by</span><span class="confirm-val">' + arriveLabel + '</span></div>' +
-    '<div class="confirm-row"><span class="confirm-key">Teacher</span><span class="confirm-val">' + esc(s.teacher || 'TBD') + '</span></div>' +
-    '<div class="confirm-row"><span class="confirm-key">Guests</span><span class="confirm-val">' + (parseInt(s.guests) || 0) + '</span></div>' +
-    '</div>' +
-    '<div class="notice notice-info"><span class="ni">&#128197;</span><span>If you added your email address, a confirmation email will be sent shortly. Add your new segment to your calendar below \u2014 if you had a previous calendar event, you can delete it.</span></div>' +
-    calendarLinks(s) +
-    '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; My booking</button></div>';
+function renderDay(dayPerformers, day) {
+  // Group by segment
+  var bySegment = {};
+  dayPerformers.forEach(function(p) {
+    var seg = p.segment || 'Single';
+    if (!bySegment[seg]) bySegment[seg] = [];
+    bySegment[seg].push(p);
+  });
+
+  var segs = SEG_ORDER.filter(function(s) { return bySegment[s] && bySegment[s].length; });
+  // Also catch any unexpected segment values
+  Object.keys(bySegment).forEach(function(s) {
+    if (segs.indexOf(s) === -1) segs.push(s);
+  });
+
+  var h = '<div class="day-header">';
+  h += '<div class="day-header-name">' + esc(day) + '</div>';
+  h += '<div class="day-header-date">' + esc(DAY_DATES[day] || '') + '</div>';
+  h += '</div>';
+
+  segs.forEach(function(seg) {
+    var group = bySegment[seg];
+    if (!group || !group.length) return;
+    h += '<div class="segment-group">';
+    // Only show segment label if more than one segment on this day
+
+    group.forEach(function(p) { h += renderPerformer(p); });
+    h += '</div>';
+  });
+
+  return h;
 }
 
-// ── Screen: Messaging ──────────────────────────────────────────
-function rMessaging() {
-  var phaseNote = '';
-  if (phase === 'locked') {
-    phaseNote = '<div class="notice notice-warn" style="margin-bottom:14px"><span class="ni">&#128274;</span><span>The schedule is now locked. Adding performers, guests, or making scheduling changes are not guaranteed. We\'ll do our best to help.</span></div>';
-  } else if (phase === 'priority') {
-    phaseNote = '<div class="notice notice-info" style="margin-bottom:14px"><span class="ni">&#8505;</span><span>We\'re processing priority requests. The schedule opens for self-service rescheduling May 4th.</span></div>';
-  } else if (phase === 'pre') {
-    phaseNote = '<div class="notice notice-info" style="margin-bottom:14px"><span class="ni">&#8505;</span><span>Rescheduling opens May 4th. Send us a message if you have an urgent conflict.</span></div>';
-  }
-  return '<div class="card">' +
-    '<div class="card-title">Send a message to Keylab</div>' +
-    phaseNote + errFrag() +
-    '<div class="field"><label>Your message</label>' +
-    '<textarea id="msg-text" rows="5" placeholder="Let us know what you need \u2014 scheduling questions, conflicts, etc." style="resize:vertical"></textarea></div>' +
-    '<p style="font-size:12px;color:var(--text3);margin-bottom:14px">Messages go directly to the Keylab team. We\'ll follow up as soon as possible.</p>' +
-    '<button class="btn-primary" id="send-btn" onclick="doSendMessage()">Send message</button>' +
-    '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="goBack()">&#8592; Back</button></div>';
+function showDay(day) {
+  activeDay = day;
+  document.querySelectorAll('.day-tab').forEach(function(t) {
+    t.classList.toggle('active', t.dataset.day === day);
+  });
+  document.querySelectorAll('.day-section').forEach(function(s) {
+    s.classList.toggle('visible', s.dataset.day === day);
+  });
 }
 
-// ── Screen: Message sent ───────────────────────────────────────
-function rMsgSent() {
-  return '<div class="card">' +
-    '<div class="msg-sent">' +
-    '<div class="icon">&#9993;&#65039;</div>' +
-    '<div class="confirm-title" style="font-size:17px">Message received!</div>' +
-    '<p style="color:var(--text2);font-size:13px;margin-top:6px;line-height:1.5">Your message has been received by the Keylab team. We\'ll follow up at your email address as soon as possible. For urgent matters, email us directly at <a href="mailto:info@keylab.nyc" style="color:var(--blue)">info@keylab.nyc</a>.</p>' +
-    '</div></div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';render()">&#8592; My booking</button></div>';
-}
-
-// ── Info Accordion ─────────────────────────────────────────────
-function renderInfo(ctx) {
-  var el = document.getElementById("info-section");
-  if (!el) return;
-
-  var panels = [];
-
-  panels.push({
-    id: "info-event",
-    title: "&#128197;  Event details & schedule",
-    body: '<h4>Performance Week</h4>' +
-      '<p>Monday, June 15 through Friday, June 19 at Keylab, 94 Luquer St., Brooklyn, NY 11231.</p>' +
-      '<h4>Performance Times</h4>' +
-      '<ul>' +
-      '<li><strong>Early Performance</strong> (Mon\u2013Thu): Begins 4:00 PM &middot; Arrive 3:30\u20133:50 PM</li>' +
-      '<li><strong>Late Performance</strong> (Mon\u2013Thu): Begins 5:00 PM &middot; Arrive 4:45\u20135:00 PM</li>' +
-      '<li><strong>Friday</strong> (single performance): Begins 4:00 PM &middot; Arrive 3:30\u20133:50 PM</li>' +
-      '</ul>' +
-      '<h4>After the Performance</h4>' +
-      '<p>Join us upstairs for pizza, snacks and beverages after each performance. There will be a jam session every day after the late performance!</p>' +
-      '<h4>Juneteenth Note</h4>' +
-      '<p>Friday, June 19 is Juneteenth. NYC public schools will be closed, but Keylab will be open and hosting our performance party as scheduled.</p>'
+function render(performers) {
+  // Group by day
+  var byDay = {};
+  performers.forEach(function(p) {
+    var d = p.day || 'Unscheduled';
+    if (!byDay[d]) byDay[d] = [];
+    byDay[d].push(p);
   });
 
-  panels.push({
-    id: "info-multiple",
-    title: "&#128106;  Families with enrolled siblings or a child with more than one enrollment",
-    body: '<h4>Siblings on different lesson days</h4>' +
-      '<p>If you have siblings enrolled on different days, each child has a reserved spot on their regular lesson day. Most families prefer to come on the same day, but this is not required.</p>' +
-      '<p>If you want to keep the current assignments, just confirm here. If you want to schedule them into the same performance segment, you will need to contact us before May 4th for guaranteed placement into either of their currently scheduled spots. Once scheduled, the other spot will be released.</p>' +
-      '<h4>Students with multiple enrollments</h4>' +
-      '<p>If your child takes more than one lesson per week on different days, they have a reserved spot on each day, but will only be performing in one spot.</p>' +
-      '<p>Simply confirm the spot that works best for you and the other will be released automatically.</p>'
+  var days = DAY_ORDER.filter(function(d) { return byDay[d] && byDay[d].length; });
+  // Catch any unlisted days
+  Object.keys(byDay).forEach(function(d) {
+    if (days.indexOf(d) === -1) days.push(d);
   });
 
-  panels.push({
-    id: "info-guests",
-    title: "&#128101;  Guests & arrival",
-    body: '<h4>Guest Limit</h4>' +
-      '<p>Up to 3 guest seats can be requested per student, four persons max (performer + guests). If your family needs more seats, please send us a message and we\'ll do our best to accommodate you if we have space available.</p>' +
-      '<p>Once you\'ve submitted your guest list, you can edit names or remove a seat through your booking page, but additional guest seats cannot be added through this tool. Email <a href="mailto:info@keylab.nyc">info@keylab.nyc</a> to request more seats — additional guests are not guaranteed.</p>' +
-      '<h4>Arrival</h4>' +
-      '<p>Please arrive during the arrival window listed for your session. Students who arrive late will be admitted between performances and moved to the end of the roster.</p>' +
-      '<h4>Staying for the Full Performance</h4>' +
-      '<p>Please plan to stay for the entire performance to support all student performers.</p>'
-  });
-
-  panels.push({
-    id: "info-dates",
-    title: "&#128467;  Key dates",
-    body: '<ul>' +
-      '<li><strong>April 30:</strong> Priority deadline</li>' +
-      '<li><strong>May 4:</strong> Schedule opens for self-service rescheduling</li>' +
-      '<li><strong>June 1:</strong> Schedule locks \u2014 after this date, contact us at info@keylab.nyc to request changes</li>' +
-      '<li><strong>June 15\u201319:</strong> Performance Party Week!</li>' +
-      '</ul>' +
-      '<p style="margin-top:8px">Spots are first-come, first-served after May 4th. Once you give up your current spot it immediately becomes available to other families.</p>'
-  });
-
-  if (ctx === "found") {
-    if (phase === 'pre' || phase === 'open') {
-      panels.push({
-        id: "info-reschedule",
-        title: "&#128260;  Rescheduling",
-        body: (phase === 'pre'
-          ? '<ul>' +
-            '<li>Spots are locked until May 4th, when the schedule opens for instant self-service rescheduling.</li>' +
-            '<li>Before May 4th, submit a scheduling request using the button on your booking page. We\'ll do our best to accommodate you based on availability.</li>' +
-            '<li>Families who request before April 30th receive priority placement.</li>' +
-            '<li>From May 4th, you can reschedule instantly to any open spot during the week.</li>' +
-            '</ul>'
-          : '<ul>' +
-            '<li>From May 4th\u201331st, you can reschedule instantly to any open spot during the week using the button above.</li>' +
-            '</ul>') +
-          '<ul>' +
-          '<li>From June 1st, the schedule will be locked. Contact <a href="mailto:info@keylab.nyc">info@keylab.nyc</a> to request changes after that date.</li>' +
-          '<li>Changes are not guaranteed but we\'ll do our best subject to availability.</li>' +
-          '<li>If you reschedule to a day other than your regular lesson day, your regular teacher may not be available. We\'ll assign a Keylab teacher to support your child if needed.</li>' +
-          '</ul>'
-      });
-    }
-    if (phase === 'priority') {
-      panels.push({
-        id: "info-priority",
-        title: "&#8987;  Priority scheduling",
-        body: '<p>We\'re currently reviewing all priority scheduling requests submitted before April 30th. The schedule will open for self-service rescheduling on <strong>May 4th</strong>.</p>' +
-          '<p>If you submitted a preference request before April 30th, we\'ll do our best to accommodate you and will be in touch if we can make a change before May 4th.</p>' +
-          '<p>Starting May 4th, you can use this tool to reschedule yourself into any open spot. Spots are first-come, first-served.</p>'
-      });
-    }
-    if (phase === 'locked') {
-      panels.push({
-        id: "info-locked",
-        title: "&#128274;  Schedule is locked",
-        body: '<p>The schedule is now locked as of June 1st. Your confirmed assignment above is final.</p>' +
-          '<p>If you need to make a change, please send us a message using the button above or email <a href="mailto:info@keylab.nyc">info@keylab.nyc</a>. We\'ll do our best to accommodate requests if we have space available, but changes are not guaranteed.</p>'
-      });
-    }
+  if (!days.length) {
+    document.getElementById('stateMsg').style.display = 'block';
+    document.getElementById('stateMsg').innerHTML = 'No performers confirmed yet.';
+    return;
   }
 
-  panels.push({
-    id: "info-bring",
-    title: "&#127928;  What to bring",
-    body: '<h4>Instruments & Equipment We Provide</h4>' +
-      '<ul>' +
-      '<li>Digital pianos</li>' +
-      '<li>Guitar &amp; bass amps</li>' +
-      '<li>Digital drum set</li>' +
-      '<li>Vocal mics &amp; music stands</li>' +
-      '<li>Sound system</li>' +
-      '</ul>' +
-      '<h4>What Students Should Bring</h4>' +
-      '<ul>' +
-      '<li>Students who bring their own instrument or laptop to lessons should bring it to the performance if possible.</li>' +
-      '<li>Students should bring copies of their own sheet music. We\'ll do our best to have copies available, but last minute requests may not be able to be accommodated.</li>' +
-      '</ul>'
-  });
-
-  panels.push({
-    id: "info-faq",
-    title: "&#10067;  Common questions",
-    body: '<h4>Is participation mandatory?</h4>' +
-      '<p>No \u2014 but all students are invited to perform! If you\'re not sure your child is ready, ask their teacher.</p>' +
-      '<h4>Is there a fee?</h4>' +
-      '<p>No, participation is completely free.</p>' +
-      '<h4>Will there be food?</h4>' +
-      '<p>Yes! Pizza, snacks and beverages will be provided after each performance.</p>' +
-      '<h4>What if my child can\'t attend their scheduled day?</h4>' +
-      '<p>You can self-service reschedule starting May 4th. While we can\'t guarantee availability, we\'ll do our best to help. Email <a href="mailto:info@keylab.nyc">info@keylab.nyc</a> for assistance.</p>' +
-      '<h4>Can I request a specific spot in the order?</h4>' +
-      '<p>We\'re unable to guarantee specific spots on the performance roster, but we\'ll do our best to honor requests if we can.</p>' +
-      '<h4>Can I share my login link with family members or friends?</h4>' +
-      '<p>Your login is unique to your child\'s booking. Any changes made using your password take effect immediately and will affect your booking \u2014 we recommend not sharing your login details with others.</p>'
-  });
-
-  var h = '<div class="info-heading">More information</div>';
-  h += panels.map(function(p) {
-    return '<div class="info-section">' +
-      '<button class="info-toggle" id="btn-' + p.id + '" onclick="toggleInfo(\'' + p.id + '\')">' +
-      '<span>' + p.title + '</span><span class="arrow">&#9660;</span></button>' +
-      '<div class="info-body" id="body-' + p.id + '">' + p.body + '</div>' +
-      '</div>';
+  // Build nav tabs
+  var nav = document.getElementById('dayNav');
+  nav.innerHTML = days.map(function(d) {
+    return '<button class="day-tab" data-day="' + esc(d) + '" onclick="showDay(\'' + esc(d) + '\')">' +
+           esc(d) +
+           '</button>';
   }).join('');
 
-  el.innerHTML = h;
+  // Build content sections
+  var content = document.getElementById('content');
+  content.innerHTML = days.map(function(d) {
+    return '<div class="day-section" data-day="' + esc(d) + '">' + renderDay(byDay[d], d) + '</div>';
+  }).join('');
+
+  // Show first day
+  showDay(days[0]);
 }
 
-function toggleInfo(id) {
-  var btn  = document.getElementById("btn-" + id);
-  var body = document.getElementById("body-" + id);
-  if (!body) return;
-  var open = body.classList.contains("open");
-  body.classList.toggle("open", !open);
-  if (btn) btn.classList.toggle("open", !open);
-}
-
-function fmtSchedSegment(s) {
-  var TYPE_ICONS = {preferred: '\u2b50', available: '\u2713', 'last-resort': '\u2193', sibling: '\ud83d\udc6b', 'admin-hold': '\ud83d\udccc', requested: ''};
-  var typeMatch = s.trim().match(/\[([^\]]+)\]$/);
-  var type = typeMatch ? typeMatch[1] : '';
-  var seg = s.trim().replace(/\s*\[[^\]]+\]$/, '').trim().replace(/_/g, ' ');
-  var icon = TYPE_ICONS[type] || '';
-  return icon ? icon + ' ' + seg : seg;
-}
-
-function getLatestSchedRequestRaw(notes) {
-  if (!notes || !notes.trim()) return [];
-  var chunks = notes.trim().split(/\n\n+/);
-  for (var i = chunks.length - 1; i >= 0; i--) {
-    var chunk = chunks[i].trim();
-    if (/^\[([^\]]+)\]\s+RESOLVED\s+—/.test(chunk) && /scheduling request withdrawn/i.test(chunk)) {
-      return [];
-    }
-    var m = chunk.match(/^\[([^\]]+)\]\s+SCHEDULING REQUEST\s+—\s+([\s\S]*)$/);
-    if (m) {
-      var body = m[2].trim();
-      var slotMatch = body.match(/Preferred slots:\s*([^.]+)/);
-      if (slotMatch) {
-        return slotMatch[1].trim().split(',').map(function(s) {
-          s = s.trim();
-          var typeMatch = s.match(/\[([^\]]+)\]$/);
-          var type = (typeMatch && typeMatch[1]) ? typeMatch[1] : 'preferred';
-          var seg = s.replace(/\s*\[[^\]]+\]$/, '').trim();
-          // Normalize "Monday Late" -> "Monday_Late"
-          var key = seg.replace(/ /g, '_');
-          return {key: key, type: type};
-        });
-      }
-    }
+// Load
+api({action: 'getProgram'}, function(err, r) {
+  var msg = document.getElementById('stateMsg');
+  if (err || !r || !r.ok) {
+    msg.innerHTML = 'Could not load program. Please refresh and try again.';
+    return;
   }
-  return [];
-}
-
-function getLatestSchedRequest(notes) {
-  if (!notes || !notes.trim()) return null;
-  var chunks = notes.trim().split(/\n\n+/);
-  for (var i = chunks.length - 1; i >= 0; i--) {
-    var chunk = chunks[i].trim();
-    // Mirror Code.gs: if the most recent relevant entry is a withdrawal, stop
-    if (/^\[([^\]]+)\]\s+RESOLVED\s+—/.test(chunk) && /scheduling request withdrawn/i.test(chunk)) {
-      return null;
-    }
-    var m = chunk.match(/^\[([^\]]+)\]\s+SCHEDULING REQUEST\s+—\s+([\s\S]*)$/);
-    if (m) {
-      var body = m[2].trim();
-      var slotMatch = body.match(/Preferred slots:\s*([^.]+)/);
-      if (slotMatch) {
-        return slotMatch[1].trim().split(',').map(function(s) {
-          return fmtSchedSegment(s);
-        });
-      }
-    }
-  }
-  return null;
-}
-
-function rWithdrawConfirm() {
-  return '<div class="card">' +
-    '<div class="card-title">Withdraw scheduling request?</div>' +
-    '<div class="notice notice-warn"><span class="ni">&#9888;</span><span>' +
-    'This will cancel your current scheduling request. You can submit a new one at any time.' +
-    '</span></div>' +
-    errFrag() +
-    '<button class="btn-cancel" data-action="confirmWithdraw">Yes, withdraw request</button>' +
-    '</div>' +
-    '<div class="back-row"><button class="btn-nav" onclick="state=\'found\';errMsg=\'\';render()">&#8592; Keep my request</button></div>';
-}
-
-function doPrefSentBack() {
-  state = 'found'; errMsg = ''; render();
-}
-
-function doModifyRequest() {
-  _requestedSegs = getLatestSchedRequestRaw(student && student.notes);
-  if (!_requestedSegs.length && student && student.schedRequest && student.schedRequest.length) {
-    _requestedSegs = student.schedRequest.map(function(s) {
-      var seg = s.trim().replace(/^[^\u0041-\u005A]*/, '').trim().replace(/ /g, '_');
-      return {key: seg, type: 'preferred'};
-    });
-  }
-  prefSelected = _requestedSegs.map(function(r) { return {key: r.key, type: r.type}; });
-  _inModifyMode = true;
-  state = 'preferences'; errMsg = ''; render();
-}
-
-function doCancelRequest() {
-  api({action:"withdrawSchedRequest", studentId:student.id, password:lookupPw}, function(e, r) {
-    if (e || !r || !r.ok) { showErr("Could not withdraw request. Please try again."); return; }
-    // Clear schedRequest field and poison notes so getLatestSchedRequest returns null
-    student.schedRequest = null;
-    var now = new Date();
-    var pad = function(n) { return n < 10 ? '0'+n : String(n); };
-    var ts = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
-    var resolvedStamp = '[' + ts + '] RESOLVED \u2014 Scheduling request withdrawn by family.';
-    student.notes = (student.notes ? student.notes + '\n\n' : '') + resolvedStamp;
-    schedRequestCancelled = true;
-    errMsg = ''; render();
-  });
-}
-
-function doFpwEnter() {
-  var fe = document.getElementById('femail');
-  if (fe) fe.focus(); else doAuth();
-}
-
-// ── Boot ───────────────────────────────────────────────────────
-render();
-renderInfo("lookup");
+  msg.style.display = 'none';
+  render(r.performers || []);
+});
 </script>
 </body>
 </html>
