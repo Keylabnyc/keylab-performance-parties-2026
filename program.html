@@ -13,9 +13,10 @@
   --bg:     #d0d0d0;
   --card:   #f6f6f6;
   --navy:   #1e3a5f;
-  --text1:  #111111;
-  --text2:  #333333;
-  --text3:  #666666;
+  --song:   #3d6b9e;
+  --text1:  #000000;
+  --text2:  #1a1a1a;
+  --text3:  #444444;
   --border: #e0e0e0;
   --cvp:    #6d28d9;
   --f:      "Inter", system-ui, -apple-system, sans-serif;
@@ -117,7 +118,7 @@ body {
 }
 .day-header-date {
   font-size: 13px;
-  color: #444;
+  color: #111;
   font-weight: 500;
   margin-top: .15rem;
 }
@@ -177,8 +178,8 @@ body {
   padding: 2px 8px;
 }
 .performer-teacher {
-  font-size: 13px;
-  color: var(--text3);
+  font-size: 14px;
+  color: #222222;
   font-weight: 400;
   margin-bottom: .65rem;
 }
@@ -201,15 +202,14 @@ body {
   content: "\2022";
   position: absolute;
   left: 0;
-  color: #1e3a5f;
-  font-size: 18px;
-  line-height: 1.1;
+  color: var(--song);
 }
 .song-title {
   font-weight: 700;
+  color: var(--song);
 }
 .song-composer {
-  color: var(--text3);
+  color: #333333;
   font-weight: 400;
   font-size: 14px;
 }
@@ -218,11 +218,12 @@ body {
 /* ── Program notes ── */
 .program-notes {
   font-size: 14px;
-  line-height: 1.75;
+  line-height: 1.65;
   color: var(--text2);
-  margin-top: .75rem;
-  padding-top: .75rem;
-  border-top: 1px solid var(--border);
+  margin-top: .35rem;
+  margin-bottom: .5rem;
+  padding-left: 1rem;
+  font-style: italic;
 }
 
 /* ── Loading / error ── */
@@ -250,7 +251,7 @@ body {
   padding: 2rem 1rem;
   border-top: 1px solid #bbb;
   font-size: 13px;
-  color: #555;
+  color: #333;
   font-weight: 500;
 }
 
@@ -290,12 +291,12 @@ var activeDay  = null;
 function api(payload, cb) {
   fetch(GAS_URL, {
     method: 'POST',
-    headers: {'Content-Type': 'text/plain'},
+    headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify(payload)
   })
   .then(function(res) { return res.json(); })
-  .then(function(r)   { cb(null, r); })
-  .catch(function(e)  { cb(String(e)); });
+  .then(function(data) { cb(null, data); })
+  .catch(function(e) { cb(String(e)); });
 }
 
 function esc(s) {
@@ -352,6 +353,9 @@ function renderPerformer(p) {
         h += ' <span class="song-composer">&mdash; ' + esc(p.song1Composer) + '</span>';
       }
       h += '</div>';
+      if ((p.song1Info || '').trim()) {
+        h += '<div class="program-notes">' + esc(p.song1Info.trim()).replace(/\n/g, '<br>') + '</div>';
+      }
     }
     if (hasSong2) {
       h += '<div class="song-line">';
@@ -360,17 +364,11 @@ function renderPerformer(p) {
         h += ' <span class="song-composer">&mdash; ' + esc(p.song2Composer) + '</span>';
       }
       h += '</div>';
+      if ((p.song2Info || '').trim()) {
+        h += '<div class="program-notes">' + esc(p.song2Info.trim()).replace(/\n/g, '<br>') + '</div>';
+      }
     }
     h += '</div>';
-  }
-
-  // Program notes (song1Info first, then song2Info if different)
-  var notes1 = (p.song1Info || '').trim();
-  var notes2 = (p.song2Info || '').trim();
-  var notes  = notes1;
-  if (notes2 && notes2 !== notes1) notes = notes1 ? notes1 + ' ' + notes2 : notes2;
-  if (notes) {
-    h += '<div class="program-notes">' + esc(notes) + '</div>';
   }
 
   h += '</div>';
